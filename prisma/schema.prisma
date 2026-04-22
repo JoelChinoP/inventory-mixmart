@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client"
   output   = "./generated"
@@ -10,8 +7,344 @@ datasource db {
   provider = "postgresql"
 }
 
-model Quotes {
-  id        Int      @id @default(autoincrement())
-  quote     String
-  createdAt DateTime @default(now())
+enum UserRole {
+  ADMIN
+  WORKER
+}
+
+enum ProductCategory {
+  SCHOOL_SUPPLIES
+  BAZAAR
+  SNACKS
+}
+
+enum StockEntryStatus {
+  ORDERED
+  RECEIVED
+}
+
+enum StockOutputReason {
+  SALE
+  WASTE
+  INTERNAL_USE
+}
+
+enum ServiceKind {
+  IN_HOUSE
+  OUTSOURCED
+}
+
+enum ServiceStatus {
+  RECEIVED
+  IN_PROGRESS
+  COMPLETED
+  DELIVERED
+  CANCELLED
+}
+
+enum StockMovementDirection {
+  IN
+  OUT
+}
+
+enum StockMovementType {
+  PURCHASE_ENTRY
+  SALE
+  WASTE
+  INTERNAL_USE
+  SERVICE_CONSUMPTION
+}
+
+model User {
+  id           String    @id @default(uuid()) @db.Uuid
+  username     String    @unique(map: "uq_users_username") @db.VarChar(50)
+  fullName     String    @map("full_name") @db.VarChar(120)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  role         UserRole
+  isActive     Boolean   @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  stockEntriesCreated     StockEntry[]    @relation("StockEntryCreatedBy")
+  stockOutputsCreated     StockOutput[]   @relation("StockOutputCreatedBy")
+  serviceRecordsCreated   ServiceRecord[] @relation("ServiceRecordCreatedBy")
+  stockMovementsPerformed StockMovement[] @relation("StockMovementPerformedBy")
+
+  @@index([role, isActive], map: "idx_users_role_active")
+  @@map("users")
+}
+
+model Supplier {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(150)
+  taxId       String   @unique(map: "uq_suppliers_tax_id") @map("tax_id") @db.VarChar(20)
+  phone       String   @db.VarChar(30)
+  contactName String   @map("contact_name") @db.VarChar(120)
+  address     String?  @db.VarChar(250)
+  notes       String?  @db.Text
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  productSuppliers ProductSupplier[]
+  stockEntries     StockEntry[]
+  inventoryLots    InventoryLot[]
+
+  @@index([name, isActive], map: "idx_suppliers_name_active")
+  @@map("suppliers")
+}
+
+model Product {
+  id            String          @id @default(uuid()) @db.Uuid
+  sku           String?         @unique(map: "uq_products_sku") @db.VarChar(50)
+  barcode       String?         @unique(map: "uq_products_barcode") @db.VarChar(64)
+  name          String          @db.VarChar(150)
+  description   String?         @db.Text
+  category      ProductCategory
+  unitName      String          @map("unit_name") @db.VarChar(30)
+  purchasePrice Decimal         @map("purchase_price") @db.Decimal(12, 2)
+  minimumStock  Decimal         @map("minimum_stock") @db.Decimal(12, 3)
+  currentStock  Decimal         @default(0) @map("current_stock") @db.Decimal(12, 3)
+  isActive      Boolean         @default(true) @map("is_active")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  productSuppliers    ProductSupplier[]
+  stockEntryItems     StockEntryItem[]
+  stockOutputItems    StockOutputItem[]
+  inventoryLots       InventoryLot[]
+  stockMovements      StockMovement[]
+  serviceTypeSupplies ServiceTypeSupply[]
+  serviceConsumptions ServiceConsumption[]
+
+  @@index([name], map: "idx_products_name")
+  @@index([category, isActive], map: "idx_products_category_active")
+  @@index([isActive, currentStock], map: "idx_products_active_current_stock")
+  @@map("products")
+}
+
+model ProductSupplier {
+  productId           String   @map("product_id") @db.Uuid
+  supplierId          String   @map("supplier_id") @db.Uuid
+  supplierProductCode String?  @map("supplier_product_code") @db.VarChar(60)
+  isPreferred         Boolean  @default(false) @map("is_preferred")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  supplier Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([productId, supplierId], map: "pk_product_suppliers")
+  @@index([supplierId, isPreferred], map: "idx_product_suppliers_supplier_preferred")
+  @@map("product_suppliers")
+}
+
+model StockEntry {
+  id              String           @id @default(uuid()) @db.Uuid
+  supplierId      String           @map("supplier_id") @db.Uuid
+  createdById     String           @map("created_by_id") @db.Uuid
+  status          StockEntryStatus
+  orderedAt       DateTime         @default(now()) @map("ordered_at")
+  receivedAt      DateTime?        @map("received_at")
+  referenceNumber String?          @map("reference_number") @db.VarChar(50)
+  notes           String?          @db.Text
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+
+  supplier  Supplier         @relation(fields: [supplierId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdBy User             @relation("StockEntryCreatedBy", fields: [createdById], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  items     StockEntryItem[]
+
+  @@index([supplierId, orderedAt], map: "idx_stock_entries_supplier_ordered_at")
+  @@index([status, orderedAt], map: "idx_stock_entries_status_ordered_at")
+  @@index([receivedAt], map: "idx_stock_entries_received_at")
+  @@map("stock_entries")
+}
+
+model StockEntryItem {
+  id             String    @id @default(uuid()) @db.Uuid
+  stockEntryId   String    @map("stock_entry_id") @db.Uuid
+  productId      String    @map("product_id") @db.Uuid
+  inventoryLotId String?   @map("inventory_lot_id") @db.Uuid
+  quantity       Decimal   @db.Decimal(12, 3)
+  unitCost       Decimal   @map("unit_cost") @db.Decimal(12, 2)
+  lotNumber      String?   @map("lot_number") @db.VarChar(80)
+  expirationDate DateTime? @map("expiration_date") @db.Date
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  stockEntry     StockEntry      @relation(fields: [stockEntryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  product        Product         @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  inventoryLot   InventoryLot?   @relation(fields: [inventoryLotId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  stockMovements StockMovement[]
+
+  @@index([stockEntryId], map: "idx_stock_entry_items_entry")
+  @@index([productId], map: "idx_stock_entry_items_product")
+  @@index([inventoryLotId], map: "idx_stock_entry_items_inventory_lot")
+  @@index([productId, expirationDate], map: "idx_stock_entry_items_product_expiration")
+  @@map("stock_entry_items")
+}
+
+model InventoryLot {
+  id              String    @id @default(uuid()) @db.Uuid
+  productId       String    @map("product_id") @db.Uuid
+  supplierId      String?   @map("supplier_id") @db.Uuid
+  lotNumber       String    @map("lot_number") @db.VarChar(80)
+  expirationDate  DateTime  @map("expiration_date") @db.Date
+  receivedAt      DateTime  @default(now()) @map("received_at")
+  initialQuantity Decimal   @map("initial_quantity") @db.Decimal(12, 3)
+  currentQuantity Decimal   @default(0) @map("current_quantity") @db.Decimal(12, 3)
+  unitCost        Decimal?  @map("unit_cost") @db.Decimal(12, 2)
+  lastMovementAt  DateTime? @map("last_movement_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  product         Product          @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  supplier        Supplier?        @relation(fields: [supplierId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  stockEntryItems StockEntryItem[]
+  stockMovements  StockMovement[]
+
+  @@unique([productId, lotNumber, expirationDate], map: "uq_inventory_lots_product_lot_expiration")
+  @@index([productId, expirationDate], map: "idx_inventory_lots_product_expiration")
+  @@index([expirationDate, currentQuantity], map: "idx_inventory_lots_expiration_quantity")
+  @@map("inventory_lots")
+}
+
+model StockOutput {
+  id          String            @id @default(uuid()) @db.Uuid
+  createdById String            @map("created_by_id") @db.Uuid
+  reason      StockOutputReason
+  occurredAt  DateTime          @default(now()) @map("occurred_at")
+  notes       String?           @db.Text
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+
+  createdBy User              @relation("StockOutputCreatedBy", fields: [createdById], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  items     StockOutputItem[]
+
+  @@index([reason, occurredAt], map: "idx_stock_outputs_reason_occurred_at")
+  @@index([createdById, occurredAt], map: "idx_stock_outputs_created_by_occurred_at")
+  @@map("stock_outputs")
+}
+
+model StockOutputItem {
+  id            String   @id @default(uuid()) @db.Uuid
+  stockOutputId String   @map("stock_output_id") @db.Uuid
+  productId     String   @map("product_id") @db.Uuid
+  quantity      Decimal  @db.Decimal(12, 3)
+  unitCost      Decimal? @map("unit_cost") @db.Decimal(12, 2)
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  stockOutput    StockOutput     @relation(fields: [stockOutputId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  product        Product         @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  stockMovements StockMovement[]
+
+  @@index([stockOutputId], map: "idx_stock_output_items_output")
+  @@index([productId], map: "idx_stock_output_items_product")
+  @@map("stock_output_items")
+}
+
+model ServiceType {
+  id          String      @id @default(uuid()) @db.Uuid
+  name        String      @unique(map: "uq_service_types_name") @db.VarChar(100)
+  kind        ServiceKind
+  unitName    String      @default("unit") @map("unit_name") @db.VarChar(30)
+  description String?     @db.Text
+  isActive    Boolean     @default(true) @map("is_active")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  supplies       ServiceTypeSupply[]
+  serviceRecords ServiceRecord[]
+
+  @@index([kind, isActive], map: "idx_service_types_kind_active")
+  @@map("service_types")
+}
+
+model ServiceTypeSupply {
+  id              String   @id @default(uuid()) @db.Uuid
+  serviceTypeId   String   @map("service_type_id") @db.Uuid
+  productId       String   @map("product_id") @db.Uuid
+  quantityPerUnit Decimal  @map("quantity_per_unit") @db.Decimal(12, 3)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  serviceType ServiceType @relation(fields: [serviceTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  product     Product     @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([serviceTypeId, productId], map: "uq_service_type_supplies_service_product")
+  @@index([productId], map: "idx_service_type_supplies_product")
+  @@map("service_type_supplies")
+}
+
+model ServiceRecord {
+  id                 String        @id @default(uuid()) @db.Uuid
+  serviceTypeId      String        @map("service_type_id") @db.Uuid
+  createdById        String        @map("created_by_id") @db.Uuid
+  kind               ServiceKind
+  status             ServiceStatus
+  quantity           Decimal       @db.Decimal(12, 3)
+  serviceDate        DateTime      @default(now()) @map("service_date")
+  deliveredAt        DateTime?     @map("delivered_at")
+  externalVendorName String?       @map("external_vendor_name") @db.VarChar(120)
+  notes              String?       @db.Text
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+
+  serviceType  ServiceType          @relation(fields: [serviceTypeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdBy    User                 @relation("ServiceRecordCreatedBy", fields: [createdById], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  consumptions ServiceConsumption[]
+
+  @@index([serviceDate], map: "idx_service_records_service_date")
+  @@index([kind, status, serviceDate], map: "idx_service_records_kind_status_date")
+  @@index([serviceTypeId, serviceDate], map: "idx_service_records_type_date")
+  @@map("service_records")
+}
+
+model ServiceConsumption {
+  id              String   @id @default(uuid()) @db.Uuid
+  serviceRecordId String   @map("service_record_id") @db.Uuid
+  productId       String   @map("product_id") @db.Uuid
+  quantity        Decimal  @db.Decimal(12, 3)
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  serviceRecord  ServiceRecord   @relation(fields: [serviceRecordId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  product        Product         @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  stockMovements StockMovement[]
+
+  @@unique([serviceRecordId, productId], map: "uq_service_consumptions_service_product")
+  @@index([productId], map: "idx_service_consumptions_product")
+  @@map("service_consumptions")
+}
+
+model StockMovement {
+  id                   String                 @id @default(uuid()) @db.Uuid
+  productId            String                 @map("product_id") @db.Uuid
+  inventoryLotId       String?                @map("inventory_lot_id") @db.Uuid
+  stockEntryItemId     String?                @map("stock_entry_item_id") @db.Uuid
+  stockOutputItemId    String?                @map("stock_output_item_id") @db.Uuid
+  serviceConsumptionId String?                @map("service_consumption_id") @db.Uuid
+  performedById        String?                @map("performed_by_id") @db.Uuid
+  movementType         StockMovementType      @map("movement_type")
+  direction            StockMovementDirection
+  quantity             Decimal                @db.Decimal(12, 3)
+  productStockAfter    Decimal                @map("product_stock_after") @db.Decimal(12, 3)
+  lotStockAfter        Decimal?               @map("lot_stock_after") @db.Decimal(12, 3)
+  occurredAt           DateTime               @default(now()) @map("occurred_at")
+  notes                String?                @db.Text
+
+  product            Product             @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  inventoryLot       InventoryLot?       @relation(fields: [inventoryLotId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  stockEntryItem     StockEntryItem?     @relation(fields: [stockEntryItemId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  stockOutputItem    StockOutputItem?    @relation(fields: [stockOutputItemId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  serviceConsumption ServiceConsumption? @relation(fields: [serviceConsumptionId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  performedBy        User?               @relation("StockMovementPerformedBy", fields: [performedById], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([productId, occurredAt], map: "idx_stock_movements_product_occurred_at")
+  @@index([movementType, occurredAt], map: "idx_stock_movements_type_occurred_at")
+  @@index([inventoryLotId, occurredAt], map: "idx_stock_movements_lot_occurred_at")
+  @@index([stockEntryItemId], map: "idx_stock_movements_entry_item")
+  @@index([stockOutputItemId], map: "idx_stock_movements_output_item")
+  @@index([serviceConsumptionId], map: "idx_stock_movements_service_consumption")
+  @@map("stock_movements")
 }

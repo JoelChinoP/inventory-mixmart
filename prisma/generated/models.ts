@@ -8,5 +8,18 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/Quotes'
+export type * from './models/User'
+export type * from './models/Supplier'
+export type * from './models/Product'
+export type * from './models/ProductSupplier'
+export type * from './models/StockEntry'
+export type * from './models/StockEntryItem'
+export type * from './models/InventoryLot'
+export type * from './models/StockOutput'
+export type * from './models/StockOutputItem'
+export type * from './models/ServiceType'
+export type * from './models/ServiceTypeSupply'
+export type * from './models/ServiceRecord'
+export type * from './models/ServiceConsumption'
+export type * from './models/StockMovement'
 export type * from './commonInputTypes'

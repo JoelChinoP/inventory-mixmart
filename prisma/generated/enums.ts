@@ -9,7 +9,73 @@
 * 🟢 You can import this file directly.
 */
 
+export const UserRole = {
+  ADMIN: 'ADMIN',
+  WORKER: 'WORKER'
+} as const
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const ProductCategory = {
+  SCHOOL_SUPPLIES: 'SCHOOL_SUPPLIES',
+  BAZAAR: 'BAZAAR',
+  SNACKS: 'SNACKS'
+} as const
+
+export type ProductCategory = (typeof ProductCategory)[keyof typeof ProductCategory]
+
+
+export const StockEntryStatus = {
+  ORDERED: 'ORDERED',
+  RECEIVED: 'RECEIVED'
+} as const
+
+export type StockEntryStatus = (typeof StockEntryStatus)[keyof typeof StockEntryStatus]
+
+
+export const StockOutputReason = {
+  SALE: 'SALE',
+  WASTE: 'WASTE',
+  INTERNAL_USE: 'INTERNAL_USE'
+} as const
+
+export type StockOutputReason = (typeof StockOutputReason)[keyof typeof StockOutputReason]
+
+
+export const ServiceKind = {
+  IN_HOUSE: 'IN_HOUSE',
+  OUTSOURCED: 'OUTSOURCED'
+} as const
+
+export type ServiceKind = (typeof ServiceKind)[keyof typeof ServiceKind]
+
+
+export const ServiceStatus = {
+  RECEIVED: 'RECEIVED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ServiceStatus = (typeof ServiceStatus)[keyof typeof ServiceStatus]
+
+
+export const StockMovementDirection = {
+  IN: 'IN',
+  OUT: 'OUT'
+} as const
+
+export type StockMovementDirection = (typeof StockMovementDirection)[keyof typeof StockMovementDirection]
+
+
+export const StockMovementType = {
+  PURCHASE_ENTRY: 'PURCHASE_ENTRY',
+  SALE: 'SALE',
+  WASTE: 'WASTE',
+  INTERNAL_USE: 'INTERNAL_USE',
+  SERVICE_CONSUMPTION: 'SERVICE_CONSUMPTION'
+} as const
+
+export type StockMovementType = (typeof StockMovementType)[keyof typeof StockMovementType]

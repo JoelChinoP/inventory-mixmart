@@ -18,7 +18,72 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
- * Model Quotes
+ * Model User
  * 
  */
-export type Quotes = Prisma.QuotesModel
+export type User = Prisma.UserModel
+/**
+ * Model Supplier
+ * 
+ */
+export type Supplier = Prisma.SupplierModel
+/**
+ * Model Product
+ * 
+ */
+export type Product = Prisma.ProductModel
+/**
+ * Model ProductSupplier
+ * 
+ */
+export type ProductSupplier = Prisma.ProductSupplierModel
+/**
+ * Model StockEntry
+ * 
+ */
+export type StockEntry = Prisma.StockEntryModel
+/**
+ * Model StockEntryItem
+ * 
+ */
+export type StockEntryItem = Prisma.StockEntryItemModel
+/**
+ * Model InventoryLot
+ * 
+ */
+export type InventoryLot = Prisma.InventoryLotModel
+/**
+ * Model StockOutput
+ * 
+ */
+export type StockOutput = Prisma.StockOutputModel
+/**
+ * Model StockOutputItem
+ * 
+ */
+export type StockOutputItem = Prisma.StockOutputItemModel
+/**
+ * Model ServiceType
+ * 
+ */
+export type ServiceType = Prisma.ServiceTypeModel
+/**
+ * Model ServiceTypeSupply
+ * 
+ */
+export type ServiceTypeSupply = Prisma.ServiceTypeSupplyModel
+/**
+ * Model ServiceRecord
+ * 
+ */
+export type ServiceRecord = Prisma.ServiceRecordModel
+/**
+ * Model ServiceConsumption
+ * 
+ */
+export type ServiceConsumption = Prisma.ServiceConsumptionModel
+/**
+ * Model StockMovement
+ * 
+ */
+export type StockMovement = Prisma.StockMovementModel

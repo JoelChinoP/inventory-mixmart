@@ -51,6 +51,7 @@ export type InventoryLotMinAggregateOutputType = {
   lastMovementAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type InventoryLotMaxAggregateOutputType = {
@@ -66,6 +67,7 @@ export type InventoryLotMaxAggregateOutputType = {
   lastMovementAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type InventoryLotCountAggregateOutputType = {
@@ -81,6 +83,7 @@ export type InventoryLotCountAggregateOutputType = {
   lastMovementAt: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -110,6 +113,7 @@ export type InventoryLotMinAggregateInputType = {
   lastMovementAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type InventoryLotMaxAggregateInputType = {
@@ -125,6 +129,7 @@ export type InventoryLotMaxAggregateInputType = {
   lastMovementAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type InventoryLotCountAggregateInputType = {
@@ -140,6 +145,7 @@ export type InventoryLotCountAggregateInputType = {
   lastMovementAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -242,6 +248,7 @@ export type InventoryLotGroupByOutputType = {
   lastMovementAt: Date | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   _count: InventoryLotCountAggregateOutputType | null
   _avg: InventoryLotAvgAggregateOutputType | null
   _sum: InventoryLotSumAggregateOutputType | null
@@ -280,6 +287,7 @@ export type InventoryLotWhereInput = {
   lastMovementAt?: Prisma.DateTimeNullableFilter<"InventoryLot"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"InventoryLot"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"InventoryLot"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"InventoryLot"> | Date | string | null
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
   supplier?: Prisma.XOR<Prisma.SupplierNullableScalarRelationFilter, Prisma.SupplierWhereInput> | null
   stockEntryItems?: Prisma.StockEntryItemListRelationFilter
@@ -299,6 +307,7 @@ export type InventoryLotOrderByWithRelationInput = {
   lastMovementAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   product?: Prisma.ProductOrderByWithRelationInput
   supplier?: Prisma.SupplierOrderByWithRelationInput
   stockEntryItems?: Prisma.StockEntryItemOrderByRelationAggregateInput
@@ -322,6 +331,7 @@ export type InventoryLotWhereUniqueInput = Prisma.AtLeast<{
   lastMovementAt?: Prisma.DateTimeNullableFilter<"InventoryLot"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"InventoryLot"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"InventoryLot"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"InventoryLot"> | Date | string | null
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
   supplier?: Prisma.XOR<Prisma.SupplierNullableScalarRelationFilter, Prisma.SupplierWhereInput> | null
   stockEntryItems?: Prisma.StockEntryItemListRelationFilter
@@ -341,6 +351,7 @@ export type InventoryLotOrderByWithAggregationInput = {
   lastMovementAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.InventoryLotCountOrderByAggregateInput
   _avg?: Prisma.InventoryLotAvgOrderByAggregateInput
   _max?: Prisma.InventoryLotMaxOrderByAggregateInput
@@ -364,6 +375,7 @@ export type InventoryLotScalarWhereWithAggregatesInput = {
   lastMovementAt?: Prisma.DateTimeNullableWithAggregatesFilter<"InventoryLot"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"InventoryLot"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"InventoryLot"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"InventoryLot"> | Date | string | null
 }
 
 export type InventoryLotCreateInput = {
@@ -377,6 +389,7 @@ export type InventoryLotCreateInput = {
   lastMovementAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   product: Prisma.ProductCreateNestedOneWithoutInventoryLotsInput
   supplier?: Prisma.SupplierCreateNestedOneWithoutInventoryLotsInput
   stockEntryItems?: Prisma.StockEntryItemCreateNestedManyWithoutInventoryLotInput
@@ -396,6 +409,7 @@ export type InventoryLotUncheckedCreateInput = {
   lastMovementAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   stockEntryItems?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutInventoryLotInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutInventoryLotInput
 }
@@ -411,6 +425,7 @@ export type InventoryLotUpdateInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   product?: Prisma.ProductUpdateOneRequiredWithoutInventoryLotsNestedInput
   supplier?: Prisma.SupplierUpdateOneWithoutInventoryLotsNestedInput
   stockEntryItems?: Prisma.StockEntryItemUpdateManyWithoutInventoryLotNestedInput
@@ -430,6 +445,7 @@ export type InventoryLotUncheckedUpdateInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stockEntryItems?: Prisma.StockEntryItemUncheckedUpdateManyWithoutInventoryLotNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutInventoryLotNestedInput
 }
@@ -447,6 +463,7 @@ export type InventoryLotCreateManyInput = {
   lastMovementAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type InventoryLotUpdateManyMutationInput = {
@@ -460,6 +477,7 @@ export type InventoryLotUpdateManyMutationInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type InventoryLotUncheckedUpdateManyInput = {
@@ -475,6 +493,7 @@ export type InventoryLotUncheckedUpdateManyInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type InventoryLotListRelationFilter = {
@@ -511,6 +530,7 @@ export type InventoryLotCountOrderByAggregateInput = {
   lastMovementAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type InventoryLotAvgOrderByAggregateInput = {
@@ -532,6 +552,7 @@ export type InventoryLotMaxOrderByAggregateInput = {
   lastMovementAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type InventoryLotMinOrderByAggregateInput = {
@@ -547,6 +568,7 @@ export type InventoryLotMinOrderByAggregateInput = {
   lastMovementAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type InventoryLotSumOrderByAggregateInput = {
@@ -690,6 +712,7 @@ export type InventoryLotCreateWithoutSupplierInput = {
   lastMovementAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   product: Prisma.ProductCreateNestedOneWithoutInventoryLotsInput
   stockEntryItems?: Prisma.StockEntryItemCreateNestedManyWithoutInventoryLotInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutInventoryLotInput
@@ -707,6 +730,7 @@ export type InventoryLotUncheckedCreateWithoutSupplierInput = {
   lastMovementAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   stockEntryItems?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutInventoryLotInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutInventoryLotInput
 }
@@ -753,6 +777,7 @@ export type InventoryLotScalarWhereInput = {
   lastMovementAt?: Prisma.DateTimeNullableFilter<"InventoryLot"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"InventoryLot"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"InventoryLot"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"InventoryLot"> | Date | string | null
 }
 
 export type InventoryLotCreateWithoutProductInput = {
@@ -766,6 +791,7 @@ export type InventoryLotCreateWithoutProductInput = {
   lastMovementAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   supplier?: Prisma.SupplierCreateNestedOneWithoutInventoryLotsInput
   stockEntryItems?: Prisma.StockEntryItemCreateNestedManyWithoutInventoryLotInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutInventoryLotInput
@@ -783,6 +809,7 @@ export type InventoryLotUncheckedCreateWithoutProductInput = {
   lastMovementAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   stockEntryItems?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutInventoryLotInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutInventoryLotInput
 }
@@ -824,6 +851,7 @@ export type InventoryLotCreateWithoutStockEntryItemsInput = {
   lastMovementAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   product: Prisma.ProductCreateNestedOneWithoutInventoryLotsInput
   supplier?: Prisma.SupplierCreateNestedOneWithoutInventoryLotsInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutInventoryLotInput
@@ -842,6 +870,7 @@ export type InventoryLotUncheckedCreateWithoutStockEntryItemsInput = {
   lastMovementAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutInventoryLotInput
 }
 
@@ -872,6 +901,7 @@ export type InventoryLotUpdateWithoutStockEntryItemsInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   product?: Prisma.ProductUpdateOneRequiredWithoutInventoryLotsNestedInput
   supplier?: Prisma.SupplierUpdateOneWithoutInventoryLotsNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutInventoryLotNestedInput
@@ -890,6 +920,7 @@ export type InventoryLotUncheckedUpdateWithoutStockEntryItemsInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutInventoryLotNestedInput
 }
 
@@ -904,6 +935,7 @@ export type InventoryLotCreateWithoutStockMovementsInput = {
   lastMovementAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   product: Prisma.ProductCreateNestedOneWithoutInventoryLotsInput
   supplier?: Prisma.SupplierCreateNestedOneWithoutInventoryLotsInput
   stockEntryItems?: Prisma.StockEntryItemCreateNestedManyWithoutInventoryLotInput
@@ -922,6 +954,7 @@ export type InventoryLotUncheckedCreateWithoutStockMovementsInput = {
   lastMovementAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   stockEntryItems?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutInventoryLotInput
 }
 
@@ -952,6 +985,7 @@ export type InventoryLotUpdateWithoutStockMovementsInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   product?: Prisma.ProductUpdateOneRequiredWithoutInventoryLotsNestedInput
   supplier?: Prisma.SupplierUpdateOneWithoutInventoryLotsNestedInput
   stockEntryItems?: Prisma.StockEntryItemUpdateManyWithoutInventoryLotNestedInput
@@ -970,6 +1004,7 @@ export type InventoryLotUncheckedUpdateWithoutStockMovementsInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stockEntryItems?: Prisma.StockEntryItemUncheckedUpdateManyWithoutInventoryLotNestedInput
 }
 
@@ -985,6 +1020,7 @@ export type InventoryLotCreateManySupplierInput = {
   lastMovementAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type InventoryLotUpdateWithoutSupplierInput = {
@@ -998,6 +1034,7 @@ export type InventoryLotUpdateWithoutSupplierInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   product?: Prisma.ProductUpdateOneRequiredWithoutInventoryLotsNestedInput
   stockEntryItems?: Prisma.StockEntryItemUpdateManyWithoutInventoryLotNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutInventoryLotNestedInput
@@ -1015,6 +1052,7 @@ export type InventoryLotUncheckedUpdateWithoutSupplierInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stockEntryItems?: Prisma.StockEntryItemUncheckedUpdateManyWithoutInventoryLotNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutInventoryLotNestedInput
 }
@@ -1031,6 +1069,7 @@ export type InventoryLotUncheckedUpdateManyWithoutSupplierInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type InventoryLotCreateManyProductInput = {
@@ -1045,6 +1084,7 @@ export type InventoryLotCreateManyProductInput = {
   lastMovementAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type InventoryLotUpdateWithoutProductInput = {
@@ -1058,6 +1098,7 @@ export type InventoryLotUpdateWithoutProductInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   supplier?: Prisma.SupplierUpdateOneWithoutInventoryLotsNestedInput
   stockEntryItems?: Prisma.StockEntryItemUpdateManyWithoutInventoryLotNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutInventoryLotNestedInput
@@ -1075,6 +1116,7 @@ export type InventoryLotUncheckedUpdateWithoutProductInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stockEntryItems?: Prisma.StockEntryItemUncheckedUpdateManyWithoutInventoryLotNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutInventoryLotNestedInput
 }
@@ -1091,6 +1133,7 @@ export type InventoryLotUncheckedUpdateManyWithoutProductInput = {
   lastMovementAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -1146,6 +1189,7 @@ export type InventoryLotSelect<ExtArgs extends runtime.Types.Extensions.Internal
   lastMovementAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.InventoryLot$supplierArgs<ExtArgs>
   stockEntryItems?: boolean | Prisma.InventoryLot$stockEntryItemsArgs<ExtArgs>
@@ -1166,6 +1210,7 @@ export type InventoryLotSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   lastMovementAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.InventoryLot$supplierArgs<ExtArgs>
 }, ExtArgs["result"]["inventoryLot"]>
@@ -1183,6 +1228,7 @@ export type InventoryLotSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   lastMovementAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.InventoryLot$supplierArgs<ExtArgs>
 }, ExtArgs["result"]["inventoryLot"]>
@@ -1200,9 +1246,10 @@ export type InventoryLotSelectScalar = {
   lastMovementAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }
 
-export type InventoryLotOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "productId" | "supplierId" | "lotNumber" | "expirationDate" | "receivedAt" | "initialQuantity" | "currentQuantity" | "unitCost" | "lastMovementAt" | "createdAt" | "updatedAt", ExtArgs["result"]["inventoryLot"]>
+export type InventoryLotOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "productId" | "supplierId" | "lotNumber" | "expirationDate" | "receivedAt" | "initialQuantity" | "currentQuantity" | "unitCost" | "lastMovementAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["inventoryLot"]>
 export type InventoryLotInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.InventoryLot$supplierArgs<ExtArgs>
@@ -1240,6 +1287,7 @@ export type $InventoryLotPayload<ExtArgs extends runtime.Types.Extensions.Intern
     lastMovementAt: Date | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
   }, ExtArgs["result"]["inventoryLot"]>
   composites: {}
 }
@@ -1679,6 +1727,7 @@ export interface InventoryLotFieldRefs {
   readonly lastMovementAt: Prisma.FieldRef<"InventoryLot", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"InventoryLot", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"InventoryLot", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"InventoryLot", 'DateTime'>
 }
     
 

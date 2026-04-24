@@ -31,6 +31,7 @@ export type ProductSupplierMinAggregateOutputType = {
   isPreferred: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type ProductSupplierMaxAggregateOutputType = {
@@ -40,6 +41,7 @@ export type ProductSupplierMaxAggregateOutputType = {
   isPreferred: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type ProductSupplierCountAggregateOutputType = {
@@ -49,6 +51,7 @@ export type ProductSupplierCountAggregateOutputType = {
   isPreferred: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -60,6 +63,7 @@ export type ProductSupplierMinAggregateInputType = {
   isPreferred?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type ProductSupplierMaxAggregateInputType = {
@@ -69,6 +73,7 @@ export type ProductSupplierMaxAggregateInputType = {
   isPreferred?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type ProductSupplierCountAggregateInputType = {
@@ -78,6 +83,7 @@ export type ProductSupplierCountAggregateInputType = {
   isPreferred?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -160,6 +166,7 @@ export type ProductSupplierGroupByOutputType = {
   isPreferred: boolean
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   _count: ProductSupplierCountAggregateOutputType | null
   _min: ProductSupplierMinAggregateOutputType | null
   _max: ProductSupplierMaxAggregateOutputType | null
@@ -190,6 +197,7 @@ export type ProductSupplierWhereInput = {
   isPreferred?: Prisma.BoolFilter<"ProductSupplier"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ProductSupplier"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProductSupplier"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ProductSupplier"> | Date | string | null
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
   supplier?: Prisma.XOR<Prisma.SupplierScalarRelationFilter, Prisma.SupplierWhereInput>
 }
@@ -201,6 +209,7 @@ export type ProductSupplierOrderByWithRelationInput = {
   isPreferred?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   product?: Prisma.ProductOrderByWithRelationInput
   supplier?: Prisma.SupplierOrderByWithRelationInput
 }
@@ -216,6 +225,7 @@ export type ProductSupplierWhereUniqueInput = Prisma.AtLeast<{
   isPreferred?: Prisma.BoolFilter<"ProductSupplier"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ProductSupplier"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProductSupplier"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ProductSupplier"> | Date | string | null
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
   supplier?: Prisma.XOR<Prisma.SupplierScalarRelationFilter, Prisma.SupplierWhereInput>
 }, "productId_supplierId">
@@ -227,6 +237,7 @@ export type ProductSupplierOrderByWithAggregationInput = {
   isPreferred?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ProductSupplierCountOrderByAggregateInput
   _max?: Prisma.ProductSupplierMaxOrderByAggregateInput
   _min?: Prisma.ProductSupplierMinOrderByAggregateInput
@@ -242,6 +253,7 @@ export type ProductSupplierScalarWhereWithAggregatesInput = {
   isPreferred?: Prisma.BoolWithAggregatesFilter<"ProductSupplier"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ProductSupplier"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ProductSupplier"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ProductSupplier"> | Date | string | null
 }
 
 export type ProductSupplierCreateInput = {
@@ -249,6 +261,7 @@ export type ProductSupplierCreateInput = {
   isPreferred?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   product: Prisma.ProductCreateNestedOneWithoutProductSuppliersInput
   supplier: Prisma.SupplierCreateNestedOneWithoutProductSuppliersInput
 }
@@ -260,6 +273,7 @@ export type ProductSupplierUncheckedCreateInput = {
   isPreferred?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ProductSupplierUpdateInput = {
@@ -267,6 +281,7 @@ export type ProductSupplierUpdateInput = {
   isPreferred?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   product?: Prisma.ProductUpdateOneRequiredWithoutProductSuppliersNestedInput
   supplier?: Prisma.SupplierUpdateOneRequiredWithoutProductSuppliersNestedInput
 }
@@ -278,6 +293,7 @@ export type ProductSupplierUncheckedUpdateInput = {
   isPreferred?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ProductSupplierCreateManyInput = {
@@ -287,6 +303,7 @@ export type ProductSupplierCreateManyInput = {
   isPreferred?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ProductSupplierUpdateManyMutationInput = {
@@ -294,6 +311,7 @@ export type ProductSupplierUpdateManyMutationInput = {
   isPreferred?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ProductSupplierUncheckedUpdateManyInput = {
@@ -303,6 +321,7 @@ export type ProductSupplierUncheckedUpdateManyInput = {
   isPreferred?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ProductSupplierListRelationFilter = {
@@ -327,6 +346,7 @@ export type ProductSupplierCountOrderByAggregateInput = {
   isPreferred?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ProductSupplierMaxOrderByAggregateInput = {
@@ -336,6 +356,7 @@ export type ProductSupplierMaxOrderByAggregateInput = {
   isPreferred?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ProductSupplierMinOrderByAggregateInput = {
@@ -345,6 +366,7 @@ export type ProductSupplierMinOrderByAggregateInput = {
   isPreferred?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ProductSupplierCreateNestedManyWithoutSupplierInput = {
@@ -436,6 +458,7 @@ export type ProductSupplierCreateWithoutSupplierInput = {
   isPreferred?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   product: Prisma.ProductCreateNestedOneWithoutProductSuppliersInput
 }
 
@@ -445,6 +468,7 @@ export type ProductSupplierUncheckedCreateWithoutSupplierInput = {
   isPreferred?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ProductSupplierCreateOrConnectWithoutSupplierInput = {
@@ -483,6 +507,7 @@ export type ProductSupplierScalarWhereInput = {
   isPreferred?: Prisma.BoolFilter<"ProductSupplier"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ProductSupplier"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProductSupplier"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ProductSupplier"> | Date | string | null
 }
 
 export type ProductSupplierCreateWithoutProductInput = {
@@ -490,6 +515,7 @@ export type ProductSupplierCreateWithoutProductInput = {
   isPreferred?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   supplier: Prisma.SupplierCreateNestedOneWithoutProductSuppliersInput
 }
 
@@ -499,6 +525,7 @@ export type ProductSupplierUncheckedCreateWithoutProductInput = {
   isPreferred?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ProductSupplierCreateOrConnectWithoutProductInput = {
@@ -533,6 +560,7 @@ export type ProductSupplierCreateManySupplierInput = {
   isPreferred?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ProductSupplierUpdateWithoutSupplierInput = {
@@ -540,6 +568,7 @@ export type ProductSupplierUpdateWithoutSupplierInput = {
   isPreferred?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   product?: Prisma.ProductUpdateOneRequiredWithoutProductSuppliersNestedInput
 }
 
@@ -549,6 +578,7 @@ export type ProductSupplierUncheckedUpdateWithoutSupplierInput = {
   isPreferred?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ProductSupplierUncheckedUpdateManyWithoutSupplierInput = {
@@ -557,6 +587,7 @@ export type ProductSupplierUncheckedUpdateManyWithoutSupplierInput = {
   isPreferred?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ProductSupplierCreateManyProductInput = {
@@ -565,6 +596,7 @@ export type ProductSupplierCreateManyProductInput = {
   isPreferred?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ProductSupplierUpdateWithoutProductInput = {
@@ -572,6 +604,7 @@ export type ProductSupplierUpdateWithoutProductInput = {
   isPreferred?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   supplier?: Prisma.SupplierUpdateOneRequiredWithoutProductSuppliersNestedInput
 }
 
@@ -581,6 +614,7 @@ export type ProductSupplierUncheckedUpdateWithoutProductInput = {
   isPreferred?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ProductSupplierUncheckedUpdateManyWithoutProductInput = {
@@ -589,6 +623,7 @@ export type ProductSupplierUncheckedUpdateManyWithoutProductInput = {
   isPreferred?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -600,6 +635,7 @@ export type ProductSupplierSelect<ExtArgs extends runtime.Types.Extensions.Inter
   isPreferred?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["productSupplier"]>
@@ -611,6 +647,7 @@ export type ProductSupplierSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   isPreferred?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["productSupplier"]>
@@ -622,6 +659,7 @@ export type ProductSupplierSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   isPreferred?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["productSupplier"]>
@@ -633,9 +671,10 @@ export type ProductSupplierSelectScalar = {
   isPreferred?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }
 
-export type ProductSupplierOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"productId" | "supplierId" | "supplierProductCode" | "isPreferred" | "createdAt" | "updatedAt", ExtArgs["result"]["productSupplier"]>
+export type ProductSupplierOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"productId" | "supplierId" | "supplierProductCode" | "isPreferred" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["productSupplier"]>
 export type ProductSupplierInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
@@ -662,6 +701,7 @@ export type $ProductSupplierPayload<ExtArgs extends runtime.Types.Extensions.Int
     isPreferred: boolean
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
   }, ExtArgs["result"]["productSupplier"]>
   composites: {}
 }
@@ -1093,6 +1133,7 @@ export interface ProductSupplierFieldRefs {
   readonly isPreferred: Prisma.FieldRef<"ProductSupplier", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"ProductSupplier", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ProductSupplier", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"ProductSupplier", 'DateTime'>
 }
     
 

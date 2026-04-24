@@ -47,6 +47,7 @@ export type ServiceRecordMinAggregateOutputType = {
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type ServiceRecordMaxAggregateOutputType = {
@@ -62,6 +63,7 @@ export type ServiceRecordMaxAggregateOutputType = {
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type ServiceRecordCountAggregateOutputType = {
@@ -77,6 +79,7 @@ export type ServiceRecordCountAggregateOutputType = {
   notes: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -102,6 +105,7 @@ export type ServiceRecordMinAggregateInputType = {
   notes?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type ServiceRecordMaxAggregateInputType = {
@@ -117,6 +121,7 @@ export type ServiceRecordMaxAggregateInputType = {
   notes?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type ServiceRecordCountAggregateInputType = {
@@ -132,6 +137,7 @@ export type ServiceRecordCountAggregateInputType = {
   notes?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -234,6 +240,7 @@ export type ServiceRecordGroupByOutputType = {
   notes: string | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   _count: ServiceRecordCountAggregateOutputType | null
   _avg: ServiceRecordAvgAggregateOutputType | null
   _sum: ServiceRecordSumAggregateOutputType | null
@@ -272,6 +279,7 @@ export type ServiceRecordWhereInput = {
   notes?: Prisma.StringNullableFilter<"ServiceRecord"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRecord"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceRecord"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceRecord"> | Date | string | null
   serviceType?: Prisma.XOR<Prisma.ServiceTypeScalarRelationFilter, Prisma.ServiceTypeWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   consumptions?: Prisma.ServiceConsumptionListRelationFilter
@@ -290,6 +298,7 @@ export type ServiceRecordOrderByWithRelationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceType?: Prisma.ServiceTypeOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
   consumptions?: Prisma.ServiceConsumptionOrderByRelationAggregateInput
@@ -311,6 +320,7 @@ export type ServiceRecordWhereUniqueInput = Prisma.AtLeast<{
   notes?: Prisma.StringNullableFilter<"ServiceRecord"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRecord"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceRecord"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceRecord"> | Date | string | null
   serviceType?: Prisma.XOR<Prisma.ServiceTypeScalarRelationFilter, Prisma.ServiceTypeWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   consumptions?: Prisma.ServiceConsumptionListRelationFilter
@@ -329,6 +339,7 @@ export type ServiceRecordOrderByWithAggregationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ServiceRecordCountOrderByAggregateInput
   _avg?: Prisma.ServiceRecordAvgOrderByAggregateInput
   _max?: Prisma.ServiceRecordMaxOrderByAggregateInput
@@ -352,6 +363,7 @@ export type ServiceRecordScalarWhereWithAggregatesInput = {
   notes?: Prisma.StringNullableWithAggregatesFilter<"ServiceRecord"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceRecord"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceRecord"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ServiceRecord"> | Date | string | null
 }
 
 export type ServiceRecordCreateInput = {
@@ -365,6 +377,7 @@ export type ServiceRecordCreateInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   serviceType: Prisma.ServiceTypeCreateNestedOneWithoutServiceRecordsInput
   createdBy: Prisma.UserCreateNestedOneWithoutServiceRecordsCreatedInput
   consumptions?: Prisma.ServiceConsumptionCreateNestedManyWithoutServiceRecordInput
@@ -383,6 +396,7 @@ export type ServiceRecordUncheckedCreateInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   consumptions?: Prisma.ServiceConsumptionUncheckedCreateNestedManyWithoutServiceRecordInput
 }
 
@@ -397,6 +411,7 @@ export type ServiceRecordUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   serviceType?: Prisma.ServiceTypeUpdateOneRequiredWithoutServiceRecordsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutServiceRecordsCreatedNestedInput
   consumptions?: Prisma.ServiceConsumptionUpdateManyWithoutServiceRecordNestedInput
@@ -415,6 +430,7 @@ export type ServiceRecordUncheckedUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   consumptions?: Prisma.ServiceConsumptionUncheckedUpdateManyWithoutServiceRecordNestedInput
 }
 
@@ -431,6 +447,7 @@ export type ServiceRecordCreateManyInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceRecordUpdateManyMutationInput = {
@@ -444,6 +461,7 @@ export type ServiceRecordUpdateManyMutationInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceRecordUncheckedUpdateManyInput = {
@@ -459,6 +477,7 @@ export type ServiceRecordUncheckedUpdateManyInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceRecordListRelationFilter = {
@@ -484,6 +503,7 @@ export type ServiceRecordCountOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ServiceRecordAvgOrderByAggregateInput = {
@@ -503,6 +523,7 @@ export type ServiceRecordMaxOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ServiceRecordMinOrderByAggregateInput = {
@@ -518,6 +539,7 @@ export type ServiceRecordMinOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ServiceRecordSumOrderByAggregateInput = {
@@ -642,6 +664,7 @@ export type ServiceRecordCreateWithoutCreatedByInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   serviceType: Prisma.ServiceTypeCreateNestedOneWithoutServiceRecordsInput
   consumptions?: Prisma.ServiceConsumptionCreateNestedManyWithoutServiceRecordInput
 }
@@ -658,6 +681,7 @@ export type ServiceRecordUncheckedCreateWithoutCreatedByInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   consumptions?: Prisma.ServiceConsumptionUncheckedCreateNestedManyWithoutServiceRecordInput
 }
 
@@ -703,6 +727,7 @@ export type ServiceRecordScalarWhereInput = {
   notes?: Prisma.StringNullableFilter<"ServiceRecord"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRecord"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceRecord"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceRecord"> | Date | string | null
 }
 
 export type ServiceRecordCreateWithoutServiceTypeInput = {
@@ -716,6 +741,7 @@ export type ServiceRecordCreateWithoutServiceTypeInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   createdBy: Prisma.UserCreateNestedOneWithoutServiceRecordsCreatedInput
   consumptions?: Prisma.ServiceConsumptionCreateNestedManyWithoutServiceRecordInput
 }
@@ -732,6 +758,7 @@ export type ServiceRecordUncheckedCreateWithoutServiceTypeInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   consumptions?: Prisma.ServiceConsumptionUncheckedCreateNestedManyWithoutServiceRecordInput
 }
 
@@ -772,6 +799,7 @@ export type ServiceRecordCreateWithoutConsumptionsInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   serviceType: Prisma.ServiceTypeCreateNestedOneWithoutServiceRecordsInput
   createdBy: Prisma.UserCreateNestedOneWithoutServiceRecordsCreatedInput
 }
@@ -789,6 +817,7 @@ export type ServiceRecordUncheckedCreateWithoutConsumptionsInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceRecordCreateOrConnectWithoutConsumptionsInput = {
@@ -818,6 +847,7 @@ export type ServiceRecordUpdateWithoutConsumptionsInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   serviceType?: Prisma.ServiceTypeUpdateOneRequiredWithoutServiceRecordsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutServiceRecordsCreatedNestedInput
 }
@@ -835,6 +865,7 @@ export type ServiceRecordUncheckedUpdateWithoutConsumptionsInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceRecordCreateManyCreatedByInput = {
@@ -849,6 +880,7 @@ export type ServiceRecordCreateManyCreatedByInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceRecordUpdateWithoutCreatedByInput = {
@@ -862,6 +894,7 @@ export type ServiceRecordUpdateWithoutCreatedByInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   serviceType?: Prisma.ServiceTypeUpdateOneRequiredWithoutServiceRecordsNestedInput
   consumptions?: Prisma.ServiceConsumptionUpdateManyWithoutServiceRecordNestedInput
 }
@@ -878,6 +911,7 @@ export type ServiceRecordUncheckedUpdateWithoutCreatedByInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   consumptions?: Prisma.ServiceConsumptionUncheckedUpdateManyWithoutServiceRecordNestedInput
 }
 
@@ -893,6 +927,7 @@ export type ServiceRecordUncheckedUpdateManyWithoutCreatedByInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceRecordCreateManyServiceTypeInput = {
@@ -907,6 +942,7 @@ export type ServiceRecordCreateManyServiceTypeInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceRecordUpdateWithoutServiceTypeInput = {
@@ -920,6 +956,7 @@ export type ServiceRecordUpdateWithoutServiceTypeInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneRequiredWithoutServiceRecordsCreatedNestedInput
   consumptions?: Prisma.ServiceConsumptionUpdateManyWithoutServiceRecordNestedInput
 }
@@ -936,6 +973,7 @@ export type ServiceRecordUncheckedUpdateWithoutServiceTypeInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   consumptions?: Prisma.ServiceConsumptionUncheckedUpdateManyWithoutServiceRecordNestedInput
 }
 
@@ -951,6 +989,7 @@ export type ServiceRecordUncheckedUpdateManyWithoutServiceTypeInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -997,6 +1036,7 @@ export type ServiceRecordSelect<ExtArgs extends runtime.Types.Extensions.Interna
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   serviceType?: boolean | Prisma.ServiceTypeDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   consumptions?: boolean | Prisma.ServiceRecord$consumptionsArgs<ExtArgs>
@@ -1016,6 +1056,7 @@ export type ServiceRecordSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   serviceType?: boolean | Prisma.ServiceTypeDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceRecord"]>
@@ -1033,6 +1074,7 @@ export type ServiceRecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   serviceType?: boolean | Prisma.ServiceTypeDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceRecord"]>
@@ -1050,9 +1092,10 @@ export type ServiceRecordSelectScalar = {
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }
 
-export type ServiceRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serviceTypeId" | "createdById" | "kind" | "status" | "quantity" | "serviceDate" | "deliveredAt" | "externalVendorName" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceRecord"]>
+export type ServiceRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serviceTypeId" | "createdById" | "kind" | "status" | "quantity" | "serviceDate" | "deliveredAt" | "externalVendorName" | "notes" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["serviceRecord"]>
 export type ServiceRecordInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   serviceType?: boolean | Prisma.ServiceTypeDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1088,6 +1131,7 @@ export type $ServiceRecordPayload<ExtArgs extends runtime.Types.Extensions.Inter
     notes: string | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
   }, ExtArgs["result"]["serviceRecord"]>
   composites: {}
 }
@@ -1526,6 +1570,7 @@ export interface ServiceRecordFieldRefs {
   readonly notes: Prisma.FieldRef<"ServiceRecord", 'String'>
   readonly createdAt: Prisma.FieldRef<"ServiceRecord", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ServiceRecord", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"ServiceRecord", 'DateTime'>
 }
     
 

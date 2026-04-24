@@ -32,7 +32,8 @@ async function createUser() {
   return prisma.user.create({
     data: {
       username: `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-      fullName: "System User",
+      firstName: "System",
+      lastName: "User",
       passwordHash: "hashed_password",
       role: "ADMIN",
     },
@@ -43,7 +44,7 @@ async function createSupplier(overrides: Record<string, any> = {}) {
   return prisma.supplier.create({
     data: {
       name: `Supplier ${Math.random().toString(36).slice(2, 8)}`,
-      taxId: `${Date.now()}${Math.floor(Math.random() * 1000)}`,
+      ruc: `${Date.now()}${Math.floor(Math.random() * 1000)}`,
       phone: "999999999",
       contactName: "Main Contact",
       ...overrides,
@@ -67,7 +68,7 @@ async function createProduct(overrides: Record<string, any> = {}) {
 test("RF-01/RF-06: required fields, non-negative values, and unique supplier tax IDs are enforced", async () => {
   await createSupplier({
     name: "Supplier Alpha",
-    taxId: "20111111111",
+    ruc: "20111111111",
   });
 
   await expectDbError(
@@ -89,9 +90,9 @@ test("RF-01/RF-06: required fields, non-negative values, and unique supplier tax
   await expectDbError(
     createSupplier({
       name: "Supplier Beta",
-      taxId: "20111111111",
+      ruc: "20111111111",
     }),
-    "tax_id",
+    "ruc",
   );
 });
 
@@ -252,8 +253,8 @@ test("Improvement: a product can have multiple suppliers but only one preferred 
   const product = await createProduct({
     name: "Planner",
   });
-  const supplierA = await createSupplier({ taxId: "20900000001" });
-  const supplierB = await createSupplier({ taxId: "20900000002" });
+  const supplierA = await createSupplier({ ruc: "20900000001" });
+  const supplierB = await createSupplier({ ruc: "20900000002" });
 
   await prisma.productSupplier.create({
     data: {

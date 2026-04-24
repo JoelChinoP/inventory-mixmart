@@ -40,6 +40,8 @@ export type ServiceConsumptionMinAggregateOutputType = {
   productId: string | null
   quantity: runtime.Decimal | null
   createdAt: Date | null
+  updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type ServiceConsumptionMaxAggregateOutputType = {
@@ -48,6 +50,8 @@ export type ServiceConsumptionMaxAggregateOutputType = {
   productId: string | null
   quantity: runtime.Decimal | null
   createdAt: Date | null
+  updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type ServiceConsumptionCountAggregateOutputType = {
@@ -56,6 +60,8 @@ export type ServiceConsumptionCountAggregateOutputType = {
   productId: number
   quantity: number
   createdAt: number
+  updatedAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -74,6 +80,8 @@ export type ServiceConsumptionMinAggregateInputType = {
   productId?: true
   quantity?: true
   createdAt?: true
+  updatedAt?: true
+  deletedAt?: true
 }
 
 export type ServiceConsumptionMaxAggregateInputType = {
@@ -82,6 +90,8 @@ export type ServiceConsumptionMaxAggregateInputType = {
   productId?: true
   quantity?: true
   createdAt?: true
+  updatedAt?: true
+  deletedAt?: true
 }
 
 export type ServiceConsumptionCountAggregateInputType = {
@@ -90,6 +100,8 @@ export type ServiceConsumptionCountAggregateInputType = {
   productId?: true
   quantity?: true
   createdAt?: true
+  updatedAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -185,6 +197,8 @@ export type ServiceConsumptionGroupByOutputType = {
   productId: string
   quantity: runtime.Decimal
   createdAt: Date
+  updatedAt: Date
+  deletedAt: Date | null
   _count: ServiceConsumptionCountAggregateOutputType | null
   _avg: ServiceConsumptionAvgAggregateOutputType | null
   _sum: ServiceConsumptionSumAggregateOutputType | null
@@ -216,6 +230,8 @@ export type ServiceConsumptionWhereInput = {
   productId?: Prisma.UuidFilter<"ServiceConsumption"> | string
   quantity?: Prisma.DecimalFilter<"ServiceConsumption"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"ServiceConsumption"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ServiceConsumption"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceConsumption"> | Date | string | null
   serviceRecord?: Prisma.XOR<Prisma.ServiceRecordScalarRelationFilter, Prisma.ServiceRecordWhereInput>
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
   stockMovements?: Prisma.StockMovementListRelationFilter
@@ -227,6 +243,8 @@ export type ServiceConsumptionOrderByWithRelationInput = {
   productId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceRecord?: Prisma.ServiceRecordOrderByWithRelationInput
   product?: Prisma.ProductOrderByWithRelationInput
   stockMovements?: Prisma.StockMovementOrderByRelationAggregateInput
@@ -242,6 +260,8 @@ export type ServiceConsumptionWhereUniqueInput = Prisma.AtLeast<{
   productId?: Prisma.UuidFilter<"ServiceConsumption"> | string
   quantity?: Prisma.DecimalFilter<"ServiceConsumption"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"ServiceConsumption"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ServiceConsumption"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceConsumption"> | Date | string | null
   serviceRecord?: Prisma.XOR<Prisma.ServiceRecordScalarRelationFilter, Prisma.ServiceRecordWhereInput>
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
   stockMovements?: Prisma.StockMovementListRelationFilter
@@ -253,6 +273,8 @@ export type ServiceConsumptionOrderByWithAggregationInput = {
   productId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ServiceConsumptionCountOrderByAggregateInput
   _avg?: Prisma.ServiceConsumptionAvgOrderByAggregateInput
   _max?: Prisma.ServiceConsumptionMaxOrderByAggregateInput
@@ -269,12 +291,16 @@ export type ServiceConsumptionScalarWhereWithAggregatesInput = {
   productId?: Prisma.UuidWithAggregatesFilter<"ServiceConsumption"> | string
   quantity?: Prisma.DecimalWithAggregatesFilter<"ServiceConsumption"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceConsumption"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceConsumption"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ServiceConsumption"> | Date | string | null
 }
 
 export type ServiceConsumptionCreateInput = {
   id?: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
   serviceRecord: Prisma.ServiceRecordCreateNestedOneWithoutConsumptionsInput
   product: Prisma.ProductCreateNestedOneWithoutServiceConsumptionsInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutServiceConsumptionInput
@@ -286,6 +312,8 @@ export type ServiceConsumptionUncheckedCreateInput = {
   productId: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutServiceConsumptionInput
 }
 
@@ -293,6 +321,8 @@ export type ServiceConsumptionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   serviceRecord?: Prisma.ServiceRecordUpdateOneRequiredWithoutConsumptionsNestedInput
   product?: Prisma.ProductUpdateOneRequiredWithoutServiceConsumptionsNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutServiceConsumptionNestedInput
@@ -304,6 +334,8 @@ export type ServiceConsumptionUncheckedUpdateInput = {
   productId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutServiceConsumptionNestedInput
 }
 
@@ -313,12 +345,16 @@ export type ServiceConsumptionCreateManyInput = {
   productId: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceConsumptionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceConsumptionUncheckedUpdateManyInput = {
@@ -327,6 +363,8 @@ export type ServiceConsumptionUncheckedUpdateManyInput = {
   productId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceConsumptionListRelationFilter = {
@@ -350,6 +388,8 @@ export type ServiceConsumptionCountOrderByAggregateInput = {
   productId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ServiceConsumptionAvgOrderByAggregateInput = {
@@ -362,6 +402,8 @@ export type ServiceConsumptionMaxOrderByAggregateInput = {
   productId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ServiceConsumptionMinOrderByAggregateInput = {
@@ -370,6 +412,8 @@ export type ServiceConsumptionMinOrderByAggregateInput = {
   productId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ServiceConsumptionSumOrderByAggregateInput = {
@@ -485,6 +529,8 @@ export type ServiceConsumptionCreateWithoutProductInput = {
   id?: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
   serviceRecord: Prisma.ServiceRecordCreateNestedOneWithoutConsumptionsInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutServiceConsumptionInput
 }
@@ -494,6 +540,8 @@ export type ServiceConsumptionUncheckedCreateWithoutProductInput = {
   serviceRecordId: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutServiceConsumptionInput
 }
 
@@ -532,12 +580,16 @@ export type ServiceConsumptionScalarWhereInput = {
   productId?: Prisma.UuidFilter<"ServiceConsumption"> | string
   quantity?: Prisma.DecimalFilter<"ServiceConsumption"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"ServiceConsumption"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ServiceConsumption"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceConsumption"> | Date | string | null
 }
 
 export type ServiceConsumptionCreateWithoutServiceRecordInput = {
   id?: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
   product: Prisma.ProductCreateNestedOneWithoutServiceConsumptionsInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutServiceConsumptionInput
 }
@@ -547,6 +599,8 @@ export type ServiceConsumptionUncheckedCreateWithoutServiceRecordInput = {
   productId: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutServiceConsumptionInput
 }
 
@@ -580,6 +634,8 @@ export type ServiceConsumptionCreateWithoutStockMovementsInput = {
   id?: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
   serviceRecord: Prisma.ServiceRecordCreateNestedOneWithoutConsumptionsInput
   product: Prisma.ProductCreateNestedOneWithoutServiceConsumptionsInput
 }
@@ -590,6 +646,8 @@ export type ServiceConsumptionUncheckedCreateWithoutStockMovementsInput = {
   productId: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceConsumptionCreateOrConnectWithoutStockMovementsInput = {
@@ -612,6 +670,8 @@ export type ServiceConsumptionUpdateWithoutStockMovementsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   serviceRecord?: Prisma.ServiceRecordUpdateOneRequiredWithoutConsumptionsNestedInput
   product?: Prisma.ProductUpdateOneRequiredWithoutServiceConsumptionsNestedInput
 }
@@ -622,6 +682,8 @@ export type ServiceConsumptionUncheckedUpdateWithoutStockMovementsInput = {
   productId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceConsumptionCreateManyProductInput = {
@@ -629,12 +691,16 @@ export type ServiceConsumptionCreateManyProductInput = {
   serviceRecordId: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceConsumptionUpdateWithoutProductInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   serviceRecord?: Prisma.ServiceRecordUpdateOneRequiredWithoutConsumptionsNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutServiceConsumptionNestedInput
 }
@@ -644,6 +710,8 @@ export type ServiceConsumptionUncheckedUpdateWithoutProductInput = {
   serviceRecordId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutServiceConsumptionNestedInput
 }
 
@@ -652,6 +720,8 @@ export type ServiceConsumptionUncheckedUpdateManyWithoutProductInput = {
   serviceRecordId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceConsumptionCreateManyServiceRecordInput = {
@@ -659,12 +729,16 @@ export type ServiceConsumptionCreateManyServiceRecordInput = {
   productId: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceConsumptionUpdateWithoutServiceRecordInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   product?: Prisma.ProductUpdateOneRequiredWithoutServiceConsumptionsNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutServiceConsumptionNestedInput
 }
@@ -674,6 +748,8 @@ export type ServiceConsumptionUncheckedUpdateWithoutServiceRecordInput = {
   productId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutServiceConsumptionNestedInput
 }
 
@@ -682,6 +758,8 @@ export type ServiceConsumptionUncheckedUpdateManyWithoutServiceRecordInput = {
   productId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -721,6 +799,8 @@ export type ServiceConsumptionSelect<ExtArgs extends runtime.Types.Extensions.In
   productId?: boolean
   quantity?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
+  deletedAt?: boolean
   serviceRecord?: boolean | Prisma.ServiceRecordDefaultArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   stockMovements?: boolean | Prisma.ServiceConsumption$stockMovementsArgs<ExtArgs>
@@ -733,6 +813,8 @@ export type ServiceConsumptionSelectCreateManyAndReturn<ExtArgs extends runtime.
   productId?: boolean
   quantity?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
+  deletedAt?: boolean
   serviceRecord?: boolean | Prisma.ServiceRecordDefaultArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceConsumption"]>
@@ -743,6 +825,8 @@ export type ServiceConsumptionSelectUpdateManyAndReturn<ExtArgs extends runtime.
   productId?: boolean
   quantity?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
+  deletedAt?: boolean
   serviceRecord?: boolean | Prisma.ServiceRecordDefaultArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceConsumption"]>
@@ -753,9 +837,11 @@ export type ServiceConsumptionSelectScalar = {
   productId?: boolean
   quantity?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
+  deletedAt?: boolean
 }
 
-export type ServiceConsumptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serviceRecordId" | "productId" | "quantity" | "createdAt", ExtArgs["result"]["serviceConsumption"]>
+export type ServiceConsumptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serviceRecordId" | "productId" | "quantity" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["serviceConsumption"]>
 export type ServiceConsumptionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   serviceRecord?: boolean | Prisma.ServiceRecordDefaultArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
@@ -784,6 +870,8 @@ export type $ServiceConsumptionPayload<ExtArgs extends runtime.Types.Extensions.
     productId: string
     quantity: runtime.Decimal
     createdAt: Date
+    updatedAt: Date
+    deletedAt: Date | null
   }, ExtArgs["result"]["serviceConsumption"]>
   composites: {}
 }
@@ -1215,6 +1303,8 @@ export interface ServiceConsumptionFieldRefs {
   readonly productId: Prisma.FieldRef<"ServiceConsumption", 'String'>
   readonly quantity: Prisma.FieldRef<"ServiceConsumption", 'Decimal'>
   readonly createdAt: Prisma.FieldRef<"ServiceConsumption", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"ServiceConsumption", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"ServiceConsumption", 'DateTime'>
 }
     
 

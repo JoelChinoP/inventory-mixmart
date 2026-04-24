@@ -41,6 +41,7 @@ export type ServiceTypeSupplyMinAggregateOutputType = {
   quantityPerUnit: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type ServiceTypeSupplyMaxAggregateOutputType = {
@@ -50,6 +51,7 @@ export type ServiceTypeSupplyMaxAggregateOutputType = {
   quantityPerUnit: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type ServiceTypeSupplyCountAggregateOutputType = {
@@ -59,6 +61,7 @@ export type ServiceTypeSupplyCountAggregateOutputType = {
   quantityPerUnit: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -78,6 +81,7 @@ export type ServiceTypeSupplyMinAggregateInputType = {
   quantityPerUnit?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type ServiceTypeSupplyMaxAggregateInputType = {
@@ -87,6 +91,7 @@ export type ServiceTypeSupplyMaxAggregateInputType = {
   quantityPerUnit?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type ServiceTypeSupplyCountAggregateInputType = {
@@ -96,6 +101,7 @@ export type ServiceTypeSupplyCountAggregateInputType = {
   quantityPerUnit?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -192,6 +198,7 @@ export type ServiceTypeSupplyGroupByOutputType = {
   quantityPerUnit: runtime.Decimal
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   _count: ServiceTypeSupplyCountAggregateOutputType | null
   _avg: ServiceTypeSupplyAvgAggregateOutputType | null
   _sum: ServiceTypeSupplySumAggregateOutputType | null
@@ -224,6 +231,7 @@ export type ServiceTypeSupplyWhereInput = {
   quantityPerUnit?: Prisma.DecimalFilter<"ServiceTypeSupply"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"ServiceTypeSupply"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceTypeSupply"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceTypeSupply"> | Date | string | null
   serviceType?: Prisma.XOR<Prisma.ServiceTypeScalarRelationFilter, Prisma.ServiceTypeWhereInput>
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
 }
@@ -235,6 +243,7 @@ export type ServiceTypeSupplyOrderByWithRelationInput = {
   quantityPerUnit?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceType?: Prisma.ServiceTypeOrderByWithRelationInput
   product?: Prisma.ProductOrderByWithRelationInput
 }
@@ -250,6 +259,7 @@ export type ServiceTypeSupplyWhereUniqueInput = Prisma.AtLeast<{
   quantityPerUnit?: Prisma.DecimalFilter<"ServiceTypeSupply"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"ServiceTypeSupply"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceTypeSupply"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceTypeSupply"> | Date | string | null
   serviceType?: Prisma.XOR<Prisma.ServiceTypeScalarRelationFilter, Prisma.ServiceTypeWhereInput>
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
 }, "id" | "serviceTypeId_productId">
@@ -261,6 +271,7 @@ export type ServiceTypeSupplyOrderByWithAggregationInput = {
   quantityPerUnit?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ServiceTypeSupplyCountOrderByAggregateInput
   _avg?: Prisma.ServiceTypeSupplyAvgOrderByAggregateInput
   _max?: Prisma.ServiceTypeSupplyMaxOrderByAggregateInput
@@ -278,6 +289,7 @@ export type ServiceTypeSupplyScalarWhereWithAggregatesInput = {
   quantityPerUnit?: Prisma.DecimalWithAggregatesFilter<"ServiceTypeSupply"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceTypeSupply"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceTypeSupply"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ServiceTypeSupply"> | Date | string | null
 }
 
 export type ServiceTypeSupplyCreateInput = {
@@ -285,6 +297,7 @@ export type ServiceTypeSupplyCreateInput = {
   quantityPerUnit: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   serviceType: Prisma.ServiceTypeCreateNestedOneWithoutSuppliesInput
   product: Prisma.ProductCreateNestedOneWithoutServiceTypeSuppliesInput
 }
@@ -296,6 +309,7 @@ export type ServiceTypeSupplyUncheckedCreateInput = {
   quantityPerUnit: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceTypeSupplyUpdateInput = {
@@ -303,6 +317,7 @@ export type ServiceTypeSupplyUpdateInput = {
   quantityPerUnit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   serviceType?: Prisma.ServiceTypeUpdateOneRequiredWithoutSuppliesNestedInput
   product?: Prisma.ProductUpdateOneRequiredWithoutServiceTypeSuppliesNestedInput
 }
@@ -314,6 +329,7 @@ export type ServiceTypeSupplyUncheckedUpdateInput = {
   quantityPerUnit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceTypeSupplyCreateManyInput = {
@@ -323,6 +339,7 @@ export type ServiceTypeSupplyCreateManyInput = {
   quantityPerUnit: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceTypeSupplyUpdateManyMutationInput = {
@@ -330,6 +347,7 @@ export type ServiceTypeSupplyUpdateManyMutationInput = {
   quantityPerUnit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceTypeSupplyUncheckedUpdateManyInput = {
@@ -339,6 +357,7 @@ export type ServiceTypeSupplyUncheckedUpdateManyInput = {
   quantityPerUnit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceTypeSupplyListRelationFilter = {
@@ -363,6 +382,7 @@ export type ServiceTypeSupplyCountOrderByAggregateInput = {
   quantityPerUnit?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ServiceTypeSupplyAvgOrderByAggregateInput = {
@@ -376,6 +396,7 @@ export type ServiceTypeSupplyMaxOrderByAggregateInput = {
   quantityPerUnit?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ServiceTypeSupplyMinOrderByAggregateInput = {
@@ -385,6 +406,7 @@ export type ServiceTypeSupplyMinOrderByAggregateInput = {
   quantityPerUnit?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ServiceTypeSupplySumOrderByAggregateInput = {
@@ -480,6 +502,7 @@ export type ServiceTypeSupplyCreateWithoutProductInput = {
   quantityPerUnit: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   serviceType: Prisma.ServiceTypeCreateNestedOneWithoutSuppliesInput
 }
 
@@ -489,6 +512,7 @@ export type ServiceTypeSupplyUncheckedCreateWithoutProductInput = {
   quantityPerUnit: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceTypeSupplyCreateOrConnectWithoutProductInput = {
@@ -527,6 +551,7 @@ export type ServiceTypeSupplyScalarWhereInput = {
   quantityPerUnit?: Prisma.DecimalFilter<"ServiceTypeSupply"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"ServiceTypeSupply"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceTypeSupply"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceTypeSupply"> | Date | string | null
 }
 
 export type ServiceTypeSupplyCreateWithoutServiceTypeInput = {
@@ -534,6 +559,7 @@ export type ServiceTypeSupplyCreateWithoutServiceTypeInput = {
   quantityPerUnit: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   product: Prisma.ProductCreateNestedOneWithoutServiceTypeSuppliesInput
 }
 
@@ -543,6 +569,7 @@ export type ServiceTypeSupplyUncheckedCreateWithoutServiceTypeInput = {
   quantityPerUnit: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceTypeSupplyCreateOrConnectWithoutServiceTypeInput = {
@@ -577,6 +604,7 @@ export type ServiceTypeSupplyCreateManyProductInput = {
   quantityPerUnit: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceTypeSupplyUpdateWithoutProductInput = {
@@ -584,6 +612,7 @@ export type ServiceTypeSupplyUpdateWithoutProductInput = {
   quantityPerUnit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   serviceType?: Prisma.ServiceTypeUpdateOneRequiredWithoutSuppliesNestedInput
 }
 
@@ -593,6 +622,7 @@ export type ServiceTypeSupplyUncheckedUpdateWithoutProductInput = {
   quantityPerUnit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceTypeSupplyUncheckedUpdateManyWithoutProductInput = {
@@ -601,6 +631,7 @@ export type ServiceTypeSupplyUncheckedUpdateManyWithoutProductInput = {
   quantityPerUnit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceTypeSupplyCreateManyServiceTypeInput = {
@@ -609,6 +640,7 @@ export type ServiceTypeSupplyCreateManyServiceTypeInput = {
   quantityPerUnit: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ServiceTypeSupplyUpdateWithoutServiceTypeInput = {
@@ -616,6 +648,7 @@ export type ServiceTypeSupplyUpdateWithoutServiceTypeInput = {
   quantityPerUnit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   product?: Prisma.ProductUpdateOneRequiredWithoutServiceTypeSuppliesNestedInput
 }
 
@@ -625,6 +658,7 @@ export type ServiceTypeSupplyUncheckedUpdateWithoutServiceTypeInput = {
   quantityPerUnit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ServiceTypeSupplyUncheckedUpdateManyWithoutServiceTypeInput = {
@@ -633,6 +667,7 @@ export type ServiceTypeSupplyUncheckedUpdateManyWithoutServiceTypeInput = {
   quantityPerUnit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -644,6 +679,7 @@ export type ServiceTypeSupplySelect<ExtArgs extends runtime.Types.Extensions.Int
   quantityPerUnit?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   serviceType?: boolean | Prisma.ServiceTypeDefaultArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceTypeSupply"]>
@@ -655,6 +691,7 @@ export type ServiceTypeSupplySelectCreateManyAndReturn<ExtArgs extends runtime.T
   quantityPerUnit?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   serviceType?: boolean | Prisma.ServiceTypeDefaultArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceTypeSupply"]>
@@ -666,6 +703,7 @@ export type ServiceTypeSupplySelectUpdateManyAndReturn<ExtArgs extends runtime.T
   quantityPerUnit?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   serviceType?: boolean | Prisma.ServiceTypeDefaultArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceTypeSupply"]>
@@ -677,9 +715,10 @@ export type ServiceTypeSupplySelectScalar = {
   quantityPerUnit?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }
 
-export type ServiceTypeSupplyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serviceTypeId" | "productId" | "quantityPerUnit" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceTypeSupply"]>
+export type ServiceTypeSupplyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serviceTypeId" | "productId" | "quantityPerUnit" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["serviceTypeSupply"]>
 export type ServiceTypeSupplyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   serviceType?: boolean | Prisma.ServiceTypeDefaultArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
@@ -706,6 +745,7 @@ export type $ServiceTypeSupplyPayload<ExtArgs extends runtime.Types.Extensions.I
     quantityPerUnit: runtime.Decimal
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
   }, ExtArgs["result"]["serviceTypeSupply"]>
   composites: {}
 }
@@ -1137,6 +1177,7 @@ export interface ServiceTypeSupplyFieldRefs {
   readonly quantityPerUnit: Prisma.FieldRef<"ServiceTypeSupply", 'Decimal'>
   readonly createdAt: Prisma.FieldRef<"ServiceTypeSupply", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ServiceTypeSupply", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"ServiceTypeSupply", 'DateTime'>
 }
     
 

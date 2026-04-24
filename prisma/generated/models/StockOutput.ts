@@ -32,6 +32,7 @@ export type StockOutputMinAggregateOutputType = {
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type StockOutputMaxAggregateOutputType = {
@@ -42,6 +43,7 @@ export type StockOutputMaxAggregateOutputType = {
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type StockOutputCountAggregateOutputType = {
@@ -52,6 +54,7 @@ export type StockOutputCountAggregateOutputType = {
   notes: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -64,6 +67,7 @@ export type StockOutputMinAggregateInputType = {
   notes?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type StockOutputMaxAggregateInputType = {
@@ -74,6 +78,7 @@ export type StockOutputMaxAggregateInputType = {
   notes?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type StockOutputCountAggregateInputType = {
@@ -84,6 +89,7 @@ export type StockOutputCountAggregateInputType = {
   notes?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -167,6 +173,7 @@ export type StockOutputGroupByOutputType = {
   notes: string | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   _count: StockOutputCountAggregateOutputType | null
   _min: StockOutputMinAggregateOutputType | null
   _max: StockOutputMaxAggregateOutputType | null
@@ -198,6 +205,7 @@ export type StockOutputWhereInput = {
   notes?: Prisma.StringNullableFilter<"StockOutput"> | string | null
   createdAt?: Prisma.DateTimeFilter<"StockOutput"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StockOutput"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"StockOutput"> | Date | string | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   items?: Prisma.StockOutputItemListRelationFilter
 }
@@ -210,6 +218,7 @@ export type StockOutputOrderByWithRelationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdBy?: Prisma.UserOrderByWithRelationInput
   items?: Prisma.StockOutputItemOrderByRelationAggregateInput
 }
@@ -225,6 +234,7 @@ export type StockOutputWhereUniqueInput = Prisma.AtLeast<{
   notes?: Prisma.StringNullableFilter<"StockOutput"> | string | null
   createdAt?: Prisma.DateTimeFilter<"StockOutput"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StockOutput"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"StockOutput"> | Date | string | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   items?: Prisma.StockOutputItemListRelationFilter
 }, "id">
@@ -237,6 +247,7 @@ export type StockOutputOrderByWithAggregationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.StockOutputCountOrderByAggregateInput
   _max?: Prisma.StockOutputMaxOrderByAggregateInput
   _min?: Prisma.StockOutputMinOrderByAggregateInput
@@ -253,6 +264,7 @@ export type StockOutputScalarWhereWithAggregatesInput = {
   notes?: Prisma.StringNullableWithAggregatesFilter<"StockOutput"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"StockOutput"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"StockOutput"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"StockOutput"> | Date | string | null
 }
 
 export type StockOutputCreateInput = {
@@ -262,6 +274,7 @@ export type StockOutputCreateInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   createdBy: Prisma.UserCreateNestedOneWithoutStockOutputsCreatedInput
   items?: Prisma.StockOutputItemCreateNestedManyWithoutStockOutputInput
 }
@@ -274,6 +287,7 @@ export type StockOutputUncheckedCreateInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   items?: Prisma.StockOutputItemUncheckedCreateNestedManyWithoutStockOutputInput
 }
 
@@ -284,6 +298,7 @@ export type StockOutputUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneRequiredWithoutStockOutputsCreatedNestedInput
   items?: Prisma.StockOutputItemUpdateManyWithoutStockOutputNestedInput
 }
@@ -296,6 +311,7 @@ export type StockOutputUncheckedUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   items?: Prisma.StockOutputItemUncheckedUpdateManyWithoutStockOutputNestedInput
 }
 
@@ -307,6 +323,7 @@ export type StockOutputCreateManyInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type StockOutputUpdateManyMutationInput = {
@@ -316,6 +333,7 @@ export type StockOutputUpdateManyMutationInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type StockOutputUncheckedUpdateManyInput = {
@@ -326,6 +344,7 @@ export type StockOutputUncheckedUpdateManyInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type StockOutputListRelationFilter = {
@@ -346,6 +365,7 @@ export type StockOutputCountOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type StockOutputMaxOrderByAggregateInput = {
@@ -356,6 +376,7 @@ export type StockOutputMaxOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type StockOutputMinOrderByAggregateInput = {
@@ -366,6 +387,7 @@ export type StockOutputMinOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type StockOutputScalarRelationFilter = {
@@ -440,6 +462,7 @@ export type StockOutputCreateWithoutCreatedByInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   items?: Prisma.StockOutputItemCreateNestedManyWithoutStockOutputInput
 }
 
@@ -450,6 +473,7 @@ export type StockOutputUncheckedCreateWithoutCreatedByInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   items?: Prisma.StockOutputItemUncheckedCreateNestedManyWithoutStockOutputInput
 }
 
@@ -490,6 +514,7 @@ export type StockOutputScalarWhereInput = {
   notes?: Prisma.StringNullableFilter<"StockOutput"> | string | null
   createdAt?: Prisma.DateTimeFilter<"StockOutput"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StockOutput"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"StockOutput"> | Date | string | null
 }
 
 export type StockOutputCreateWithoutItemsInput = {
@@ -499,6 +524,7 @@ export type StockOutputCreateWithoutItemsInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   createdBy: Prisma.UserCreateNestedOneWithoutStockOutputsCreatedInput
 }
 
@@ -510,6 +536,7 @@ export type StockOutputUncheckedCreateWithoutItemsInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type StockOutputCreateOrConnectWithoutItemsInput = {
@@ -535,6 +562,7 @@ export type StockOutputUpdateWithoutItemsInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneRequiredWithoutStockOutputsCreatedNestedInput
 }
 
@@ -546,6 +574,7 @@ export type StockOutputUncheckedUpdateWithoutItemsInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type StockOutputCreateManyCreatedByInput = {
@@ -555,6 +584,7 @@ export type StockOutputCreateManyCreatedByInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type StockOutputUpdateWithoutCreatedByInput = {
@@ -564,6 +594,7 @@ export type StockOutputUpdateWithoutCreatedByInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   items?: Prisma.StockOutputItemUpdateManyWithoutStockOutputNestedInput
 }
 
@@ -574,6 +605,7 @@ export type StockOutputUncheckedUpdateWithoutCreatedByInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   items?: Prisma.StockOutputItemUncheckedUpdateManyWithoutStockOutputNestedInput
 }
 
@@ -584,6 +616,7 @@ export type StockOutputUncheckedUpdateManyWithoutCreatedByInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -625,6 +658,7 @@ export type StockOutputSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   items?: boolean | Prisma.StockOutput$itemsArgs<ExtArgs>
   _count?: boolean | Prisma.StockOutputCountOutputTypeDefaultArgs<ExtArgs>
@@ -638,6 +672,7 @@ export type StockOutputSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["stockOutput"]>
 
@@ -649,6 +684,7 @@ export type StockOutputSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["stockOutput"]>
 
@@ -660,9 +696,10 @@ export type StockOutputSelectScalar = {
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }
 
-export type StockOutputOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdById" | "reason" | "occurredAt" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["stockOutput"]>
+export type StockOutputOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdById" | "reason" | "occurredAt" | "notes" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["stockOutput"]>
 export type StockOutputInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   items?: boolean | Prisma.StockOutput$itemsArgs<ExtArgs>
@@ -689,6 +726,7 @@ export type $StockOutputPayload<ExtArgs extends runtime.Types.Extensions.Interna
     notes: string | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
   }, ExtArgs["result"]["stockOutput"]>
   composites: {}
 }
@@ -1121,6 +1159,7 @@ export interface StockOutputFieldRefs {
   readonly notes: Prisma.FieldRef<"StockOutput", 'String'>
   readonly createdAt: Prisma.FieldRef<"StockOutput", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"StockOutput", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"StockOutput", 'DateTime'>
 }
     
 

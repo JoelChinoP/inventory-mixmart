@@ -1494,14 +1494,20 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const UserScalarFieldEnum = {
   id: 'id',
+  dni: 'dni',
   username: 'username',
-  fullName: 'fullName',
+  email: 'email',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  phone: 'phone',
+  dateOfBirth: 'dateOfBirth',
   passwordHash: 'passwordHash',
   role: 'role',
   isActive: 'isActive',
   lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -1509,15 +1515,16 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const SupplierScalarFieldEnum = {
   id: 'id',
+  ruc: 'ruc',
   name: 'name',
-  taxId: 'taxId',
   phone: 'phone',
   contactName: 'contactName',
   address: 'address',
   notes: 'notes',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type SupplierScalarFieldEnum = (typeof SupplierScalarFieldEnum)[keyof typeof SupplierScalarFieldEnum]
@@ -1536,7 +1543,8 @@ export const ProductScalarFieldEnum = {
   currentStock: 'currentStock',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
@@ -1548,7 +1556,8 @@ export const ProductSupplierScalarFieldEnum = {
   supplierProductCode: 'supplierProductCode',
   isPreferred: 'isPreferred',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type ProductSupplierScalarFieldEnum = (typeof ProductSupplierScalarFieldEnum)[keyof typeof ProductSupplierScalarFieldEnum]
@@ -1564,7 +1573,8 @@ export const StockEntryScalarFieldEnum = {
   referenceNumber: 'referenceNumber',
   notes: 'notes',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type StockEntryScalarFieldEnum = (typeof StockEntryScalarFieldEnum)[keyof typeof StockEntryScalarFieldEnum]
@@ -1579,7 +1589,9 @@ export const StockEntryItemScalarFieldEnum = {
   unitCost: 'unitCost',
   lotNumber: 'lotNumber',
   expirationDate: 'expirationDate',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type StockEntryItemScalarFieldEnum = (typeof StockEntryItemScalarFieldEnum)[keyof typeof StockEntryItemScalarFieldEnum]
@@ -1597,7 +1609,8 @@ export const InventoryLotScalarFieldEnum = {
   unitCost: 'unitCost',
   lastMovementAt: 'lastMovementAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type InventoryLotScalarFieldEnum = (typeof InventoryLotScalarFieldEnum)[keyof typeof InventoryLotScalarFieldEnum]
@@ -1610,7 +1623,8 @@ export const StockOutputScalarFieldEnum = {
   occurredAt: 'occurredAt',
   notes: 'notes',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type StockOutputScalarFieldEnum = (typeof StockOutputScalarFieldEnum)[keyof typeof StockOutputScalarFieldEnum]
@@ -1622,7 +1636,9 @@ export const StockOutputItemScalarFieldEnum = {
   productId: 'productId',
   quantity: 'quantity',
   unitCost: 'unitCost',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type StockOutputItemScalarFieldEnum = (typeof StockOutputItemScalarFieldEnum)[keyof typeof StockOutputItemScalarFieldEnum]
@@ -1636,7 +1652,8 @@ export const ServiceTypeScalarFieldEnum = {
   description: 'description',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type ServiceTypeScalarFieldEnum = (typeof ServiceTypeScalarFieldEnum)[keyof typeof ServiceTypeScalarFieldEnum]
@@ -1648,7 +1665,8 @@ export const ServiceTypeSupplyScalarFieldEnum = {
   productId: 'productId',
   quantityPerUnit: 'quantityPerUnit',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type ServiceTypeSupplyScalarFieldEnum = (typeof ServiceTypeSupplyScalarFieldEnum)[keyof typeof ServiceTypeSupplyScalarFieldEnum]
@@ -1666,7 +1684,8 @@ export const ServiceRecordScalarFieldEnum = {
   externalVendorName: 'externalVendorName',
   notes: 'notes',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type ServiceRecordScalarFieldEnum = (typeof ServiceRecordScalarFieldEnum)[keyof typeof ServiceRecordScalarFieldEnum]
@@ -1677,7 +1696,9 @@ export const ServiceConsumptionScalarFieldEnum = {
   serviceRecordId: 'serviceRecordId',
   productId: 'productId',
   quantity: 'quantity',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type ServiceConsumptionScalarFieldEnum = (typeof ServiceConsumptionScalarFieldEnum)[keyof typeof ServiceConsumptionScalarFieldEnum]
@@ -1697,7 +1718,8 @@ export const StockMovementScalarFieldEnum = {
   productStockAfter: 'productStockAfter',
   lotStockAfter: 'lotStockAfter',
   occurredAt: 'occurredAt',
-  notes: 'notes'
+  notes: 'notes',
+  createdAt: 'createdAt'
 } as const
 
 export type StockMovementScalarFieldEnum = (typeof StockMovementScalarFieldEnum)[keyof typeof StockMovementScalarFieldEnum]
@@ -1748,6 +1770,20 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'DateTime'
+ */
+export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime[]'
+ */
+export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
  * Reference to a field of type 'UserRole'
  */
 export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
@@ -1765,20 +1801,6 @@ export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-/**
- * Reference to a field of type 'DateTime'
- */
-export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-/**
- * Reference to a field of type 'DateTime[]'
- */
-export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
     
 
 

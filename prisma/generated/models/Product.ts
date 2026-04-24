@@ -52,6 +52,7 @@ export type ProductMinAggregateOutputType = {
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type ProductMaxAggregateOutputType = {
@@ -68,6 +69,7 @@ export type ProductMaxAggregateOutputType = {
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type ProductCountAggregateOutputType = {
@@ -84,6 +86,7 @@ export type ProductCountAggregateOutputType = {
   isActive: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -114,6 +117,7 @@ export type ProductMinAggregateInputType = {
   isActive?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type ProductMaxAggregateInputType = {
@@ -130,6 +134,7 @@ export type ProductMaxAggregateInputType = {
   isActive?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type ProductCountAggregateInputType = {
@@ -146,6 +151,7 @@ export type ProductCountAggregateInputType = {
   isActive?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -249,6 +255,7 @@ export type ProductGroupByOutputType = {
   isActive: boolean
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   _count: ProductCountAggregateOutputType | null
   _avg: ProductAvgAggregateOutputType | null
   _sum: ProductSumAggregateOutputType | null
@@ -288,6 +295,7 @@ export type ProductWhereInput = {
   isActive?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
   productSuppliers?: Prisma.ProductSupplierListRelationFilter
   stockEntryItems?: Prisma.StockEntryItemListRelationFilter
   stockOutputItems?: Prisma.StockOutputItemListRelationFilter
@@ -311,6 +319,7 @@ export type ProductOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   productSuppliers?: Prisma.ProductSupplierOrderByRelationAggregateInput
   stockEntryItems?: Prisma.StockEntryItemOrderByRelationAggregateInput
   stockOutputItems?: Prisma.StockOutputItemOrderByRelationAggregateInput
@@ -337,6 +346,7 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   isActive?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
   productSuppliers?: Prisma.ProductSupplierListRelationFilter
   stockEntryItems?: Prisma.StockEntryItemListRelationFilter
   stockOutputItems?: Prisma.StockOutputItemListRelationFilter
@@ -360,6 +370,7 @@ export type ProductOrderByWithAggregationInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ProductCountOrderByAggregateInput
   _avg?: Prisma.ProductAvgOrderByAggregateInput
   _max?: Prisma.ProductMaxOrderByAggregateInput
@@ -384,6 +395,7 @@ export type ProductScalarWhereWithAggregatesInput = {
   isActive?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
 }
 
 export type ProductCreateInput = {
@@ -400,6 +412,7 @@ export type ProductCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierCreateNestedManyWithoutProductInput
   stockEntryItems?: Prisma.StockEntryItemCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemCreateNestedManyWithoutProductInput
@@ -423,6 +436,7 @@ export type ProductUncheckedCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedCreateNestedManyWithoutProductInput
   stockEntryItems?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedCreateNestedManyWithoutProductInput
@@ -446,6 +460,7 @@ export type ProductUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUpdateManyWithoutProductNestedInput
   stockEntryItems?: Prisma.StockEntryItemUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUpdateManyWithoutProductNestedInput
@@ -469,6 +484,7 @@ export type ProductUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedUpdateManyWithoutProductNestedInput
   stockEntryItems?: Prisma.StockEntryItemUncheckedUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedUpdateManyWithoutProductNestedInput
@@ -492,6 +508,7 @@ export type ProductCreateManyInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type ProductUpdateManyMutationInput = {
@@ -508,6 +525,7 @@ export type ProductUpdateManyMutationInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ProductUncheckedUpdateManyInput = {
@@ -524,6 +542,7 @@ export type ProductUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ProductCountOrderByAggregateInput = {
@@ -540,6 +559,7 @@ export type ProductCountOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ProductAvgOrderByAggregateInput = {
@@ -562,6 +582,7 @@ export type ProductMaxOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ProductMinOrderByAggregateInput = {
@@ -578,6 +599,7 @@ export type ProductMinOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ProductSumOrderByAggregateInput = {
@@ -715,6 +737,7 @@ export type ProductCreateWithoutProductSuppliersInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   stockEntryItems?: Prisma.StockEntryItemCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemCreateNestedManyWithoutProductInput
   inventoryLots?: Prisma.InventoryLotCreateNestedManyWithoutProductInput
@@ -737,6 +760,7 @@ export type ProductUncheckedCreateWithoutProductSuppliersInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   stockEntryItems?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedCreateNestedManyWithoutProductInput
   inventoryLots?: Prisma.InventoryLotUncheckedCreateNestedManyWithoutProductInput
@@ -775,6 +799,7 @@ export type ProductUpdateWithoutProductSuppliersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stockEntryItems?: Prisma.StockEntryItemUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUpdateManyWithoutProductNestedInput
   inventoryLots?: Prisma.InventoryLotUpdateManyWithoutProductNestedInput
@@ -797,6 +822,7 @@ export type ProductUncheckedUpdateWithoutProductSuppliersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stockEntryItems?: Prisma.StockEntryItemUncheckedUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedUpdateManyWithoutProductNestedInput
   inventoryLots?: Prisma.InventoryLotUncheckedUpdateManyWithoutProductNestedInput
@@ -819,6 +845,7 @@ export type ProductCreateWithoutStockEntryItemsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemCreateNestedManyWithoutProductInput
   inventoryLots?: Prisma.InventoryLotCreateNestedManyWithoutProductInput
@@ -841,6 +868,7 @@ export type ProductUncheckedCreateWithoutStockEntryItemsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedCreateNestedManyWithoutProductInput
   inventoryLots?: Prisma.InventoryLotUncheckedCreateNestedManyWithoutProductInput
@@ -879,6 +907,7 @@ export type ProductUpdateWithoutStockEntryItemsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUpdateManyWithoutProductNestedInput
   inventoryLots?: Prisma.InventoryLotUpdateManyWithoutProductNestedInput
@@ -901,6 +930,7 @@ export type ProductUncheckedUpdateWithoutStockEntryItemsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedUpdateManyWithoutProductNestedInput
   inventoryLots?: Prisma.InventoryLotUncheckedUpdateManyWithoutProductNestedInput
@@ -923,6 +953,7 @@ export type ProductCreateWithoutInventoryLotsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierCreateNestedManyWithoutProductInput
   stockEntryItems?: Prisma.StockEntryItemCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemCreateNestedManyWithoutProductInput
@@ -945,6 +976,7 @@ export type ProductUncheckedCreateWithoutInventoryLotsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedCreateNestedManyWithoutProductInput
   stockEntryItems?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedCreateNestedManyWithoutProductInput
@@ -983,6 +1015,7 @@ export type ProductUpdateWithoutInventoryLotsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUpdateManyWithoutProductNestedInput
   stockEntryItems?: Prisma.StockEntryItemUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUpdateManyWithoutProductNestedInput
@@ -1005,6 +1038,7 @@ export type ProductUncheckedUpdateWithoutInventoryLotsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedUpdateManyWithoutProductNestedInput
   stockEntryItems?: Prisma.StockEntryItemUncheckedUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedUpdateManyWithoutProductNestedInput
@@ -1027,6 +1061,7 @@ export type ProductCreateWithoutStockOutputItemsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierCreateNestedManyWithoutProductInput
   stockEntryItems?: Prisma.StockEntryItemCreateNestedManyWithoutProductInput
   inventoryLots?: Prisma.InventoryLotCreateNestedManyWithoutProductInput
@@ -1049,6 +1084,7 @@ export type ProductUncheckedCreateWithoutStockOutputItemsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedCreateNestedManyWithoutProductInput
   stockEntryItems?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutProductInput
   inventoryLots?: Prisma.InventoryLotUncheckedCreateNestedManyWithoutProductInput
@@ -1087,6 +1123,7 @@ export type ProductUpdateWithoutStockOutputItemsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUpdateManyWithoutProductNestedInput
   stockEntryItems?: Prisma.StockEntryItemUpdateManyWithoutProductNestedInput
   inventoryLots?: Prisma.InventoryLotUpdateManyWithoutProductNestedInput
@@ -1109,6 +1146,7 @@ export type ProductUncheckedUpdateWithoutStockOutputItemsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedUpdateManyWithoutProductNestedInput
   stockEntryItems?: Prisma.StockEntryItemUncheckedUpdateManyWithoutProductNestedInput
   inventoryLots?: Prisma.InventoryLotUncheckedUpdateManyWithoutProductNestedInput
@@ -1131,6 +1169,7 @@ export type ProductCreateWithoutServiceTypeSuppliesInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierCreateNestedManyWithoutProductInput
   stockEntryItems?: Prisma.StockEntryItemCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemCreateNestedManyWithoutProductInput
@@ -1153,6 +1192,7 @@ export type ProductUncheckedCreateWithoutServiceTypeSuppliesInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedCreateNestedManyWithoutProductInput
   stockEntryItems?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedCreateNestedManyWithoutProductInput
@@ -1191,6 +1231,7 @@ export type ProductUpdateWithoutServiceTypeSuppliesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUpdateManyWithoutProductNestedInput
   stockEntryItems?: Prisma.StockEntryItemUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUpdateManyWithoutProductNestedInput
@@ -1213,6 +1254,7 @@ export type ProductUncheckedUpdateWithoutServiceTypeSuppliesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedUpdateManyWithoutProductNestedInput
   stockEntryItems?: Prisma.StockEntryItemUncheckedUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedUpdateManyWithoutProductNestedInput
@@ -1235,6 +1277,7 @@ export type ProductCreateWithoutServiceConsumptionsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierCreateNestedManyWithoutProductInput
   stockEntryItems?: Prisma.StockEntryItemCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemCreateNestedManyWithoutProductInput
@@ -1257,6 +1300,7 @@ export type ProductUncheckedCreateWithoutServiceConsumptionsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedCreateNestedManyWithoutProductInput
   stockEntryItems?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedCreateNestedManyWithoutProductInput
@@ -1295,6 +1339,7 @@ export type ProductUpdateWithoutServiceConsumptionsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUpdateManyWithoutProductNestedInput
   stockEntryItems?: Prisma.StockEntryItemUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUpdateManyWithoutProductNestedInput
@@ -1317,6 +1362,7 @@ export type ProductUncheckedUpdateWithoutServiceConsumptionsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedUpdateManyWithoutProductNestedInput
   stockEntryItems?: Prisma.StockEntryItemUncheckedUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedUpdateManyWithoutProductNestedInput
@@ -1339,6 +1385,7 @@ export type ProductCreateWithoutStockMovementsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierCreateNestedManyWithoutProductInput
   stockEntryItems?: Prisma.StockEntryItemCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemCreateNestedManyWithoutProductInput
@@ -1361,6 +1408,7 @@ export type ProductUncheckedCreateWithoutStockMovementsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedCreateNestedManyWithoutProductInput
   stockEntryItems?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutProductInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedCreateNestedManyWithoutProductInput
@@ -1399,6 +1447,7 @@ export type ProductUpdateWithoutStockMovementsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUpdateManyWithoutProductNestedInput
   stockEntryItems?: Prisma.StockEntryItemUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUpdateManyWithoutProductNestedInput
@@ -1421,6 +1470,7 @@ export type ProductUncheckedUpdateWithoutStockMovementsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   productSuppliers?: Prisma.ProductSupplierUncheckedUpdateManyWithoutProductNestedInput
   stockEntryItems?: Prisma.StockEntryItemUncheckedUpdateManyWithoutProductNestedInput
   stockOutputItems?: Prisma.StockOutputItemUncheckedUpdateManyWithoutProductNestedInput
@@ -1528,6 +1578,7 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   productSuppliers?: boolean | Prisma.Product$productSuppliersArgs<ExtArgs>
   stockEntryItems?: boolean | Prisma.Product$stockEntryItemsArgs<ExtArgs>
   stockOutputItems?: boolean | Prisma.Product$stockOutputItemsArgs<ExtArgs>
@@ -1552,6 +1603,7 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }, ExtArgs["result"]["product"]>
 
 export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1568,6 +1620,7 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }, ExtArgs["result"]["product"]>
 
 export type ProductSelectScalar = {
@@ -1584,9 +1637,10 @@ export type ProductSelectScalar = {
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sku" | "barcode" | "name" | "description" | "category" | "unitName" | "purchasePrice" | "minimumStock" | "currentStock" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sku" | "barcode" | "name" | "description" | "category" | "unitName" | "purchasePrice" | "minimumStock" | "currentStock" | "isActive" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   productSuppliers?: boolean | Prisma.Product$productSuppliersArgs<ExtArgs>
   stockEntryItems?: boolean | Prisma.Product$stockEntryItemsArgs<ExtArgs>
@@ -1625,6 +1679,7 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     isActive: boolean
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
   }, ExtArgs["result"]["product"]>
   composites: {}
 }
@@ -2068,6 +2123,7 @@ export interface ProductFieldRefs {
   readonly isActive: Prisma.FieldRef<"Product", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Product", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Product", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"Product", 'DateTime'>
 }
     
 

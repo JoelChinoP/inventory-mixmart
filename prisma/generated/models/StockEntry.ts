@@ -35,6 +35,7 @@ export type StockEntryMinAggregateOutputType = {
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type StockEntryMaxAggregateOutputType = {
@@ -48,6 +49,7 @@ export type StockEntryMaxAggregateOutputType = {
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type StockEntryCountAggregateOutputType = {
@@ -61,6 +63,7 @@ export type StockEntryCountAggregateOutputType = {
   notes: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -76,6 +79,7 @@ export type StockEntryMinAggregateInputType = {
   notes?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type StockEntryMaxAggregateInputType = {
@@ -89,6 +93,7 @@ export type StockEntryMaxAggregateInputType = {
   notes?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type StockEntryCountAggregateInputType = {
@@ -102,6 +107,7 @@ export type StockEntryCountAggregateInputType = {
   notes?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -188,6 +194,7 @@ export type StockEntryGroupByOutputType = {
   notes: string | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   _count: StockEntryCountAggregateOutputType | null
   _min: StockEntryMinAggregateOutputType | null
   _max: StockEntryMaxAggregateOutputType | null
@@ -222,6 +229,7 @@ export type StockEntryWhereInput = {
   notes?: Prisma.StringNullableFilter<"StockEntry"> | string | null
   createdAt?: Prisma.DateTimeFilter<"StockEntry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StockEntry"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"StockEntry"> | Date | string | null
   supplier?: Prisma.XOR<Prisma.SupplierScalarRelationFilter, Prisma.SupplierWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   items?: Prisma.StockEntryItemListRelationFilter
@@ -238,6 +246,7 @@ export type StockEntryOrderByWithRelationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   supplier?: Prisma.SupplierOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
   items?: Prisma.StockEntryItemOrderByRelationAggregateInput
@@ -257,6 +266,7 @@ export type StockEntryWhereUniqueInput = Prisma.AtLeast<{
   notes?: Prisma.StringNullableFilter<"StockEntry"> | string | null
   createdAt?: Prisma.DateTimeFilter<"StockEntry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StockEntry"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"StockEntry"> | Date | string | null
   supplier?: Prisma.XOR<Prisma.SupplierScalarRelationFilter, Prisma.SupplierWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   items?: Prisma.StockEntryItemListRelationFilter
@@ -273,6 +283,7 @@ export type StockEntryOrderByWithAggregationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.StockEntryCountOrderByAggregateInput
   _max?: Prisma.StockEntryMaxOrderByAggregateInput
   _min?: Prisma.StockEntryMinOrderByAggregateInput
@@ -292,6 +303,7 @@ export type StockEntryScalarWhereWithAggregatesInput = {
   notes?: Prisma.StringNullableWithAggregatesFilter<"StockEntry"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"StockEntry"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"StockEntry"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"StockEntry"> | Date | string | null
 }
 
 export type StockEntryCreateInput = {
@@ -303,6 +315,7 @@ export type StockEntryCreateInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   supplier: Prisma.SupplierCreateNestedOneWithoutStockEntriesInput
   createdBy: Prisma.UserCreateNestedOneWithoutStockEntriesCreatedInput
   items?: Prisma.StockEntryItemCreateNestedManyWithoutStockEntryInput
@@ -319,6 +332,7 @@ export type StockEntryUncheckedCreateInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   items?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutStockEntryInput
 }
 
@@ -331,6 +345,7 @@ export type StockEntryUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   supplier?: Prisma.SupplierUpdateOneRequiredWithoutStockEntriesNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutStockEntriesCreatedNestedInput
   items?: Prisma.StockEntryItemUpdateManyWithoutStockEntryNestedInput
@@ -347,6 +362,7 @@ export type StockEntryUncheckedUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   items?: Prisma.StockEntryItemUncheckedUpdateManyWithoutStockEntryNestedInput
 }
 
@@ -361,6 +377,7 @@ export type StockEntryCreateManyInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type StockEntryUpdateManyMutationInput = {
@@ -372,6 +389,7 @@ export type StockEntryUpdateManyMutationInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type StockEntryUncheckedUpdateManyInput = {
@@ -385,6 +403,7 @@ export type StockEntryUncheckedUpdateManyInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type StockEntryListRelationFilter = {
@@ -408,6 +427,7 @@ export type StockEntryCountOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type StockEntryMaxOrderByAggregateInput = {
@@ -421,6 +441,7 @@ export type StockEntryMaxOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type StockEntryMinOrderByAggregateInput = {
@@ -434,6 +455,7 @@ export type StockEntryMinOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type StockEntryScalarRelationFilter = {
@@ -552,6 +574,7 @@ export type StockEntryCreateWithoutCreatedByInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   supplier: Prisma.SupplierCreateNestedOneWithoutStockEntriesInput
   items?: Prisma.StockEntryItemCreateNestedManyWithoutStockEntryInput
 }
@@ -566,6 +589,7 @@ export type StockEntryUncheckedCreateWithoutCreatedByInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   items?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutStockEntryInput
 }
 
@@ -609,6 +633,7 @@ export type StockEntryScalarWhereInput = {
   notes?: Prisma.StringNullableFilter<"StockEntry"> | string | null
   createdAt?: Prisma.DateTimeFilter<"StockEntry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StockEntry"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"StockEntry"> | Date | string | null
 }
 
 export type StockEntryCreateWithoutSupplierInput = {
@@ -620,6 +645,7 @@ export type StockEntryCreateWithoutSupplierInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   createdBy: Prisma.UserCreateNestedOneWithoutStockEntriesCreatedInput
   items?: Prisma.StockEntryItemCreateNestedManyWithoutStockEntryInput
 }
@@ -634,6 +660,7 @@ export type StockEntryUncheckedCreateWithoutSupplierInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   items?: Prisma.StockEntryItemUncheckedCreateNestedManyWithoutStockEntryInput
 }
 
@@ -672,6 +699,7 @@ export type StockEntryCreateWithoutItemsInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   supplier: Prisma.SupplierCreateNestedOneWithoutStockEntriesInput
   createdBy: Prisma.UserCreateNestedOneWithoutStockEntriesCreatedInput
 }
@@ -687,6 +715,7 @@ export type StockEntryUncheckedCreateWithoutItemsInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type StockEntryCreateOrConnectWithoutItemsInput = {
@@ -714,6 +743,7 @@ export type StockEntryUpdateWithoutItemsInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   supplier?: Prisma.SupplierUpdateOneRequiredWithoutStockEntriesNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutStockEntriesCreatedNestedInput
 }
@@ -729,6 +759,7 @@ export type StockEntryUncheckedUpdateWithoutItemsInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type StockEntryCreateManyCreatedByInput = {
@@ -741,6 +772,7 @@ export type StockEntryCreateManyCreatedByInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type StockEntryUpdateWithoutCreatedByInput = {
@@ -752,6 +784,7 @@ export type StockEntryUpdateWithoutCreatedByInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   supplier?: Prisma.SupplierUpdateOneRequiredWithoutStockEntriesNestedInput
   items?: Prisma.StockEntryItemUpdateManyWithoutStockEntryNestedInput
 }
@@ -766,6 +799,7 @@ export type StockEntryUncheckedUpdateWithoutCreatedByInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   items?: Prisma.StockEntryItemUncheckedUpdateManyWithoutStockEntryNestedInput
 }
 
@@ -779,6 +813,7 @@ export type StockEntryUncheckedUpdateManyWithoutCreatedByInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type StockEntryCreateManySupplierInput = {
@@ -791,6 +826,7 @@ export type StockEntryCreateManySupplierInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type StockEntryUpdateWithoutSupplierInput = {
@@ -802,6 +838,7 @@ export type StockEntryUpdateWithoutSupplierInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneRequiredWithoutStockEntriesCreatedNestedInput
   items?: Prisma.StockEntryItemUpdateManyWithoutStockEntryNestedInput
 }
@@ -816,6 +853,7 @@ export type StockEntryUncheckedUpdateWithoutSupplierInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   items?: Prisma.StockEntryItemUncheckedUpdateManyWithoutStockEntryNestedInput
 }
 
@@ -829,6 +867,7 @@ export type StockEntryUncheckedUpdateManyWithoutSupplierInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -873,6 +912,7 @@ export type StockEntrySelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   items?: boolean | Prisma.StockEntry$itemsArgs<ExtArgs>
@@ -890,6 +930,7 @@ export type StockEntrySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["stockEntry"]>
@@ -905,6 +946,7 @@ export type StockEntrySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["stockEntry"]>
@@ -920,9 +962,10 @@ export type StockEntrySelectScalar = {
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }
 
-export type StockEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "supplierId" | "createdById" | "status" | "orderedAt" | "receivedAt" | "referenceNumber" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["stockEntry"]>
+export type StockEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "supplierId" | "createdById" | "status" | "orderedAt" | "receivedAt" | "referenceNumber" | "notes" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["stockEntry"]>
 export type StockEntryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -956,6 +999,7 @@ export type $StockEntryPayload<ExtArgs extends runtime.Types.Extensions.Internal
     notes: string | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
   }, ExtArgs["result"]["stockEntry"]>
   composites: {}
 }
@@ -1392,6 +1436,7 @@ export interface StockEntryFieldRefs {
   readonly notes: Prisma.FieldRef<"StockEntry", 'String'>
   readonly createdAt: Prisma.FieldRef<"StockEntry", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"StockEntry", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"StockEntry", 'DateTime'>
 }
     
 

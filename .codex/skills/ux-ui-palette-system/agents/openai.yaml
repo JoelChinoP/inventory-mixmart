@@ -1,4 +1,4 @@
 interface:
   display_name: "UX/UI Palette System"
-  short_description: "Accessible palette-to-design-system workflow"
-  default_prompt: "Use $ux-ui-palette-system to convert this palette into accessible Tailwind design tokens."
+  short_description: "Accessible Mixmart Tailwind palette workflow"
+  default_prompt: "Use $ux-ui-palette-system to preserve Mixmart's palette, semantic tokens, and dense operational UI patterns."

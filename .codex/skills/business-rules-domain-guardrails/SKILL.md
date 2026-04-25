@@ -41,13 +41,14 @@ If expiration/lots are requested later, treat that as a new requirement and rein
 
 ## Cost And Reporting Policy
 - `StockEntryItem.unitCost` stores the actual purchase cost for that received item.
-- `Product.purchasePrice` is the current reference/average purchase cost used for simple operational valuation.
-- When purchase cost changes between orders, preserve the historical entry cost and update the product reference cost using a simple, documented approach such as weighted average.
-- `StockOutputItem.unitCost` and/or `StockMovement.unitCost` must capture the cost at the time of output/consumption so reports do not depend on a later mutable product price.
+- `Product.purchasePrice` is the current weighted-average/reference purchase cost used for simple operational valuation.
+- When purchase cost changes between orders, preserve the historical entry cost and update `Product.purchasePrice` using weighted average.
+- `StockOutputItem.unitCost` and `StockMovement.unitCost` must capture the cost at the time of output/consumption so reports do not depend on a later mutable product price.
 - `Product.salePrice` is the current suggested sale price and may be changed by an admin for future sales.
 - `StockOutputItem.suggestedUnitSalePrice` stores the suggested price snapshot at sale time.
 - `StockOutputItem.unitSalePrice` stores the real unit sale price charged, allowing discounts or negotiated prices without rewriting the product suggestion.
-- Revenue/profit reports must use the `StockOutputItem` sale-price snapshot fields, not the mutable product sale price.
+- Revenue/profit reports must use the `StockOutputItem` sale-price snapshot fields and output cost snapshots, not mutable product prices.
+- Suggested sale price history is future scope; do not add `ProductSalePriceHistory` unless explicitly requested.
 
 ## Enforcement Guidance
 - Use Prisma enums and relations for readability.
@@ -69,3 +70,5 @@ If expiration/lots are requested later, treat that as a new requirement and rein
 - Low-stock and movement reports remain queryable by date/product/category.
 - Soft delete hides configured catalog rows without weakening append-only history protections.
 - Purchase cost changes are preserved for entry history and frozen on outgoing cost records for reports.
+- Sale outputs freeze suggested and actual sale prices, and profit reports use those snapshots.
+- Non-sale outputs keep sale price fields null.

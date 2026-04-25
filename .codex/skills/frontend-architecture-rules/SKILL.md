@@ -40,3 +40,15 @@ Define and enforce practical frontend structure, conventions, and implementation
 10. Ensure forms have labels, visible errors, keyboard support, and clear focus states.
 11. Avoid introducing new dependencies unless they remove meaningful complexity.
 12. Verify with lint/build/tests relevant to the touched surface and report blockers explicitly.
+
+## Mixmart Performance Rules
+- Design for Vercel-free-tier constraints: each endpoint/server action should target 1-3 database round trips.
+- Load initial route data in Server Components; avoid client fetch waterfalls for dashboards, catalogs, stock, and reports.
+- Use one shaped Prisma query with `select`/`include` when possible.
+- Batch lookups by IDs and avoid DB queries inside loops.
+- Use aggregate SQL or Prisma aggregates for reports instead of row-by-row server work.
+- Keep route handlers and server actions thin: validate input, authorize, call a server service, and revalidate affected UI/cache.
+- Keep stock-changing operations dynamic, transaction-safe, and never cache-dependent.
+- Use Next.js cache tags/revalidation only for mostly-read catalog/report data with clear freshness rules.
+- Do not put critical inventory, pricing, or authorization business rules in Client Components.
+- Prefer lightweight PWA behavior first: manifest/installability and navigation prefetching; do not implement offline inventory writes for the MVP.

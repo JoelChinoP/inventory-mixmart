@@ -39,3 +39,13 @@ Convert an existing palette into a usable, accessible, scalable visual system fo
 10. Prefer Tailwind tokens and reusable component classes over hardcoded colors.
 11. Keep rounded UI elements restrained unless the existing system differs.
 12. Return implementation-ready code and concise usage guidance.
+
+## Mixmart Palette Rules
+- Preserve the existing Tailwind palette and CSS variables in `tailwind.config.js` and `src/app/globals.css`.
+- Use semantic tokens such as `primary`, `secondary`, `accent`, `background`, `surface`, `foreground`, `muted`, `border`, `input`, `ring`, `success`, `warning`, `error`, and `info`.
+- Keep Mixmart screens operational and dense: tables, filters, status badges, compact forms, and clear affordances.
+- Use neutral/oat surfaces for most layout areas; reserve saturated purple, lime, and orange for active navigation, actions, confirmations, warnings, and highlights.
+- Prefer accessible Radix/shadcn-style controls for dialogs, dropdowns, tabs, popovers, tooltips, and selects.
+- Prefer Lucide icons for familiar actions in buttons, navigation, tables, and status UI.
+- Avoid decorative hero layouts, gradients, and oversized marketing sections for internal inventory workflows.
+- Ensure button text, table labels, badges, and form controls fit on mobile and desktop.

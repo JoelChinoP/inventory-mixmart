@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mixmart UX/UI Module Design"
+  short_description: "Advanced role-aware UX/UI rules for all Mixmart modules"
+  default_prompt: "Use $mixmart-ux-ui-module-design to design or review intuitive, beautiful, role-aware Mixmart inventory screens."

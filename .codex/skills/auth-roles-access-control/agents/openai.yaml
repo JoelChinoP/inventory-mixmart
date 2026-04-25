@@ -1,4 +1,4 @@
 interface:
   display_name: "Auth Roles Access Control"
-  short_description: "Authentication and RBAC implementation guide"
-  default_prompt: "Use $auth-roles-access-control to design authentication, sessions, and role-based access control."
+  short_description: "NextAuth login-only and RBAC guide"
+  default_prompt: "Use $auth-roles-access-control to design Mixmart login, sessions, active-user checks, Google access, and role-based authorization."

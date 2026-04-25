@@ -40,3 +40,16 @@ Design or implement simple, secure authentication and role-based access control 
 10. Record audit fields such as actor id and timestamps when business-critical.
 11. Do not put secrets in client components or public env variables.
 12. Provide tests for blocked access, inactive users, and privileged-only actions.
+
+## Mixmart Auth Policy
+- Use NextAuth.js v4 with JWT sessions for this repo.
+- Keep the login page login-only: do not add public signup/register flows.
+- Credentials login must accept one identifier field that can be username or email, plus password.
+- Normalize email identifiers before lookup and keep login failures generic.
+- Store only password hashes in `User.passwordHash`.
+- Add Google login with `GoogleProvider` only as normal online OAuth; do not request offline access or refresh tokens.
+- Google login must require a verified Google email that matches an existing active `User.email`.
+- Do not auto-provision users from Google login.
+- Require `User.isActive = true` and `User.deletedAt = null` before granting access.
+- Only `ADMIN` can create, reactivate, deactivate, or assign roles to `ADMIN` and `WORKER` users.
+- Recheck role and active status in server actions, route handlers, protected pages, reports, and database-facing services.

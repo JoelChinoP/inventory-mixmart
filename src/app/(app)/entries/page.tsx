@@ -1,8 +1,10 @@
 import { PackageCheck, Plus } from "lucide-react";
+import { Suspense } from "react";
 
 import {
   EmptyState,
   FlashMessage,
+  OperationalPageSkeleton,
   PageHeader,
   Section,
   SectionHeader,
@@ -26,7 +28,21 @@ type EntriesPageProps = {
   }>;
 };
 
-export default async function EntriesPage({ searchParams }: EntriesPageProps) {
+export default function EntriesPage({ searchParams }: EntriesPageProps) {
+  return (
+    <div>
+      <PageHeader
+        title="Entradas"
+        description="Ordenes y compras recibidas. Recibir una orden actualiza el stock una sola vez."
+      />
+      <Suspense fallback={<OperationalPageSkeleton />}>
+        <EntriesContent searchParams={searchParams} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function EntriesContent({ searchParams }: EntriesPageProps) {
   await requireActiveUser("/entries");
   const params = await searchParams;
   const [suppliers, products, entries] = await Promise.all([
@@ -58,12 +74,7 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
   ]);
 
   return (
-    <div>
-      <PageHeader
-        title="Entradas"
-        description="Ordenes y compras recibidas. Recibir una orden actualiza el stock una sola vez."
-      />
-
+    <>
       {params.success ? (
         <FlashMessage type="success">Entrada registrada correctamente.</FlashMessage>
       ) : null}
@@ -97,7 +108,7 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
           </div>
 
           <div className="overflow-x-auto rounded-card border border-border">
-            <table className="min-w-full text-sm">
+            <table className="table-operational">
               <thead className="bg-surface-muted text-left text-xs uppercase text-muted-foreground">
                 <tr>
                   <th className="px-3 py-2">Producto</th>
@@ -146,7 +157,7 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
         <SectionHeader title="Entradas recientes" />
         {entries.length ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
+            <table className="table-operational">
               <thead className="bg-surface-muted text-left text-xs uppercase text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3">Referencia</th>
@@ -232,6 +243,6 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
           <EmptyState title="Sin entradas" description="Registra la primera compra u orden." />
         )}
       </Section>
-    </div>
+    </>
   );
 }

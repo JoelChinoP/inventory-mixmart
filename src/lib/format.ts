@@ -67,7 +67,7 @@ export function formatDateOnly(value: Date | string | null | undefined) {
 }
 
 export const productCategoryLabels: Record<ProductCategory, string> = {
-  SCHOOL_SUPPLIES: "Utiles escolares",
+  SCHOOL_SUPPLIES: "Chucherias",
   BAZAAR: "Bazar",
   SNACKS: "Snacks",
 };

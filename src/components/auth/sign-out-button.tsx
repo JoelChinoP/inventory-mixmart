@@ -3,14 +3,17 @@
 import { LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 
+import { cn } from "@/lib/utils";
+
 type SignOutButtonProps = {
   compact?: boolean;
+  className?: string;
 };
 
-export function SignOutButton({ compact = false }: SignOutButtonProps) {
+export function SignOutButton({ compact = false, className }: SignOutButtonProps) {
   return (
     <button
-      className="btn btn-ghost"
+      className={cn("btn btn-ghost", className)}
       onClick={() => signOut({ callbackUrl: "/login" })}
       title="Cerrar sesion"
       type="button"

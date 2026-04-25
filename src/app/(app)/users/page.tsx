@@ -1,9 +1,10 @@
 import { Plus } from "lucide-react";
-import { Fragment } from "react";
+import { Fragment, Suspense } from "react";
 
 import {
   EmptyState,
   FlashMessage,
+  OperationalPageSkeleton,
   PageHeader,
   Section,
   SectionHeader,
@@ -25,7 +26,15 @@ type UsersPageProps = {
 
 const roles: UserRole[] = ["ADMIN", "WORKER"];
 
-export default async function UsersPage({ searchParams }: UsersPageProps) {
+export default function UsersPage({ searchParams }: UsersPageProps) {
+  return (
+    <Suspense fallback={<OperationalPageSkeleton />}>
+      <UsersContent searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function UsersContent({ searchParams }: UsersPageProps) {
   await requireRole(["ADMIN"], "/users");
   const params = await searchParams;
   const users = await prisma.user.findMany({
@@ -53,7 +62,7 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
         <SectionHeader title="Usuarios registrados" />
         {users.length ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
+            <table className="table-operational">
               <thead className="bg-surface-muted text-left text-xs uppercase text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3">Usuario</th>

@@ -1,10 +1,12 @@
 import { Plus, RotateCcw, Search } from "lucide-react";
-import { Fragment } from "react";
+import { Fragment, Suspense } from "react";
 
 import {
   EmptyState,
   FlashMessage,
+  PageContentSkeleton,
   PageHeader,
+  ProductCategoryBadge,
   Section,
   SectionHeader,
   StatusBadge,
@@ -40,7 +42,21 @@ type ProductsPageProps = {
 
 const categories: ProductCategory[] = ["SCHOOL_SUPPLIES", "BAZAAR", "SNACKS"];
 
-export default async function ProductsPage({ searchParams }: ProductsPageProps) {
+export default function ProductsPage({ searchParams }: ProductsPageProps) {
+  return (
+    <div>
+      <PageHeader
+        title="Productos"
+        description="Catalogo, precios de referencia y stock actual por producto."
+      />
+      <Suspense fallback={<PageContentSkeleton />}>
+        <ProductsContent searchParams={searchParams} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function ProductsContent({ searchParams }: ProductsPageProps) {
   const user = await requireActiveUser("/products");
   const params = await searchParams;
   const canManage = canManageCatalog(user.role);
@@ -71,12 +87,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   });
 
   return (
-    <div>
-      <PageHeader
-        title="Productos"
-        description="Catalogo, precios de referencia y stock actual por producto."
-      />
-
+    <>
       {params.success ? (
         <FlashMessage type="success">Producto guardado correctamente.</FlashMessage>
       ) : null}
@@ -122,7 +133,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         <SectionHeader title="Lista de productos" />
         {products.length ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
+            <table className="table-operational">
               <thead className="bg-surface-muted text-left text-xs uppercase text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3">Producto</th>
@@ -145,7 +156,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                           {product.sku || product.barcode || product.unitName}
                         </p>
                       </td>
-                      <td className="px-4 py-3">{productCategoryLabels[product.category]}</td>
+                      <td className="px-4 py-3">
+                        <ProductCategoryBadge category={product.category} />
+                      </td>
                       <td className="px-4 py-3">
                         <StatusBadge tone={stockTone(product)}>
                           {formatDecimal(product.currentStock, 3)}
@@ -209,8 +222,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                     {canManage && !product.deletedAt ? (
                       <tr className="bg-surface-muted/45">
                         <td className="px-4 py-3" colSpan={user.role === "ADMIN" ? 8 : 6}>
-                          <details>
-                            <summary className="cursor-pointer text-sm font-medium text-primary">
+                          <details className="group">
+                            <summary className="inline-flex cursor-pointer list-none items-center rounded-card border border-primary-200 bg-primary-50 px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary-100 [&::-webkit-details-marker]:hidden">
                               Editar producto
                             </summary>
                             <ProductForm mode="edit" product={product} />
@@ -227,7 +240,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           <EmptyState title="Sin productos" description="No hay productos con esos filtros." />
         )}
       </Section>
-    </div>
+    </>
   );
 }
 

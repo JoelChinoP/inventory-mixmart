@@ -1,8 +1,11 @@
 import { Search } from "lucide-react";
+import { Suspense } from "react";
 
 import {
   EmptyState,
+  PageContentSkeleton,
   PageHeader,
+  ProductCategoryBadge,
   Section,
   SectionHeader,
   StatusBadge,
@@ -28,7 +31,21 @@ type StockPageProps = {
 
 const categories: ProductCategory[] = ["SCHOOL_SUPPLIES", "BAZAAR", "SNACKS"];
 
-export default async function StockPage({ searchParams }: StockPageProps) {
+export default function StockPage({ searchParams }: StockPageProps) {
+  return (
+    <div>
+      <PageHeader
+        title="Stock"
+        description="Disponibilidad actual y ultima actividad por producto."
+      />
+      <Suspense fallback={<PageContentSkeleton />}>
+        <StockContent searchParams={searchParams} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function StockContent({ searchParams }: StockPageProps) {
   await requireActiveUser("/stock");
   const params = await searchParams;
   const q = params.q?.trim() ?? "";
@@ -67,12 +84,7 @@ export default async function StockPage({ searchParams }: StockPageProps) {
   });
 
   return (
-    <div>
-      <PageHeader
-        title="Stock"
-        description="Disponibilidad actual y ultima actividad por producto."
-      />
-
+    <>
       <Section className="mb-5">
         <SectionHeader title="Filtros" />
         <form className="grid gap-3 p-4 md:grid-cols-[1fr_180px_160px_auto]" action="/stock">
@@ -112,7 +124,7 @@ export default async function StockPage({ searchParams }: StockPageProps) {
         <SectionHeader title="Inventario actual" />
         {filteredProducts.length ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
+            <table className="table-operational">
               <thead className="bg-surface-muted text-left text-xs uppercase text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3">Producto</th>
@@ -136,7 +148,7 @@ export default async function StockPage({ searchParams }: StockPageProps) {
                         {product.name}
                       </td>
                       <td className="px-4 py-3">
-                        {productCategoryLabels[product.category]}
+                        <ProductCategoryBadge category={product.category} />
                       </td>
                       <td className="px-4 py-3">
                         {formatDecimal(product.currentStock, 3)}
@@ -179,6 +191,6 @@ export default async function StockPage({ searchParams }: StockPageProps) {
           <EmptyState title="Sin productos" description="No hay stock con esos filtros." />
         )}
       </Section>
-    </div>
+    </>
   );
 }

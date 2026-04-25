@@ -1,9 +1,10 @@
 import { Plus, RotateCcw, Search } from "lucide-react";
-import { Fragment } from "react";
+import { Fragment, Suspense } from "react";
 
 import {
   EmptyState,
   FlashMessage,
+  PageContentSkeleton,
   PageHeader,
   Section,
   SectionHeader,
@@ -31,7 +32,21 @@ type SuppliersPageProps = {
   }>;
 };
 
-export default async function SuppliersPage({ searchParams }: SuppliersPageProps) {
+export default function SuppliersPage({ searchParams }: SuppliersPageProps) {
+  return (
+    <div>
+      <PageHeader
+        title="Proveedores"
+        description="Datos de contacto, estado y compras recientes."
+      />
+      <Suspense fallback={<PageContentSkeleton />}>
+        <SuppliersContent searchParams={searchParams} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function SuppliersContent({ searchParams }: SuppliersPageProps) {
   const user = await requireActiveUser("/suppliers");
   const params = await searchParams;
   const q = params.q?.trim() ?? "";
@@ -75,12 +90,7 @@ export default async function SuppliersPage({ searchParams }: SuppliersPageProps
   });
 
   return (
-    <div>
-      <PageHeader
-        title="Proveedores"
-        description="Datos de contacto, estado y compras recientes."
-      />
-
+    <>
       {params.success ? (
         <FlashMessage type="success">Proveedor guardado correctamente.</FlashMessage>
       ) : null}
@@ -115,7 +125,7 @@ export default async function SuppliersPage({ searchParams }: SuppliersPageProps
         <SectionHeader title="Lista de proveedores" />
         {suppliers.length ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
+            <table className="table-operational">
               <thead className="bg-surface-muted text-left text-xs uppercase text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3">Proveedor</th>
@@ -248,7 +258,7 @@ export default async function SuppliersPage({ searchParams }: SuppliersPageProps
           <EmptyState title="Sin proveedores" description="No hay proveedores con esos filtros." />
         )}
       </Section>
-    </div>
+    </>
   );
 }
 

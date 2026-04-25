@@ -1,8 +1,10 @@
 import { Plus } from "lucide-react";
+import { Suspense } from "react";
 
 import {
   EmptyState,
   FlashMessage,
+  OperationalPageSkeleton,
   PageHeader,
   Section,
   SectionHeader,
@@ -39,7 +41,21 @@ function dateTimeLocalValue() {
   return new Date().toISOString().slice(0, 16);
 }
 
-export default async function ServicesPage({ searchParams }: ServicesPageProps) {
+export default function ServicesPage({ searchParams }: ServicesPageProps) {
+  return (
+    <div>
+      <PageHeader
+        title="Servicios"
+        description="Servicios internos con consumo de insumos y trabajos tercerizados."
+      />
+      <Suspense fallback={<OperationalPageSkeleton />}>
+        <ServicesContent searchParams={searchParams} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function ServicesContent({ searchParams }: ServicesPageProps) {
   const user = await requireActiveUser("/services");
   const params = await searchParams;
   const canManage = canManageCatalog(user.role);
@@ -82,12 +98,7 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
   const outsourcedTypes = serviceTypes.filter((type) => type.kind === "OUTSOURCED");
 
   return (
-    <div>
-      <PageHeader
-        title="Servicios"
-        description="Servicios internos con consumo de insumos y trabajos tercerizados."
-      />
-
+    <>
       {params.success ? (
         <FlashMessage type="success">Servicio guardado correctamente.</FlashMessage>
       ) : null}
@@ -176,7 +187,7 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
               </div>
 
               <div className="overflow-x-auto rounded-card border border-border">
-                <table className="min-w-full text-sm">
+                <table className="table-operational">
                   <thead className="bg-surface-muted text-left text-xs uppercase text-muted-foreground">
                     <tr>
                       <th className="px-3 py-2">Insumo</th>
@@ -231,7 +242,7 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
         <SectionHeader title="Servicios recientes" />
         {records.length ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
+            <table className="table-operational">
               <thead className="bg-surface-muted text-left text-xs uppercase text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3">Servicio</th>
@@ -296,7 +307,7 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
           <EmptyState title="Sin servicios" description="Registra el primer servicio." />
         )}
       </Section>
-    </div>
+    </>
   );
 }
 

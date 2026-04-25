@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
+import { Candy, Cookie, ShoppingBag } from "lucide-react";
 
+import { productCategoryLabels } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import type { ProductCategory } from "../../../prisma/generated/client";
 
 type PageHeaderProps = {
   title: string;
@@ -12,7 +15,7 @@ export function PageHeader({ title, description, action }: PageHeaderProps) {
   return (
     <header className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+        <h2 className="text-3xl font-semibold tracking-tight text-foreground">
           {title}
         </h2>
         {description ? (
@@ -33,7 +36,12 @@ type SectionProps = {
 
 export function Section({ children, className }: SectionProps) {
   return (
-    <section className={cn("rounded-card border border-border bg-surface", className)}>
+    <section
+      className={cn(
+        "overflow-hidden rounded-card border border-border bg-surface-elevated text-card-foreground shadow-soft",
+        className,
+      )}
+    >
       {children}
     </section>
   );
@@ -47,7 +55,7 @@ export function SectionHeader({
   description?: string;
 }) {
   return (
-    <div className="border-b border-border px-4 py-3">
+    <div className="border-b border-border bg-surface px-4 py-3">
       <h3 className="text-base font-semibold text-foreground">{title}</h3>
       {description ? (
         <p className="mt-1 text-sm text-muted-foreground">{description}</p>
@@ -64,7 +72,7 @@ export function EmptyState({
   description?: string;
 }) {
   return (
-    <div className="px-4 py-8 text-center">
+    <div className="px-4 py-10 text-center">
       <p className="text-sm font-semibold text-foreground">{title}</p>
       {description ? (
         <p className="mt-1 text-sm text-muted-foreground">{description}</p>
@@ -91,6 +99,62 @@ export function StatusBadge({
         }[tone];
 
   return <span className={cn("badge", className)}>{children}</span>;
+}
+
+const categoryConfig = {
+  SCHOOL_SUPPLIES: {
+    icon: Candy,
+    className: "border-accent-200 bg-accent-50 text-accent-800",
+    iconClassName: "bg-accent-100 text-accent-800",
+  },
+  BAZAAR: {
+    icon: ShoppingBag,
+    className: "border-primary-200 bg-primary-50 text-primary-700",
+    iconClassName: "bg-primary-100 text-primary",
+  },
+  SNACKS: {
+    icon: Cookie,
+    className: "border-success-border bg-success-surface text-success",
+    iconClassName: "bg-secondary-100 text-success",
+  },
+} satisfies Record<
+  ProductCategory,
+  {
+    icon: typeof Candy;
+    className: string;
+    iconClassName: string;
+  }
+>;
+
+export function ProductCategoryBadge({
+  category,
+  className,
+}: {
+  category: ProductCategory;
+  className?: string;
+}) {
+  const config = categoryConfig[category];
+  const Icon = config.icon;
+
+  return (
+    <span
+      className={cn(
+        "inline-flex min-h-8 items-center gap-2 rounded-card border px-2.5 py-1 text-xs font-semibold leading-none",
+        config.className,
+        className,
+      )}
+    >
+      <span
+        className={cn(
+          "flex h-5 w-5 shrink-0 items-center justify-center rounded-control",
+          config.iconClassName,
+        )}
+      >
+        <Icon aria-hidden="true" className="h-3.5 w-3.5" />
+      </span>
+      {productCategoryLabels[category]}
+    </span>
+  );
 }
 
 export function FlashMessage({

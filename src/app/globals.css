@@ -124,6 +124,7 @@
   html {
     min-height: 100%;
     background: var(--color-background);
+    scroll-padding-top: 72px;
   }
 
   body {
@@ -152,7 +153,7 @@
 
 @layer components {
   .btn {
-    @apply inline-flex h-10 items-center justify-center gap-2 rounded-control px-4 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:bg-disabled disabled:text-disabled-foreground;
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-control px-4 text-sm font-semibold transition duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] disabled:pointer-events-none disabled:scale-100 disabled:bg-disabled disabled:text-disabled-foreground;
   }
 
   .btn-primary {
@@ -160,11 +161,11 @@
   }
 
   .btn-secondary {
-    @apply bg-secondary text-secondary-foreground hover:bg-secondary-hover hover:text-white active:bg-secondary-active active:text-white disabled:bg-secondary-disabled disabled:text-disabled-foreground;
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary-hover active:bg-secondary-active disabled:bg-secondary-disabled disabled:text-disabled-foreground;
   }
 
   .btn-accent {
-    @apply bg-accent text-accent-foreground hover:bg-accent-hover hover:text-white active:bg-accent-active active:text-white disabled:bg-accent-disabled disabled:text-disabled-foreground;
+    @apply bg-accent text-accent-foreground hover:bg-accent-hover active:bg-accent-active disabled:bg-accent-disabled disabled:text-disabled-foreground;
   }
 
   .btn-ghost {
@@ -176,11 +177,35 @@
   }
 
   .input {
-    @apply h-10 w-full rounded-control border border-input bg-surface px-3 text-sm text-foreground shadow-sm transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-4 focus:ring-focus disabled:bg-disabled disabled:text-disabled-foreground;
+    @apply h-10 w-full rounded-control border border-input bg-surface-elevated px-3 text-sm text-foreground shadow-sm transition-colors placeholder:text-muted-foreground hover:border-primary-200 focus:border-primary focus:outline-none focus:ring-4 focus:ring-focus disabled:bg-disabled disabled:text-disabled-foreground;
   }
 
   .badge {
-    @apply inline-flex items-center rounded-control border px-2 py-1 text-xs font-medium;
+    @apply inline-flex min-h-6 items-center whitespace-nowrap rounded-control border px-2 py-1 text-xs font-medium leading-none;
+  }
+
+  .table-operational {
+    @apply min-w-full border-separate border-spacing-0 text-sm;
+  }
+
+  .table-operational thead {
+    @apply bg-surface-muted text-left text-xs uppercase text-muted-foreground;
+  }
+
+  .table-operational th {
+    @apply px-4 py-3 font-semibold;
+  }
+
+  .table-operational td {
+    @apply px-4 py-3 align-middle;
+  }
+
+  .table-operational tbody tr {
+    @apply transition-colors hover:bg-surface-muted/65;
+  }
+
+  .popover-window {
+    @apply rounded-card border border-border bg-surface-elevated p-3 shadow-soft;
   }
 
   .badge-success {

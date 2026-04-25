@@ -1,8 +1,11 @@
 import { Search } from "lucide-react";
+import { Suspense } from "react";
 
 import {
   EmptyState,
+  PageContentSkeleton,
   PageHeader,
+  ProductCategoryBadge,
   Section,
   SectionHeader,
   StatusBadge,
@@ -22,7 +25,15 @@ import {
 } from "@/lib/format";
 import { requireRole } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import type { ProductCategory } from "../../../../prisma/generated/client";
+import type {
+  ProductCategory,
+  ServiceKind,
+  ServiceStatus,
+  StockEntryStatus,
+  StockMovementDirection,
+  StockMovementType,
+  StockOutputReason,
+} from "../../../../prisma/generated/client";
 
 type ReportsPageProps = {
   searchParams: Promise<{
@@ -35,6 +46,83 @@ type ReportsPageProps = {
 };
 
 const categories: ProductCategory[] = ["SCHOOL_SUPPLIES", "BAZAAR", "SNACKS"];
+type DecimalValue = Parameters<typeof formatDecimal>[0];
+
+type ReportProduct = {
+  id: string;
+  name: string;
+  category: ProductCategory;
+  currentStock: DecimalValue;
+  minimumStock: DecimalValue;
+  purchasePrice: DecimalValue;
+};
+
+type ReportSupplier = {
+  id: string;
+  name: string;
+};
+
+type MovementRow = {
+  id: string;
+  occurredAt: Date;
+  direction: StockMovementDirection;
+  movementType: StockMovementType;
+  quantity: DecimalValue;
+  unitCost: DecimalValue;
+  product: {
+    name: string;
+    category: ProductCategory;
+    unitName: string;
+  };
+};
+
+type EntryRow = {
+  id: string;
+  orderedAt: Date;
+  status: StockEntryStatus;
+  supplier: {
+    name: string;
+  };
+  items: {
+    quantity: DecimalValue;
+    unitCost: DecimalValue;
+    product: {
+      name: string;
+      category: ProductCategory;
+    };
+  }[];
+};
+
+type OutputRow = {
+  id: string;
+  occurredAt: Date;
+  reason: StockOutputReason;
+  items: {
+    quantity: DecimalValue;
+    unitCost: DecimalValue;
+    unitSalePrice: DecimalValue;
+    product: {
+      name: string;
+      category: ProductCategory;
+    };
+  }[];
+};
+
+type ServiceRow = {
+  id: string;
+  serviceDate: Date;
+  kind: ServiceKind;
+  status: ServiceStatus;
+  quantity: DecimalValue;
+  serviceType: {
+    name: string;
+  };
+  consumptions: {
+    product: {
+      name: string;
+    };
+  }[];
+};
 
 function defaultFrom() {
   const date = new Date();
@@ -54,7 +142,15 @@ function endOfDate(value: string) {
   return new Date(`${value}T23:59:59.999`);
 }
 
-export default async function ReportsPage({ searchParams }: ReportsPageProps) {
+export default function ReportsPage({ searchParams }: ReportsPageProps) {
+  return (
+    <Suspense fallback={<PageContentSkeleton />}>
+      <ReportsContent searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function ReportsContent({ searchParams }: ReportsPageProps) {
   await requireRole(["ADMIN"], "/reports");
   const params = await searchParams;
   const from = params.from ?? defaultFrom();
@@ -200,7 +296,71 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
         title="Reportes"
         description="Analisis administrativo con datos historicos congelados en entradas, salidas y movimientos."
       />
+      <ReportsTables
+        category={category}
+        entries={entries}
+        from={from}
+        inventoryValue={inventoryValue}
+        lowStock={lowStock}
+        movements={movements}
+        outOfStock={outOfStock}
+        outputCost={outputCost}
+        outputs={outputs}
+        productId={productId}
+        products={products}
+        purchaseTotal={purchaseTotal}
+        saleCost={saleCost}
+        saleRevenue={saleRevenue}
+        services={services}
+        supplierId={supplierId}
+        suppliers={suppliers}
+        to={to}
+      />
+    </div>
+  );
+}
 
+function ReportsTables({
+  category,
+  entries,
+  from,
+  inventoryValue,
+  lowStock,
+  movements,
+  outOfStock,
+  outputCost,
+  outputs,
+  productId,
+  products,
+  purchaseTotal,
+  saleCost,
+  saleRevenue,
+  services,
+  supplierId,
+  suppliers,
+  to,
+}: {
+  category: ProductCategory | undefined;
+  entries: EntryRow[];
+  from: string;
+  inventoryValue: number;
+  lowStock: ReportProduct[];
+  movements: MovementRow[];
+  outOfStock: ReportProduct[];
+  outputCost: number;
+  outputs: OutputRow[];
+  productId: string | undefined;
+  products: ReportProduct[];
+  purchaseTotal: number;
+  saleCost: number;
+  saleRevenue: number;
+  services: ServiceRow[];
+  supplierId: string | undefined;
+  suppliers: ReportSupplier[];
+  to: string;
+}) {
+  return (
+    <>
       <Section className="mb-5">
         <SectionHeader title="Filtros" />
         <form className="grid gap-3 p-4 md:grid-cols-3 xl:grid-cols-[140px_140px_180px_1fr_1fr_auto]" action="/reports">
@@ -272,7 +432,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
           <SectionHeader title="Movimientos por periodo" />
           {movements.length ? (
             <div className="max-h-[520px] overflow-auto">
-              <table className="min-w-full text-sm">
+              <table className="table-operational">
                 <thead className="sticky top-0 bg-surface-muted text-left text-xs uppercase text-muted-foreground">
                   <tr>
                     <th className="px-4 py-3">Fecha</th>
@@ -286,7 +446,17 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
                   {movements.map((movement) => (
                     <tr key={movement.id}>
                       <td className="px-4 py-3">{formatDate(movement.occurredAt)}</td>
-                      <td className="px-4 py-3">{movement.product.name}</td>
+                      <td className="px-4 py-3">
+                        <div className="space-y-2">
+                          <p className="font-medium text-foreground">
+                            {movement.product.name}
+                          </p>
+                          <ProductCategoryBadge
+                            category={movement.product.category}
+                            className="min-h-6 rounded-control px-2 py-0.5"
+                          />
+                        </div>
+                      </td>
                       <td className="px-4 py-3">
                         <StatusBadge
                           tone={movement.direction === "IN" ? "success" : "warning"}
@@ -313,7 +483,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
           <SectionHeader title="Stock bajo y sin stock" />
           {lowStock.length ? (
             <div className="max-h-[520px] overflow-auto">
-              <table className="min-w-full text-sm">
+              <table className="table-operational">
                 <thead className="sticky top-0 bg-surface-muted text-left text-xs uppercase text-muted-foreground">
                   <tr>
                     <th className="px-4 py-3">Producto</th>
@@ -329,7 +499,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
                         {product.name}
                       </td>
                       <td className="px-4 py-3">
-                        {productCategoryLabels[product.category]}
+                        <ProductCategoryBadge category={product.category} />
                       </td>
                       <td className="px-4 py-3">
                         <StatusBadge
@@ -359,7 +529,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
           <SectionHeader title="Compras por proveedor" />
           {entries.length ? (
             <div className="max-h-[520px] overflow-auto">
-              <table className="min-w-full text-sm">
+              <table className="table-operational">
                 <thead className="sticky top-0 bg-surface-muted text-left text-xs uppercase text-muted-foreground">
                   <tr>
                     <th className="px-4 py-3">Fecha</th>
@@ -405,7 +575,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
           <SectionHeader title="Salidas y utilidad" />
           {outputs.length ? (
             <div className="max-h-[520px] overflow-auto">
-              <table className="min-w-full text-sm">
+              <table className="table-operational">
                 <thead className="sticky top-0 bg-surface-muted text-left text-xs uppercase text-muted-foreground">
                   <tr>
                     <th className="px-4 py-3">Fecha</th>
@@ -457,7 +627,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
         <SectionHeader title="Resumen de servicios" />
         {services.length ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
+            <table className="table-operational">
               <thead className="bg-surface-muted text-left text-xs uppercase text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3">Fecha</th>
@@ -492,7 +662,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
           <EmptyState title="Sin servicios en el periodo" />
         )}
       </Section>
-    </div>
+    </>
   );
 }
 

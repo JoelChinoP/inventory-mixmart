@@ -1,5 +1,6 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 
@@ -17,8 +18,15 @@ export function SubmitButton({
   const { pending } = useFormStatus();
 
   return (
-    <button className={className} disabled={pending} type="submit">
-      {pending ? pendingLabel : children}
+    <button aria-busy={pending} className={className} disabled={pending} type="submit">
+      {pending ? (
+        <>
+          <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
+          {pendingLabel}
+        </>
+      ) : (
+        children
+      )}
     </button>
   );
 }

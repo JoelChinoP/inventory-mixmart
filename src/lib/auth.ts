@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 
 import type { UserRole } from "../../prisma/generated/client";
 import prisma from "./prisma";
@@ -195,9 +196,24 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 
-export async function getSession() {
-  return getServerSession(authOptions);
-}
+export const getSession = cache(async () => getServerSession(authOptions));
+
+const getActiveUserById = cache(async (userId: string) =>
+  prisma.user.findFirst({
+    where: {
+      id: userId,
+      isActive: true,
+      deletedAt: null,
+    },
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      role: true,
+    },
+  }),
+);
 
 export async function requireSession(callbackUrl = DEFAULT_AUTHENTICATED_PATH) {
   const session = await getSession();
@@ -216,20 +232,7 @@ export async function requireSession(callbackUrl = DEFAULT_AUTHENTICATED_PATH) {
 
 export async function requireActiveUser(callbackUrl = DEFAULT_AUTHENTICATED_PATH) {
   const session = await requireSession(callbackUrl);
-  const user = await prisma.user.findFirst({
-    where: {
-      id: session.user.id,
-      isActive: true,
-      deletedAt: null,
-    },
-    select: {
-      id: true,
-      email: true,
-      firstName: true,
-      lastName: true,
-      role: true,
-    },
-  });
+  const user = await getActiveUserById(session.user.id);
 
   if (!user) {
     redirect(getSignInPath(callbackUrl));

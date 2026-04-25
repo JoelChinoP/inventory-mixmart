@@ -6,9 +6,11 @@ description: Use when designing, implementing, or reviewing advanced UX/UI for M
 # Mixmart UX/UI Module Design
 
 ## Role
+
 Act as a senior product designer, UX architect, and frontend design-system engineer for Mixmart.
 
 ## Goal
+
 Create an intuitive, beautiful, fast, role-aware internal inventory app for a small/medium store, without turning operational screens into marketing pages.
 
 The interface must help non-technical users act confidently: see what matters, enter data quickly, avoid stock mistakes, and understand system feedback immediately.
@@ -16,6 +18,7 @@ The interface must help non-technical users act confidently: see what matters, e
 When a screen requires server boundaries (mutations, JSON contracts, integrations, exports), pair this skill with `mixmart-api-module-design` to keep a clear split between UX decisions and API/BFF decisions.
 
 ## Inputs
+
 - Current Prisma schema and domain rules.
 - Existing Tailwind tokens in `tailwind.config.js` and `src/app/globals.css`.
 - User roles: `ADMIN` and `WORKER`.
@@ -25,6 +28,7 @@ When a screen requires server boundaries (mutations, JSON contracts, integration
 - API/BFF strategy from `mixmart-api-module-design` when endpoint design is in scope.
 
 ## Outputs
+
 - Role-aware navigation and screen architecture.
 - Module-by-module UX patterns.
 - Page layouts, tables, forms, detail views, empty states, and error states.
@@ -34,6 +38,7 @@ When a screen requires server boundaries (mutations, JSON contracts, integration
 - Implementation-ready UI acceptance checklist.
 
 ## Product Personality
+
 Mixmart should feel:
 
 - clear, calm, and trustworthy
@@ -45,6 +50,7 @@ Mixmart should feel:
 Do not build a landing page for app modules. The first screen after login should be useful immediately.
 
 ## Visual System Rules
+
 - Preserve the existing Tailwind semantic tokens.
 - Use neutral/oat surfaces for most screen structure.
 - Use `primary` for main actions, active navigation, and focus identity.
@@ -58,6 +64,7 @@ Do not build a landing page for app modules. The first screen after login should
 - Use accessible Radix/shadcn-style primitives for dialogs, menus, tabs, popovers, tooltips, selects, and command palettes.
 
 ## Layout System
+
 Use a stable app shell:
 
 - left sidebar on desktop
@@ -75,7 +82,9 @@ Preferred page structure:
 4. Inline feedback: empty, loading, error, success, validation, and destructive confirmation states.
 
 ## Role-Based UX
+
 ### ADMIN
+
 Show:
 
 - dashboard
@@ -92,6 +101,7 @@ Show:
 Admin UI can expose costs, suggested sale prices, margins, reports, user management, activation/deactivation, restore, and sensitive audit context.
 
 ### WORKER
+
 Show:
 
 - dashboard with operational summary only
@@ -104,6 +114,7 @@ Show:
 Hide reports, users, role controls, global configuration, cost-sensitive admin reports, and destructive maintenance actions. Do not rely on hidden UI for security; server authorization remains required.
 
 ## Navigation Rules
+
 - Group daily operations first: Dashboard, Stock, Entries, Outputs, Services.
 - Group catalog management next: Products, Suppliers.
 - Put admin-only areas later: Reports, Users.
@@ -112,7 +123,9 @@ Hide reports, users, role controls, global configuration, cost-sensitive admin r
 - Show a compact low-stock indicator in navigation or dashboard only if it helps action, not as decoration.
 
 ## Module Blueprints
+
 ### Login
+
 Goal: fast, clean access.
 
 Requirements:
@@ -128,6 +141,7 @@ Requirements:
 Use a centered panel or split-free focused layout. Keep form fields large enough for daily use.
 
 ### Dashboard
+
 Goal: answer "What needs attention today?"
 
 Admin widgets:
@@ -154,6 +168,7 @@ Design:
 - include direct links from each widget to the filtered list
 
 ### Products
+
 Goal: manage catalog and pricing without losing stock clarity.
 
 List columns:
@@ -177,6 +192,7 @@ UX:
 - never imply `Product.purchasePrice` is historical truth
 
 ### Suppliers
+
 Goal: quickly find vendor data and purchase history.
 
 List columns:
@@ -198,6 +214,7 @@ Detail view:
 Use tabs for detail sections when space is tight.
 
 ### Stock Entries
+
 Goal: create orders and receive purchases safely.
 
 List columns:
@@ -226,6 +243,7 @@ Receive flow:
 - after receive, show success and link to movements
 
 ### Stock Outputs
+
 Goal: register sales, waste, and internal use without allowing negative stock.
 
 Form:
@@ -244,6 +262,7 @@ UX:
 - show margin hints only for admin if cost data is exposed
 
 ### Stock
+
 Goal: inspect availability fast.
 
 Core views:
@@ -266,6 +285,7 @@ Columns:
 Use dense tables with clear status badges. Avoid chart-first stock screens for MVP.
 
 ### Services
+
 Goal: handle in-house and outsourced service work without confusing stock.
 
 Use tabs:
@@ -293,6 +313,7 @@ Outsourced service form:
 Use timeline/status chips for service status transitions.
 
 ### Reports
+
 Goal: help admin understand operations and money.
 
 Reports should be filter-first:
@@ -323,6 +344,7 @@ UX:
 - make export actions explicit and admin-only
 
 ### Users
+
 Goal: safe admin-only account management.
 
 List columns:
@@ -344,6 +366,7 @@ Rules:
 - inactive users should appear visually muted but still readable
 
 ## Table UX Rules
+
 - Provide search and filters above the table.
 - Keep columns stable; do not let badges or buttons resize rows.
 - Use pagination or server-side filtering for large lists.
@@ -354,6 +377,7 @@ Rules:
 - Keep admin-only columns hidden from workers.
 
 ## Form UX Rules
+
 - Use Zod-backed validation at the server boundary and client form validation where useful.
 - Use clear labels, examples, and inline errors.
 - Keep required fields visually obvious.
@@ -364,6 +388,7 @@ Rules:
 - On success, return users to the useful next place: detail page, filtered list, or another create form.
 
 ## State And Feedback Rules
+
 Every module must handle:
 
 - loading
@@ -378,6 +403,7 @@ Every module must handle:
 For stock mutations, avoid optimistic stock changes unless the UI clearly waits for server confirmation.
 
 ## Responsive Rules
+
 - Mobile must support daily operational tasks, especially stock outputs and service registration.
 - Tables may become card lists on mobile, but preserve key fields and actions.
 - Use sticky bottom submit bars for long forms.
@@ -385,6 +411,7 @@ For stock mutations, avoid optimistic stock changes unless the UI clearly waits 
 - Do not hide critical fields behind hover-only affordances.
 
 ## Accessibility Rules
+
 - Maintain WCAG AA contrast for text and controls.
 - Ensure every input has a label.
 - Use semantic buttons and links.
@@ -394,6 +421,7 @@ For stock mutations, avoid optimistic stock changes unless the UI clearly waits 
 - Confirm destructive actions with accessible dialogs.
 
 ## Performance UX Rules
+
 - Prefer Server Components for initial data.
 - Avoid client-side waterfalls.
 - Do not load full report datasets when summaries or paginated results are enough.
@@ -402,6 +430,7 @@ For stock mutations, avoid optimistic stock changes unless the UI clearly waits 
 - Inventory writes must require live server/database validation.
 
 ## Copywriting Rules
+
 - UI text may be Spanish for end users.
 - Keep labels short and direct.
 - Use verbs on action buttons: Save, Receive, Register sale, Deactivate, Restore.
@@ -409,6 +438,7 @@ For stock mutations, avoid optimistic stock changes unless the UI clearly waits 
 - Explain risky actions in plain language: "This will update stock and cannot be applied twice."
 
 ## Beautiful But Operational Checklist
+
 Before finalizing a screen, verify:
 
 - The main user action is obvious within three seconds.

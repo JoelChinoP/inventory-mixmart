@@ -1,53 +1,115 @@
-type DatabaseEnvName =
-  | "DB_HOST"
-  | "DB_PORT"
-  | "DB_USER"
-  | "DB_PASSWORD"
-  | "DB_NAME"
-  | "DB_SCHEMA";
+const LOCAL_DATABASE_HOSTS = new Set(['localhost', '127.0.0.1', '::1']);
 
-function readRequiredEnv(name: DatabaseEnvName) {
+function getDefaultSchema() {
+  return process.env.DATABASE_SCHEMA ?? 'mixmart';
+}
+
+function readUrlFromEnv(name: 'DATABASE_URL' | 'DIRECT_URL') {
   const value = process.env[name];
 
   if (!value) {
-    throw new Error(`${name} is required to build the database connection URL.`);
+    return null;
   }
 
-  return value;
+  try {
+    return new URL(value);
+  } catch {
+    throw new Error(`${name} is not a valid URL.`);
+  }
 }
 
-function buildDatabaseUrlFromEnv() {
-  const databaseUrl = new URL("postgresql://localhost");
-  databaseUrl.hostname = readRequiredEnv("DB_HOST");
-  databaseUrl.port = readRequiredEnv("DB_PORT");
-  databaseUrl.username = readRequiredEnv("DB_USER");
-  databaseUrl.password = readRequiredEnv("DB_PASSWORD");
-  databaseUrl.pathname = `/${readRequiredEnv("DB_NAME")}`;
-  databaseUrl.searchParams.set("schema", readRequiredEnv("DB_SCHEMA"));
+function isLocalDatabaseHost(hostname: string) {
+  return LOCAL_DATABASE_HOSTS.has(hostname) || hostname.endsWith('.local');
+}
 
-  if (process.env.DB_SSLMODE) {
-    databaseUrl.searchParams.set("sslmode", process.env.DB_SSLMODE);
+function readRequiredDatabaseUrl() {
+  const databaseUrl = readUrlFromEnv('DATABASE_URL');
+
+  if (!databaseUrl) {
+    throw new Error('DATABASE_URL is required.');
   }
 
   return databaseUrl;
 }
 
-export function getDatabaseUrl() {
-  if (process.env.DATABASE_URL) {
-    return process.env.DATABASE_URL;
+function applySharedConnectionDefaults(databaseUrl: URL) {
+  if (!databaseUrl.searchParams.get('schema')) {
+    databaseUrl.searchParams.set('schema', getDefaultSchema());
   }
 
-  return buildDatabaseUrlFromEnv().toString();
+  if (
+    !databaseUrl.searchParams.get('sslmode') &&
+    !isLocalDatabaseHost(databaseUrl.hostname)
+  ) {
+    databaseUrl.searchParams.set(
+      'sslmode',
+      process.env.DB_SSLMODE ?? 'require',
+    );
+  }
+
+  return databaseUrl;
+}
+
+function applyTlsCompatibilityDefaults(databaseUrl: URL) {
+  const sslMode = databaseUrl.searchParams.get('sslmode');
+  const explicitCompat = process.env.DB_USE_LIBPQ_COMPAT;
+  const shouldUseLibpqCompat =
+    explicitCompat === undefined
+      ? process.env.NODE_ENV !== 'production'
+      : explicitCompat === 'true';
+
+  // In local/dev environments, this avoids TLS verification issues caused by
+  // corporate/self-signed certificate chains while keeping production strict by default.
+  if (
+    shouldUseLibpqCompat &&
+    sslMode === 'require' &&
+    !databaseUrl.searchParams.get('uselibpqcompat')
+  ) {
+    databaseUrl.searchParams.set('uselibpqcompat', 'true');
+  }
+
+  return databaseUrl;
+}
+
+function applyRuntimePoolerDefaults(databaseUrl: URL) {
+  if (databaseUrl.hostname.endsWith('pooler.supabase.com')) {
+    if (!databaseUrl.searchParams.get('pgbouncer')) {
+      databaseUrl.searchParams.set('pgbouncer', 'true');
+    }
+
+    if (!databaseUrl.searchParams.get('connection_limit')) {
+      databaseUrl.searchParams.set('connection_limit', '1');
+    }
+  }
+
+  return databaseUrl;
+}
+
+function resolveRuntimeDatabaseUrl() {
+  const databaseUrl = readRequiredDatabaseUrl();
+
+  return applyRuntimePoolerDefaults(
+    applyTlsCompatibilityDefaults(applySharedConnectionDefaults(databaseUrl)),
+  );
+}
+
+function resolveDirectDatabaseUrl() {
+  const databaseUrl = readUrlFromEnv('DIRECT_URL') ?? readRequiredDatabaseUrl();
+
+  return applyTlsCompatibilityDefaults(
+    applySharedConnectionDefaults(databaseUrl),
+  );
+}
+
+export function getDirectDatabaseUrl() {
+  return resolveDirectDatabaseUrl().toString();
 }
 
 export function getDatabaseConnection() {
-  const databaseUrl = process.env.DATABASE_URL
-    ? new URL(process.env.DATABASE_URL)
-    : buildDatabaseUrlFromEnv();
-  const schema =
-    databaseUrl.searchParams.get("schema") ?? process.env.DB_SCHEMA ?? "public";
+  const databaseUrl = resolveRuntimeDatabaseUrl();
+  const schema = databaseUrl.searchParams.get('schema') ?? getDefaultSchema();
 
-  databaseUrl.searchParams.delete("schema");
+  databaseUrl.searchParams.delete('schema');
 
   return {
     connectionString: databaseUrl.toString(),

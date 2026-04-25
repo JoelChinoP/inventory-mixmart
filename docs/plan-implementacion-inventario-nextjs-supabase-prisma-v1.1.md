@@ -32,6 +32,9 @@ Build a solid MVP for Mixmart inventory while respecting the current schema and 
 - Keep all business mutations on the server.
 - Never write inventory directly from browser code.
 - Use Prisma only from server code.
+- Prefer Server Actions as the default BFF surface for internal app workflows.
+- Add Route Handlers only for explicit JSON/API consumers, not as placeholders.
+- Do not create empty `app/api/**/route.ts` files.
 - Validate auth and roles in every server action, route handler, and domain service.
 - Keep database constraints/triggers or transaction-safe server services responsible for critical stock invariants.
 - Separate report queries from transactional write flows.
@@ -341,6 +344,12 @@ Based on the local Next.js docs for this repo version:
 - `GET` Route Handlers are not cached by default unless opted in.
 - Prefer tag-based cache invalidation for mostly-read data.
 - Keep mutation routes dynamic and transaction-safe.
+
+Hybrid decision rule for this project:
+
+- Server Actions: default for internal UI forms and authenticated mutations.
+- Route Handlers: use for integrations, exports, webhooks, or reusable JSON endpoints consumed outside the current page flow.
+- If there is no real API consumer yet, keep the API folder minimal; this is valid and preferred for MVP efficiency.
 
 ## 14. Caching And PWA Posture
 Use caching only where freshness rules are clear:

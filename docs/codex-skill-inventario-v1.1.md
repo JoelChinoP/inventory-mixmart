@@ -225,6 +225,14 @@ Reports are admin-only by default.
 ## 15. Performance Rules
 The app targets Vercel free-tier style constraints, so each endpoint/server action should aim for 1-3 database round trips.
 
+API/BFF optimization policy for this repo:
+
+- Default to Server Actions for internal web app forms and mutations.
+- Use Route Handlers (REST/JSON) only when there is a real consumer: mobile app, third-party integration, webhook, export endpoint, or cross-app reuse.
+- Do not scaffold empty `app/api/**/route.ts` files.
+- When both Server Actions and Route Handlers exist, both must call shared server services and avoid duplicating business logic.
+- For read APIs consumed by the UI, prefer consolidated payloads over many small endpoints to avoid client waterfalls.
+
 Rules:
 
 - Load initial route data in Server Components.
@@ -297,3 +305,4 @@ An implementation is acceptable when it:
 - keeps stock non-negative
 - records immutable stock movements
 - stays within practical endpoint query budgets
+- avoids unused/empty REST endpoints; API routes exist only for explicit use cases

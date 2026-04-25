@@ -13,6 +13,8 @@ Create an intuitive, beautiful, fast, role-aware internal inventory app for a sm
 
 The interface must help non-technical users act confidently: see what matters, enter data quickly, avoid stock mistakes, and understand system feedback immediately.
 
+When a screen requires server boundaries (mutations, JSON contracts, integrations, exports), pair this skill with `mixmart-api-module-design` to keep a clear split between UX decisions and API/BFF decisions.
+
 ## Inputs
 - Current Prisma schema and domain rules.
 - Existing Tailwind tokens in `tailwind.config.js` and `src/app/globals.css`.
@@ -20,6 +22,7 @@ The interface must help non-technical users act confidently: see what matters, e
 - Module requirements: login, dashboard, products, suppliers, stock entries, stock outputs, stock, services, reports, and users.
 - Next.js App Router and Server Component constraints.
 - Vercel-free-tier performance goal: low CPU, low query count, no client waterfalls.
+- API/BFF strategy from `mixmart-api-module-design` when endpoint design is in scope.
 
 ## Outputs
 - Role-aware navigation and screen architecture.

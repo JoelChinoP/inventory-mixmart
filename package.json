@@ -11,7 +11,8 @@
     "db:rules": "node scripts/apply-database-rules.mjs",
     "db:setup": "prisma db push && node scripts/apply-database-rules.mjs && prisma generate",
     "db:seed": "prisma db seed",
-    "test": "tsx --test tests/database.integration.test.ts",
+    "test": "tsx --test tests/auth-rbac.unit.test.ts tests/database.integration.test.ts",
+    "test:auth": "tsx --test tests/auth-rbac.unit.test.ts",
     "test:db": "tsx --test tests/database.integration.test.ts"
   },
   "dependencies": {

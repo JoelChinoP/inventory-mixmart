@@ -20,7 +20,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   const params = await searchParams;
   const callbackUrl = getSafeCallbackUrl(params.callbackUrl);
-  const initialError = params.error ? "Correo o contraseña incorrectos." : undefined;
+  const initialError = params.error
+    ? "No se pudo iniciar sesion. Revisa tus datos e intenta de nuevo."
+    : undefined;
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
@@ -30,10 +32,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             Inventario MixMart
           </p>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Iniciar sesión
+            Iniciar sesion
           </h1>
           <p className="text-sm text-muted-foreground">
-            Accede con tu cuenta asignada por el administrador.
+            Acceso interno para usuarios asignados por el administrador.
           </p>
         </div>
 

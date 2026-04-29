@@ -64,6 +64,7 @@ model User {
   lastName     String    @map("last_name") @db.VarChar(50)
   phone        String?   @db.VarChar(30)
   dateOfBirth  DateTime? @map("date_of_birth") @db.Date
+  avatarUrl    String?   @map("avatar_url") @db.VarChar(300)
   passwordHash String    @map("password_hash") @db.VarChar(255)
   role         UserRole
 

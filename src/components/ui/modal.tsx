@@ -71,7 +71,7 @@ export function FormModal({
         >
           <div
             className={cn(
-              "relative my-auto w-full overflow-hidden rounded-card border border-border bg-surface-elevated shadow-elevated animate-dialog-in",
+              "relative my-auto w-full overflow-hidden rounded-modal border border-border bg-surface-elevated shadow-elevated animate-dialog-in",
               sizeClass[size],
             )}
             onClick={(event) => event.stopPropagation()}
@@ -90,7 +90,7 @@ export function FormModal({
               </div>
               <button
                 aria-label="Cerrar"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground transition hover:bg-surface-muted hover:text-foreground"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground transition hover:bg-surface-muted hover:text-foreground active:scale-[0.95]"
                 onClick={() => setOpen(false)}
                 type="button"
               >

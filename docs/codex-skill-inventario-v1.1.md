@@ -1,10 +1,10 @@
-# Skill - Mixmart Inventory System
+# Skill - El Colorado Inventory System
 Version: 1.1
 Optimized for: Codex, implementation agents, and AI coding assistants
 Target stack: Next.js App Router, NextAuth.js v4, Prisma ORM 7, Supabase Postgres, Tailwind CSS
 
 ## 1. Purpose
-Use this skill when implementing, extending, or auditing the Mixmart inventory system.
+Use this skill when implementing, extending, or auditing the El Colorado inventory system.
 
 The goal is to keep future agents aligned with the real business rules, current database shape, and practical constraints of a small or medium store. Do not reinterpret the business from scratch.
 

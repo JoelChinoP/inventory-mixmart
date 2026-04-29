@@ -137,6 +137,7 @@ export const authOptions: NextAuthOptions = {
           email: true,
           firstName: true,
           lastName: true,
+          avatarUrl: true,
           role: true,
         },
       });
@@ -152,6 +153,7 @@ export const authOptions: NextAuthOptions = {
 
       user.id = dbUser.id;
       user.email = dbUser.email;
+      user.image = dbUser.avatarUrl;
       user.name = `${dbUser.firstName} ${dbUser.lastName}`;
       user.role = dbUser.role;
 
@@ -210,7 +212,13 @@ const getActiveUserById = cache(async (userId: string) =>
       email: true,
       firstName: true,
       lastName: true,
+      username: true,
+      phone: true,
+      dni: true,
+      avatarUrl: true,
       role: true,
+      lastLoginAt: true,
+      createdAt: true,
     },
   }),
 );

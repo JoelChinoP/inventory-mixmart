@@ -14,6 +14,7 @@ export const protectedPaths = [
   "/suppliers",
   "/reports",
   "/users",
+  "/profile",
 ] as const;
 
 export const adminOnlyPaths = ["/reports", "/users"] as const;

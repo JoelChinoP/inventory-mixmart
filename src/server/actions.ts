@@ -15,9 +15,11 @@ import {
   createSupplierRecord,
   createUserAccount,
   entrySchema,
+  hasProfileIdentityConflict,
   idFromForm,
   isInsufficientStockError,
   outputSchema,
+  ownProfileUpdateSchema,
   parseForm,
   parseServiceTypeSupplies,
   parseStockEntryItems,
@@ -40,10 +42,13 @@ import {
   supplierSchema,
   supplierUpdateSchema,
   updateProductRecord,
+  updateOwnProfile as updateOwnProfileRecord,
   updateSupplierRecord,
   updateUserAccount,
+  AvatarUploadError,
   userCreateSchema,
   userUpdateSchema,
+  saveProfileAvatar,
 } from "@/services";
 
 const adminOnly = [ADMIN_ROLE];
@@ -273,6 +278,50 @@ export async function setUserActive(formData: FormData) {
   }
 
   revalidatePath("/users");
+}
+
+export async function updateOwnProfile(formData: FormData) {
+  const user = await requireActiveUser("/profile");
+  const data = parseForm(ownProfileUpdateSchema, formData);
+  const avatar = formData.get("avatar");
+  const removeAvatar = stringValue(formData, "removeAvatar") === "true";
+  let avatarUrl: string | undefined;
+
+  if (
+    await hasProfileIdentityConflict({
+      id: user.id,
+      email: data.email,
+      dni: data.dni,
+    })
+  ) {
+    redirect("/profile?error=duplicate");
+  }
+
+  try {
+    if (avatar instanceof File && avatar.size > 0) {
+      avatarUrl = await saveProfileAvatar({
+        userId: user.id,
+        file: avatar,
+        previousAvatarUrl: user.avatarUrl,
+      });
+    }
+  } catch (error) {
+    if (error instanceof AvatarUploadError) {
+      redirect(`/profile?error=${error.code}`);
+    }
+
+    throw error;
+  }
+
+  await updateOwnProfileRecord({
+    id: user.id,
+    data,
+    avatarUrl,
+    removeAvatar: removeAvatar && !avatarUrl,
+  });
+  revalidatePath("/profile");
+  revalidatePath("/dashboard");
+  redirect("/profile?success=profile");
 }
 
 export async function requireCurrentUser() {

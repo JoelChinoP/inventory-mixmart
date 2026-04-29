@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { CircleHelp, Plus } from "lucide-react";
+import { CircleHelp, Plus, UserRound } from "lucide-react";
 
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import {
@@ -14,6 +14,7 @@ type AppShellUser = {
   firstName: string;
   lastName: string;
   email: string | null;
+  avatarUrl: string | null;
   role: UserRole;
 };
 
@@ -28,28 +29,35 @@ export function AppShell({ children, user }: AppShellProps) {
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-80 border-r border-border bg-surface-muted text-foreground lg:flex lg:flex-col">
         <div className="px-10 pb-8 pt-10">
           <p className="text-3xl font-semibold tracking-tight text-primary">
-            MixMart
+            El Colorado
           </p>
           <p className="mt-2 text-lg text-muted-foreground">
-            Inventory Management
+            Libreria y Bazar
           </p>
         </div>
 
         <div className="px-5">
           <Link
-            className="btn btn-primary h-[60px] w-full justify-center rounded-card text-lg shadow-soft"
+            className="btn btn-primary h-14 w-full justify-center rounded-pill px-6 text-[17px]"
             href="/entries"
           >
             <Plus aria-hidden="true" className="h-6 w-6" />
-            + Nuevo Registro
+            Nuevo registro
           </Link>
         </div>
 
         <AppNavigation role={user.role} />
 
         <div className="mt-auto border-t border-border px-5 py-8">
-          <button
+          <Link
             className="flex h-12 w-full items-center gap-4 rounded-card px-6 text-base font-medium text-muted-foreground transition hover:bg-primary-50 hover:text-primary"
+            href="/profile"
+          >
+            <UserRound aria-hidden="true" className="h-6 w-6" />
+            Mi perfil
+          </Link>
+          <button
+            className="mt-3 flex h-12 w-full items-center gap-4 rounded-card px-6 text-base font-medium text-muted-foreground transition hover:bg-primary-50 hover:text-primary"
             type="button"
           >
             <CircleHelp aria-hidden="true" className="h-6 w-6" />

@@ -68,9 +68,9 @@ export function OutputForm({ products }: OutputFormProps) {
               return (
                 <label
                   className={cn(
-                    "flex cursor-pointer items-center gap-3 rounded-card border px-3 py-2.5 text-sm transition",
+                    "flex cursor-pointer items-center gap-3 rounded-control border px-3 py-2.5 text-sm transition active:scale-[0.95]",
                     active
-                      ? "border-primary-300 bg-primary-50 text-primary-800 shadow-sm"
+                      ? "border-primary-300 bg-primary-50 text-primary-800"
                       : "border-border bg-surface hover:border-primary-200 hover:bg-primary-50/60",
                   )}
                   key={option.value}
@@ -85,7 +85,7 @@ export function OutputForm({ products }: OutputFormProps) {
                   />
                   <span
                     className={cn(
-                      "flex h-9 w-9 shrink-0 items-center justify-center rounded-card border",
+                      "flex h-9 w-9 shrink-0 items-center justify-center rounded-control border",
                       active
                         ? "border-primary-200 bg-primary text-primary-foreground"
                         : "border-border bg-surface-muted text-muted-foreground",
@@ -206,7 +206,7 @@ export function OutputForm({ products }: OutputFormProps) {
         <p className="text-xs text-muted-foreground">
           La salida actualizara el stock cuando el servidor confirme la operacion.
         </p>
-        <SubmitButton className="sm:w-auto">
+        <SubmitButton className="btn btn-primary sm:w-auto">
           <Plus aria-hidden="true" className="h-4 w-4" />
           Registrar salida
         </SubmitButton>

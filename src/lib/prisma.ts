@@ -3,6 +3,8 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { inventorySoftDeleteExtension } from "../../prisma/extensions/soft-delete.extension";
 import { getDatabaseConnection } from "./database-url";
 
+const PRISMA_CLIENT_SCHEMA_VERSION = "20260429103000_add_user_avatar";
+
 const prismaClientSingleton = () => {
   const database = getDatabaseConnection();
   const adapter = new PrismaPg(
@@ -18,14 +20,19 @@ const prismaClientSingleton = () => {
   return {
     prisma: prismaRaw.$extends(inventorySoftDeleteExtension),
     prismaRaw,
+    schemaVersion: PRISMA_CLIENT_SCHEMA_VERSION,
   };
 };
 
 declare const globalThis: {
-  prismaGlobal: ReturnType<typeof prismaClientSingleton>;
+  prismaGlobal?: ReturnType<typeof prismaClientSingleton>;
 } & typeof global;
 
-const prismaClients = globalThis.prismaGlobal ?? prismaClientSingleton();
+const cachedPrismaClients = globalThis.prismaGlobal;
+const prismaClients =
+  cachedPrismaClients?.schemaVersion === PRISMA_CLIENT_SCHEMA_VERSION
+    ? cachedPrismaClients
+    : prismaClientSingleton();
 const prisma = prismaClients.prisma;
 
 export default prisma;

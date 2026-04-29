@@ -19,6 +19,7 @@ test("ADMIN can access all protected modules", () => {
     "/suppliers",
     "/reports",
     "/users",
+    "/profile",
   ]) {
     assert.equal(canAccessPath("ADMIN", path), true);
   }
@@ -38,6 +39,7 @@ test("WORKER is blocked from admin-only modules", () => {
   assert.equal(canAccessPath("WORKER", "/suppliers"), true);
   assert.equal(canAccessPath("WORKER", "/reports"), false);
   assert.equal(canAccessPath("WORKER", "/users"), false);
+  assert.equal(canAccessPath("WORKER", "/profile"), true);
   assert.equal(canManageCatalog("WORKER"), false);
   assert.equal(canManageUsers("WORKER"), false);
   assert.equal(canViewReports("WORKER"), false);

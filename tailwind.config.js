@@ -127,7 +127,10 @@ const config = {
       },
       borderRadius: {
         card: "var(--radius-card)",
+        input: "var(--radius-input)",
         control: "var(--radius-control)",
+        modal: "var(--radius-modal)",
+        pill: "var(--radius-pill)",
       },
       boxShadow: {
         soft: "var(--shadow-soft)",

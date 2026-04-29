@@ -1,10 +1,10 @@
-# Implementation Plan - Mixmart Inventory System
+# Implementation Plan - El Colorado Inventory System
 Version: 1.1
 Stack: Next.js App Router, NextAuth.js v4, Prisma ORM 7, Supabase Postgres, Tailwind CSS
 Orientation: executable, server-first, cost-aware, Vercel-free-tier friendly
 
 ## 1. Objective
-Build a solid MVP for Mixmart inventory while respecting the current schema and business decisions:
+Build a solid MVP for El Colorado inventory while respecting the current schema and business decisions:
 
 - no snack lots, expiration dates, FEFO, or expiration alerts
 - purchase costs may vary across entries of the same product

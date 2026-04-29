@@ -17,5 +17,6 @@ export const config = {
     "/suppliers/:path*",
     "/reports/:path*",
     "/users/:path*",
+    "/profile/:path*",
   ],
 };

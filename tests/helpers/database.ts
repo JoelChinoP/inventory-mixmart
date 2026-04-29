@@ -8,7 +8,7 @@ import { PrismaClient } from "../../prisma/generated/client";
 const { Client } = pg;
 
 const DEFAULT_TEST_DATABASE_URL =
-  "postgresql://myuser:mypassword@localhost:5420/mydb?schema=public";
+  "postgresql://myuser:mypassword@127.0.0.1:5420/mydb?schema=public";
 
 const TABLES = [
   "stock_movements",

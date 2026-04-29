@@ -407,7 +407,7 @@ function MetricCard({
   }[tone];
 
   return (
-    <div className="rounded-card border border-border bg-surface-elevated p-5 shadow-soft transition hover:shadow-elevated">
+    <div className="rounded-card border border-border bg-surface-elevated p-5 transition hover:border-primary-200">
       <div className="flex items-start justify-between gap-3">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           {label}
@@ -507,7 +507,7 @@ function ShortcutCard({
 }) {
   return (
     <Link
-      className="group flex flex-col gap-2 rounded-card border border-border bg-surface-elevated p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-elevated"
+      className="group flex flex-col gap-2 rounded-card border border-border bg-surface-elevated p-5 transition hover:border-primary-200 hover:bg-primary-50/35"
       href={href}
     >
       <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-50 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
@@ -518,4 +518,3 @@ function ShortcutCard({
     </Link>
   );
 }
-

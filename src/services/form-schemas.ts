@@ -102,6 +102,14 @@ export const userUpdateSchema = z.object({
   password: z.string().optional(),
 });
 
+export const ownProfileUpdateSchema = z.object({
+  firstName: z.string().trim().min(2),
+  lastName: z.string().trim().min(2),
+  email: nullableText,
+  phone: nullableText,
+  dni: nullableText,
+});
+
 const stockEntryItemSchema = z.object({
   productId: z.string().uuid(),
   quantity: positiveDecimal,
@@ -134,6 +142,7 @@ export type ServiceTypeSupplyInput = z.infer<typeof serviceTypeSupplySchema>;
 export type ServiceRecordInput = z.infer<typeof serviceRecordSchema>;
 export type UserCreateInput = z.infer<typeof userCreateSchema>;
 export type UserUpdateInput = z.infer<typeof userUpdateSchema>;
+export type OwnProfileUpdateInput = z.infer<typeof ownProfileUpdateSchema>;
 
 export function stringValue(formData: FormData, key: string) {
   return String(formData.get(key) ?? "");

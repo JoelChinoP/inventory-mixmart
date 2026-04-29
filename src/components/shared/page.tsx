@@ -139,14 +139,14 @@ export function ProductCategoryBadge({
   return (
     <span
       className={cn(
-        "inline-flex min-h-8 items-center gap-2 rounded-card border px-2.5 py-1 text-xs font-semibold leading-none",
+        "inline-flex min-h-8 items-center gap-2 rounded-pill border px-2.5 py-1 text-xs font-semibold leading-none",
         config.className,
         className,
       )}
     >
       <span
         className={cn(
-          "flex h-5 w-5 shrink-0 items-center justify-center rounded-control",
+          "flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
           config.iconClassName,
         )}
       >

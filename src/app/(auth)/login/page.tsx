@@ -1,10 +1,10 @@
-import { getServerSession } from "next-auth/next";
-import Image from "next/image";
-import { Store } from "lucide-react";
-import { redirect } from "next/navigation";
+import { getServerSession } from 'next-auth/next';
+import Image from 'next/image';
+import { Store } from 'lucide-react';
+import { redirect } from 'next/navigation';
 
-import { LoginForm } from "@/components/auth/login-form";
-import { authOptions, getSafeCallbackUrl } from "@/lib/auth";
+import { LoginForm } from '@/components/auth/login-form';
+import { authOptions, getSafeCallbackUrl } from '@/lib/auth';
 
 type LoginPageProps = {
   searchParams: Promise<{
@@ -17,13 +17,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const session = await getServerSession(authOptions);
 
   if (session) {
-    redirect("/dashboard");
+    redirect('/dashboard');
   }
 
   const params = await searchParams;
   const callbackUrl = getSafeCallbackUrl(params.callbackUrl);
   const initialError = params.error
-    ? "No se pudo iniciar sesion. Revisa tus datos e intenta de nuevo."
+    ? 'No se pudo iniciar sesion. Revisa tus datos e intenta de nuevo.'
     : undefined;
 
   return (
@@ -36,10 +36,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             </span>
             <div>
               <p className="text-lg font-semibold tracking-tight text-foreground">
-                EL COLORADO
+                Inventario
               </p>
               <p className="text-xs font-medium text-muted-foreground">
-                Acceso interno de inventario
+                Libreria y Bazar
               </p>
             </div>
           </div>
@@ -65,9 +65,11 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 </span>
                 <div>
                   <p className="text-base font-semibold text-foreground">
-                    EL COLORADO
+                    El Colorado
                   </p>
-                  <p className="text-xs text-muted-foreground">Inventario interno</p>
+                  <p className="text-xs text-muted-foreground">
+                    Inventario interno
+                  </p>
                 </div>
               </div>
               <Image
@@ -82,7 +84,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
             <div className="mb-7 space-y-3">
               <p className="badge border-success-border bg-success-surface text-success">
-                Inventario EL COLORADO
+                Inventario librería/bazar
               </p>
               <div className="space-y-2">
                 <h1 className="text-3xl font-semibold tracking-tight text-foreground">

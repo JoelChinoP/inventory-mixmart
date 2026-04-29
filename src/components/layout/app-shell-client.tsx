@@ -11,6 +11,7 @@ import {
   Truck,
   Users,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -22,6 +23,7 @@ type AppTopBarUser = {
   firstName: string;
   lastName: string;
   email: string | null;
+  avatarUrl: string | null;
   role: UserRole;
 };
 
@@ -80,7 +82,7 @@ export function AppNavigation({ role }: { role: UserRole }) {
             className={cn(
               "flex min-h-[60px] items-center gap-4 rounded-card px-6 text-lg font-medium transition duration-150 ease-out",
               active
-                ? "bg-primary-100 text-primary shadow-sm"
+                ? "bg-primary-100 text-primary"
                 : "text-muted-foreground hover:bg-primary-50 hover:text-primary",
             )}
             href={item.href}
@@ -100,7 +102,10 @@ export function AppTopBar({ user }: { user: AppTopBarUser }) {
   const pathname = usePathname();
   const visibleItems = getVisibleGroups(user.role).flatMap((group) => group.items);
   const currentModule =
-    visibleItems.find((item) => isActive(pathname, item.href))?.label ?? "MixMart";
+    pathname.startsWith("/profile")
+      ? "Mi perfil"
+      : visibleItems.find((item) => isActive(pathname, item.href))?.label ??
+        "El Colorado";
   const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
 
   return (
@@ -112,12 +117,33 @@ export function AppTopBar({ user }: { user: AppTopBarUser }) {
           </h1>
         </div>
         <div className="flex shrink-0 items-center gap-3">
-          <span
+          <Link
             aria-label={`${user.firstName} ${user.lastName}`}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground shadow-soft"
+            className="group flex items-center gap-3 rounded-pill border border-border bg-surface px-2 py-1.5 transition hover:border-primary-200 hover:bg-primary-50"
+            href="/profile"
           >
-            {initials}
-          </span>
+            <span className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+              {user.avatarUrl ? (
+                <Image
+                  alt=""
+                  className="object-cover"
+                  fill
+                  sizes="40px"
+                  src={user.avatarUrl}
+                />
+              ) : (
+                initials
+              )}
+            </span>
+            <span className="hidden pr-2 text-left sm:block">
+              <span className="block text-sm font-semibold leading-tight text-foreground">
+                {user.firstName}
+              </span>
+              <span className="block text-xs leading-tight text-muted-foreground">
+                Mi perfil
+              </span>
+            </span>
+          </Link>
         </div>
       </div>
     </header>
@@ -129,7 +155,7 @@ export function MobileNavigation({ role }: { role: UserRole }) {
   const visibleItems = getVisibleGroups(role).flatMap((group) => group.items);
 
   return (
-    <nav className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-5 rounded-card border border-border bg-surface/98 shadow-soft backdrop-blur lg:hidden">
+    <nav className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-5 rounded-card border border-border bg-surface/98 backdrop-blur lg:hidden">
       {visibleItems.slice(0, 5).map((item) => {
         const Icon = item.icon;
         const active = isActive(pathname, item.href);

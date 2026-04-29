@@ -2,124 +2,136 @@
 @config "../../tailwind.config.js";
 
 @theme {
-  --font-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --font-sans: var(--font-geist-sans), "Inter", Arial, Helvetica, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
     Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  --color-oat-50: #fdfaf3;
-  --color-oat-100: #f8f1e2;
-  --color-oat-200: #f0e4cb;
-  --color-oat-300: #e3d2ac;
-  --color-oat-400: #d2bb86;
-  --color-oat-500: #b89c63;
-  --color-oat-600: #94794a;
-  --color-oat-700: #6f593a;
-  --color-oat-800: #4a3b2a;
-  --color-oat-900: #2a2118;
-  --color-oat-950: #181208;
+  /* Warm parchment scale (canvas) */
+  --color-oat-50: #faf6f2;
+  --color-oat-100: #f5efeb;
+  --color-oat-200: #ede6e0;
+  --color-oat-300: #ddd2c7;
+  --color-oat-400: #c5b4a4;
+  --color-oat-500: #a8927d;
+  --color-oat-600: #8a735e;
+  --color-oat-700: #6a5645;
+  --color-oat-800: #463729;
+  --color-oat-900: #2a2018;
+  --color-oat-950: #18110b;
 
-  --color-primary-50: #eef1ff;
-  --color-primary-100: #dde3ff;
-  --color-primary-200: #c1c9ff;
-  --color-primary-300: #9ba5fb;
-  --color-primary-400: #7b80f4;
-  --color-primary-500: #5e5ee8;
-  --color-primary-600: #4a44d7;
-  --color-primary-700: #3d36b4;
-  --color-primary-800: #322e91;
-  --color-primary-900: #2a2873;
-  --color-primary-950: #1b1844;
+  /* Brand purple — the only clickable color */
+  --color-primary-50: #f4f1f6;
+  --color-primary-100: #e8e4ed;
+  --color-primary-200: #d2c9da;
+  --color-primary-300: #b6a8c2;
+  --color-primary-400: #9686a4;
+  --color-primary-500: #7a6a8a;
+  --color-primary-600: #6c5b7b;
+  --color-primary-700: #5a4a68;
+  --color-primary-800: #4f3f5c;
+  --color-primary-900: #3e3148;
+  --color-primary-950: #231c2a;
 
-  --color-secondary-50: #fff5f0;
-  --color-secondary-100: #ffe6db;
-  --color-secondary-200: #ffc8b1;
-  --color-secondary-300: #ffa37c;
-  --color-secondary-400: #ff7a48;
-  --color-secondary-500: #fb5a25;
-  --color-secondary-600: #e8421a;
-  --color-secondary-700: #bf3315;
-  --color-secondary-800: #962b16;
-  --color-secondary-900: #7a2616;
-  --color-secondary-950: #420f08;
+  /* Attention orange — warning + danger unified */
+  --color-secondary-50: #fef3eb;
+  --color-secondary-100: #fce0cc;
+  --color-secondary-200: #fac196;
+  --color-secondary-300: #f89d60;
+  --color-secondary-400: #f57f39;
+  --color-secondary-500: #f3722c;
+  --color-secondary-600: #d85a1a;
+  --color-secondary-700: #b14315;
+  --color-secondary-800: #883014;
+  --color-secondary-900: #6b2611;
+  --color-secondary-950: #3d1208;
 
-  --color-accent-50: #ecfdf5;
-  --color-accent-100: #d1fae5;
-  --color-accent-200: #a7f3d0;
-  --color-accent-300: #6ee7b7;
-  --color-accent-400: #34d399;
-  --color-accent-500: #10b981;
-  --color-accent-600: #059669;
-  --color-accent-700: #047857;
-  --color-accent-800: #065f46;
-  --color-accent-900: #064e3b;
-  --color-accent-950: #022c22;
+  /* Positive lime green — entries, income, healthy stock */
+  --color-accent-50: #f4fae3;
+  --color-accent-100: #e5f4c0;
+  --color-accent-200: #d2ee96;
+  --color-accent-300: #bce368;
+  --color-accent-400: #a5d448;
+  --color-accent-500: #9bcb3c;
+  --color-accent-600: #7aad2b;
+  --color-accent-700: #5e8821;
+  --color-accent-800: #4a6a1a;
+  --color-accent-900: #385014;
+  --color-accent-950: #1f2d08;
 
-  --color-primary: #4a44d7;
+  /* Brand mappings */
+  --color-primary: #6c5b7b;
   --color-primary-foreground: #ffffff;
-  --color-primary-hover: #3d36b4;
-  --color-primary-active: #322e91;
-  --color-primary-disabled: #c1c9ff;
+  --color-primary-hover: #5a4a68;
+  --color-primary-active: #4f3f5c;
+  --color-primary-disabled: #d2c9da;
 
-  --color-secondary: #fb5a25;
+  --color-secondary: #f3722c;
   --color-secondary-foreground: #ffffff;
-  --color-secondary-hover: #e8421a;
-  --color-secondary-active: #bf3315;
-  --color-secondary-disabled: #ffc8b1;
+  --color-secondary-hover: #d85a1a;
+  --color-secondary-active: #b14315;
+  --color-secondary-disabled: #fac196;
 
-  --color-accent: #10b981;
-  --color-accent-foreground: #ffffff;
-  --color-accent-hover: #059669;
-  --color-accent-active: #047857;
-  --color-accent-disabled: #a7f3d0;
+  --color-accent: #9bcb3c;
+  --color-accent-foreground: #1c1b1f;
+  --color-accent-hover: #7aad2b;
+  --color-accent-active: #5e8821;
+  --color-accent-disabled: #d2ee96;
 
-  --color-background: #fbf7ef;
-  --color-foreground: #1a1611;
+  /* Surfaces */
+  --color-background: #f5efeb;
+  --color-foreground: #1c1b1f;
   --color-surface: #ffffff;
-  --color-surface-muted: #f4ecdb;
+  --color-surface-muted: #ede6e0;
   --color-surface-elevated: #ffffff;
-  --color-surface-sunken: #efe5d0;
+  --color-surface-sunken: #ddd2c7;
   --color-card: #ffffff;
-  --color-card-foreground: #1a1611;
-  --color-muted: #f4ecdb;
-  --color-muted-foreground: #6f593a;
-  --color-border: #e5d8b8;
-  --color-input: #e5d8b8;
-  --color-ring: #4a44d7;
-  --color-focus: #dde3ff;
-  --color-disabled: #f4ecdb;
-  --color-disabled-foreground: #94794a;
+  --color-card-foreground: #1c1b1f;
+  --color-muted: #ede6e0;
+  --color-muted-foreground: #5b5763;
+  --color-border: #e3dad0;
+  --color-input: #d6c9bc;
+  --color-ring: #7e6a8e;
+  --color-focus: #e8e4ed;
+  --color-disabled: #ede6e0;
+  --color-disabled-foreground: #908a96;
 
-  --color-success: #059669;
-  --color-success-foreground: #ffffff;
-  --color-success-surface: #ecfdf5;
-  --color-success-border: #6ee7b7;
+  /* Semantic — positive (success) */
+  --color-success: #7aad2b;
+  --color-success-foreground: #1c1b1f;
+  --color-success-surface: #f4fae3;
+  --color-success-border: #bce368;
 
-  --color-warning: #d97706;
+  /* Semantic — attention (warning) */
+  --color-warning: #d85a1a;
   --color-warning-foreground: #ffffff;
-  --color-warning-surface: #fffbeb;
-  --color-warning-border: #fcd34d;
+  --color-warning-surface: #fef3eb;
+  --color-warning-border: #f89d60;
 
-  --color-error: #dc2626;
+  /* Severity unified — error reuses attention vivid */
+  --color-error: #d85a1a;
   --color-error-foreground: #ffffff;
-  --color-error-surface: #fef2f2;
-  --color-error-border: #fca5a5;
+  --color-error-surface: #fef3eb;
+  --color-error-border: #f89d60;
 
-  --color-info: #0284c7;
+  /* Info — neutral brand-soft tone */
+  --color-info: #6c5b7b;
   --color-info-foreground: #ffffff;
-  --color-info-surface: #f0f9ff;
-  --color-info-border: #7dd3fc;
+  --color-info-surface: #f4f1f6;
+  --color-info-border: #d2c9da;
 
-  --color-ink: #14110b;
-  --color-ink-soft: #1f1a13;
-  --color-ink-foreground: #f8f1e2;
-  --color-ink-muted: #94794a;
+  /* Dark tiles for hero financial card */
+  --color-ink: #1f1b25;
+  --color-ink-soft: #15121a;
+  --color-ink-foreground: #ffffff;
+  --color-ink-muted: rgba(255, 255, 255, 0.64);
 
-  --radius-card: 0.75rem;
-  --radius-control: 0.5rem;
-  --shadow-soft: 0 1px 2px rgb(26 22 17 / 5%),
-    0 8px 24px rgb(26 22 17 / 6%);
-  --shadow-elevated: 0 12px 40px rgb(26 22 17 / 12%);
-  --shadow-focus: 0 0 0 4px rgb(74 68 215 / 18%);
+  /* Six radii only — 0 / 8 / 12 / 18 / 24 / 9999 */
+  --radius-card: 18px;
+  --radius-control: 12px;
+  --shadow-soft: 0 1px 2px rgb(28 27 31 / 4%),
+    0 8px 24px rgb(28 27 31 / 6%);
+  --shadow-elevated: 0 8px 32px -8px rgb(28 27 31 / 18%);
+  --shadow-focus: 0 0 0 4px rgb(126 106 142 / 22%);
 }
 
 @layer base {
@@ -138,12 +150,14 @@
     background: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-feature-settings: "ss03", "cv11";
+    font-variant-numeric: tabular-nums;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
   }
 
   ::selection {
-    background: rgb(110 231 183 / 45%);
+    background: rgb(155 203 60 / 35%);
     color: var(--color-foreground);
   }
 
@@ -180,7 +194,7 @@
   }
 
   .btn-soft {
-    @apply bg-surface-muted text-foreground hover:bg-oat-200 disabled:bg-disabled disabled:text-disabled-foreground;
+    @apply bg-surface-muted text-foreground hover:bg-oat-300 disabled:bg-disabled disabled:text-disabled-foreground;
   }
 
   .card {
@@ -188,7 +202,7 @@
   }
 
   .card-ink {
-    @apply rounded-card text-ink-foreground shadow-soft;
+    @apply rounded-card text-ink-foreground shadow-elevated;
     background: linear-gradient(135deg, var(--color-ink) 0%, var(--color-ink-soft) 100%);
   }
 

@@ -1,64 +1,64 @@
 import Link from "next/link";
 import {
   AlertTriangle,
+  ArrowDownLeft,
+  ArrowUpRight,
   BarChart3,
-  BookOpen,
   Boxes,
-  CheckCircle2,
-  ChevronRight,
-  ClipboardList,
   PackagePlus,
-  ReceiptText,
-  Send,
-  Settings2,
-  WalletCards,
 } from "lucide-react";
 import { Suspense, type ReactNode } from "react";
 
-import { DashboardContentSkeleton, StatusBadge } from "@/components/shared";
+import { RangeSelector } from "@/components/dashboard/range-selector";
+import { DashboardContentSkeleton } from "@/components/shared";
 import {
   decimalToNumber,
   formatCurrency,
-  formatDate,
-  formatDecimal,
   movementTypeLabels,
 } from "@/lib/format";
+import { formatRelativeTime, getRange } from "@/lib/date-range";
 import { requireActiveUser } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 
-function startOfToday() {
-  const date = new Date();
-  date.setHours(0, 0, 0, 0);
-  return date;
-}
+type DashboardPageProps = {
+  searchParams: Promise<{ range?: string }>;
+};
 
-export default function DashboardPage() {
+export default function DashboardPage({ searchParams }: DashboardPageProps) {
   return (
     <Suspense fallback={<DashboardContentSkeleton />}>
-      <DashboardContent />
+      <DashboardContent searchParams={searchParams} />
     </Suspense>
   );
 }
 
-async function DashboardContent() {
-  const user = await requireActiveUser("/dashboard");
-  const today = startOfToday();
+async function DashboardContent({ searchParams }: DashboardPageProps) {
+  await requireActiveUser("/dashboard");
+  const params = await searchParams;
+  const range = getRange(params.range);
+
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todayEnd = new Date();
+  todayEnd.setHours(23, 59, 59, 999);
 
   const [
     products,
-    outOfStockCount,
+    activeProductsCount,
+    categoryGroups,
     entriesToday,
     outputsToday,
-    servicesToday,
+    saleItemsRange,
+    saleItemsPrevious,
     recentMovements,
-    saleItemsToday,
   ] = await Promise.all([
     prisma.product.findMany({
       where: { isActive: true },
       select: {
         id: true,
         name: true,
+        sku: true,
         currentStock: true,
         minimumStock: true,
         purchasePrice: true,
@@ -66,312 +66,430 @@ async function DashboardContent() {
       orderBy: { name: "asc" },
       take: 500,
     }),
-    prisma.product.count({ where: { currentStock: 0, isActive: true } }),
-    prisma.stockEntry.count({ where: { createdAt: { gte: today } } }),
-    prisma.stockOutput.count({ where: { occurredAt: { gte: today } } }),
-    prisma.serviceRecord.count({ where: { serviceDate: { gte: today } } }),
-    prisma.stockMovement.findMany({
-      include: {
-        product: { select: { name: true, unitName: true } },
-        performedBy: { select: { firstName: true, lastName: true } },
+    prisma.product.count({ where: { isActive: true } }),
+    prisma.product.groupBy({
+      by: ["category"],
+      where: { isActive: true },
+    }),
+    prisma.stockEntry.count({ where: { createdAt: { gte: todayStart, lte: todayEnd } } }),
+    prisma.stockOutput.count({ where: { occurredAt: { gte: todayStart, lte: todayEnd } } }),
+    prisma.stockOutputItem.findMany({
+      where: {
+        stockOutput: {
+          reason: "SALE",
+          occurredAt: { gte: range.start, lte: range.end },
+        },
       },
-      orderBy: { occurredAt: "desc" },
-      take: 5,
+      select: { quantity: true, unitCost: true, unitSalePrice: true },
     }),
     prisma.stockOutputItem.findMany({
       where: {
         stockOutput: {
           reason: "SALE",
-          occurredAt: { gte: today },
+          occurredAt: { gte: range.previousStart, lte: range.previousEnd },
         },
       },
-      select: {
-        quantity: true,
-        unitCost: true,
-        unitSalePrice: true,
+      select: { quantity: true, unitCost: true, unitSalePrice: true },
+    }),
+    prisma.stockMovement.findMany({
+      include: {
+        product: { select: { name: true, unitName: true, sku: true } },
       },
+      orderBy: { occurredAt: "desc" },
+      take: 5,
     }),
   ]);
 
-  const lowStockProducts = products.filter(
-    (product) =>
-      decimalToNumber(product.currentStock) <= decimalToNumber(product.minimumStock),
+  const lowStockProducts = products.filter((product) => {
+    const stock = decimalToNumber(product.currentStock);
+    const minimum = decimalToNumber(product.minimumStock);
+    return stock <= minimum;
+  });
+  const outOfStockProducts = lowStockProducts.filter(
+    (product) => decimalToNumber(product.currentStock) <= 0,
   );
-  const inventoryValue = products.reduce(
+  const lowStockOnly = lowStockProducts.filter(
+    (product) => decimalToNumber(product.currentStock) > 0,
+  );
+  const inventoryCost = products.reduce(
     (sum, product) =>
       sum +
       decimalToNumber(product.currentStock) * decimalToNumber(product.purchasePrice),
     0,
   );
-  const salesRevenue = saleItemsToday.reduce(
+  const revenue = saleItemsRange.reduce(
     (sum, item) =>
       sum + decimalToNumber(item.quantity) * decimalToNumber(item.unitSalePrice),
     0,
   );
-  const salesCost = saleItemsToday.reduce(
+  const cogs = saleItemsRange.reduce(
     (sum, item) =>
       sum + decimalToNumber(item.quantity) * decimalToNumber(item.unitCost),
     0,
   );
+  const previousRevenue = saleItemsPrevious.reduce(
+    (sum, item) =>
+      sum + decimalToNumber(item.quantity) * decimalToNumber(item.unitSalePrice),
+    0,
+  );
+  const grossProfit = revenue - cogs;
+  const margin = revenue > 0 ? (grossProfit / revenue) * 100 : 0;
+  const revenueChange =
+    previousRevenue > 0
+      ? ((revenue - previousRevenue) / previousRevenue) * 100
+      : revenue > 0
+        ? 100
+        : 0;
+
+  const attentionList = [
+    ...outOfStockProducts.map((product) => ({ product, status: "out" as const })),
+    ...lowStockOnly.map((product) => ({ product, status: "low" as const })),
+  ].slice(0, 4);
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <span className="inline-flex w-fit items-center gap-2 rounded-full border border-secondary-300 bg-secondary-50 px-4 py-1.5 text-sm font-medium text-success">
-          <span className="h-2.5 w-2.5 rounded-full bg-success" />
-          {user.role === "ADMIN" ? "Admin" : "Usuario"} Online
-        </span>
-        <div className="flex flex-wrap gap-4">
-          <Link className="btn btn-primary h-14 rounded-card px-8 text-base" href="/entries">
-            <PackagePlus aria-hidden="true" className="h-6 w-6" />
-            Entrada
-          </Link>
-          <Link
-            className="btn h-14 rounded-card bg-success px-8 text-base text-success-foreground hover:bg-secondary-700"
-            href="/outputs"
-          >
-            <Send aria-hidden="true" className="h-6 w-6" />
-            Salida
-          </Link>
-        </div>
-      </div>
-
-      <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
+    <div className="space-y-6">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          href="/stock?status=low"
-          icon={<AlertTriangle className="h-5 w-5" />}
-          label="Bajo stock"
-          tone="error"
-          value={lowStockProducts.length}
-        />
-        <MetricCard
-          href="/stock?status=out"
-          icon={<Boxes className="h-5 w-5" />}
-          label="Sin stock"
-          tone="muted"
-          value={outOfStockCount}
-        />
-        <MetricCard
-          href="/entries"
-          icon={<ClipboardList className="h-5 w-5" />}
+          delta={null}
+          icon={<ArrowDownLeft className="h-5 w-5" />}
           label="Entradas de hoy"
-          tone="success"
+          subtitle="unidades"
+          tone="entry"
           value={entriesToday}
         />
         <MetricCard
-          href="/outputs"
-          icon={<Send className="h-5 w-5" />}
+          delta={null}
+          icon={<ArrowUpRight className="h-5 w-5" />}
           label="Salidas de hoy"
-          tone="accent"
+          subtitle="unidades"
+          tone="output"
           value={outputsToday}
         />
+        <MetricCard
+          delta={null}
+          icon={<AlertTriangle className="h-5 w-5" />}
+          label="Bajo stock"
+          subtitle={`${outOfStockProducts.length} sin stock`}
+          tone="warning"
+          value={lowStockProducts.length}
+        />
+        <MetricCard
+          delta={null}
+          icon={<Boxes className="h-5 w-5" />}
+          label="Productos activos"
+          subtitle={`SKUs · ${categoryGroups.length} categorias`}
+          tone="muted"
+          value={activeProductsCount}
+        />
       </div>
 
-      <div className="grid gap-8 xl:grid-cols-[2fr_0.95fr]">
-        <div className="min-h-[440px] rounded-card border border-border bg-surface-elevated p-10 shadow-soft">
-          <div className="flex items-center gap-3">
-            <span className="flex h-8 w-8 items-center justify-center rounded-control bg-primary text-primary-foreground">
-              <WalletCards aria-hidden="true" className="h-5 w-5" />
-            </span>
-            <h2 className="text-2xl font-semibold text-foreground">
-              Resumen Financiero
+      <section className="card-ink relative overflow-hidden p-6 md:p-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-ink-foreground sm:text-2xl">
+              Resumen financiero
             </h2>
+            <p className="mt-1 text-sm text-ink-foreground/60">
+              {range.label} · {range.detail}
+            </p>
           </div>
-
-          <div className="mt-8 grid gap-8 md:grid-cols-3">
-            <FinanceMetric
-              label="Valor inventario"
-              tone="primary"
-              value={formatCurrency(inventoryValue)}
-            />
-            <FinanceMetric label="Ventas de hoy" value={formatCurrency(salesRevenue)} />
-            <FinanceMetric
-              label="Utilidad bruta hoy"
-              tone="success"
-              value={formatCurrency(salesRevenue - salesCost)}
-            />
-          </div>
+          <RangeSelector value={range.key} />
         </div>
 
-        <div className="grid gap-8">
-          <div className="min-h-[275px] rounded-card border border-border bg-surface-elevated p-8 shadow-soft">
-            <div className="flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-semibold text-foreground">Movimientos</h2>
-              <ChevronRight aria-hidden="true" className="h-5 w-5 text-primary" />
-            </div>
-            {recentMovements.length ? (
-              <div className="mt-6 space-y-4">
-                {recentMovements.map((movement) => (
-                  <div
-                    className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-muted px-4 py-3"
+        <div className="mt-7 grid gap-6 lg:grid-cols-[1.5fr_1fr_1fr] lg:items-end">
+          <FinanceMain
+            change={revenueChange}
+            label="Ingresos"
+            value={formatCurrency(revenue)}
+          />
+          <FinanceSecondary
+            label="Costo de inventario"
+            note="Valorizacion al cierre"
+            value={formatCurrency(inventoryCost)}
+          />
+          <FinanceSecondary
+            highlight
+            label="Margen bruto"
+            note={`${margin.toFixed(1)}% sobre ingresos`}
+            value={formatCurrency(grossProfit)}
+          />
+        </div>
+      </section>
+
+      <div className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
+        <div className="rounded-card border border-border bg-surface-elevated p-6 shadow-soft">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="text-lg font-semibold text-foreground">
+              Movimientos recientes
+            </h2>
+            <Link
+              className="text-sm font-medium text-primary hover:underline"
+              href="/stock"
+            >
+              Ver todos
+            </Link>
+          </div>
+          {recentMovements.length ? (
+            <ul className="mt-5 space-y-3">
+              {recentMovements.map((movement) => {
+                const direction = movement.direction;
+                return (
+                  <li
+                    className="flex items-center justify-between gap-4 rounded-card px-3 py-3 transition hover:bg-surface-muted"
                     key={movement.id}
                   >
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-foreground">
-                        {movement.product.name}
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span
+                        className={cn(
+                          "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+                          direction === "IN"
+                            ? "bg-accent-100 text-accent-700"
+                            : "bg-secondary-100 text-secondary-700",
+                        )}
+                      >
+                        {direction === "IN" ? (
+                          <ArrowDownLeft aria-hidden="true" className="h-4 w-4" />
+                        ) : (
+                          <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+                        )}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-foreground">
+                          {movement.product.name}
+                        </p>
+                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                          {movementTypeLabels[movement.movementType]}
+                          {movement.product.sku ? ` · ${movement.product.sku}` : ""}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p
+                        className={cn(
+                          "text-sm font-semibold",
+                          direction === "IN" ? "text-accent-700" : "text-secondary-700",
+                        )}
+                      >
+                        {direction === "IN" ? "+" : "-"}
+                        {Math.round(decimalToNumber(movement.quantity))}
                       </p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {movementTypeLabels[movement.movementType]} -{" "}
-                        {formatDate(movement.occurredAt)}
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        {formatRelativeTime(movement.occurredAt)}
                       </p>
                     </div>
-                    <StatusBadge
-                      tone={movement.direction === "IN" ? "success" : "warning"}
-                    >
-                      {formatDecimal(movement.quantity, 3)}
-                    </StatusBadge>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="flex min-h-[190px] flex-col items-center justify-center text-center">
-                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                  <ReceiptText aria-hidden="true" className="h-7 w-7" />
-                </span>
-                <p className="mt-5 text-base text-muted-foreground">
-                  Sin movimientos recientes
-                </p>
-              </div>
-            )}
-          </div>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="mt-6 text-sm text-muted-foreground">
+              Sin movimientos recientes.
+            </p>
+          )}
+        </div>
 
-          <div className="relative overflow-hidden rounded-card border border-secondary-300 bg-surface-elevated p-8 shadow-soft">
-            <div className="absolute -right-12 -top-16 h-40 w-40 rounded-full bg-secondary-50" />
-            <h2 className="relative text-2xl font-semibold text-foreground">
-              Atencion de Stock
-            </h2>
-            {lowStockProducts.length ? (
-              <div className="relative mt-5 space-y-3">
-                {lowStockProducts.slice(0, 3).map((product) => (
-                  <div className="flex items-center justify-between gap-3" key={product.id}>
-                    <p className="text-sm font-medium text-foreground">{product.name}</p>
-                    <StatusBadge
-                      tone={
-                        decimalToNumber(product.currentStock) <= 0 ? "error" : "warning"
-                      }
-                    >
-                      {formatDecimal(product.currentStock, 3)}
-                    </StatusBadge>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="relative mt-5 flex items-center gap-4 text-success">
-                <CheckCircle2 aria-hidden="true" className="h-7 w-7 fill-success" />
-                <p className="text-xl font-medium">Stock saludable</p>
-              </div>
-            )}
+        <div className="rounded-card border border-border bg-surface-elevated p-6 shadow-soft">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="text-lg font-semibold text-foreground">Atencion</h2>
+            <Link
+              className="text-sm font-medium text-primary hover:underline"
+              href="/stock?status=low"
+            >
+              Ver stock
+            </Link>
           </div>
+          {attentionList.length ? (
+            <ul className="mt-5 space-y-2.5">
+              {attentionList.map(({ product, status }) => {
+                const isOut = status === "out";
+                return (
+                  <li
+                    className={cn(
+                      "flex items-center justify-between gap-3 rounded-card border px-3.5 py-3",
+                      isOut
+                        ? "border-error-border bg-error/15 text-error"
+                        : "border-warning-border bg-warning-surface",
+                    )}
+                    key={product.id}
+                  >
+                    <div className="min-w-0">
+                      <p
+                        className={cn(
+                          "truncate text-sm font-semibold",
+                          isOut ? "text-error" : "text-foreground",
+                        )}
+                      >
+                        {product.name}
+                      </p>
+                      <p
+                        className={cn(
+                          "mt-0.5 truncate text-xs",
+                          isOut ? "text-error/80" : "text-muted-foreground",
+                        )}
+                      >
+                        {product.sku ?? "Sin SKU"} · Minimo{" "}
+                        {Math.round(decimalToNumber(product.minimumStock))}
+                      </p>
+                    </div>
+                    <span
+                      className={cn(
+                        "shrink-0 rounded-control px-2.5 py-1 text-xs font-semibold",
+                        isOut
+                          ? "bg-error text-error-foreground"
+                          : "bg-warning text-warning-foreground",
+                      )}
+                    >
+                      {isOut
+                        ? "SIN STOCK"
+                        : `${Math.round(decimalToNumber(product.currentStock))} / ${Math.round(decimalToNumber(product.minimumStock))} uds`}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="mt-6 text-sm text-muted-foreground">
+              Todo el stock esta dentro de los minimos.
+            </p>
+          )}
         </div>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <ShortcutCard
-          href="/services"
-          icon={<Settings2 className="h-6 w-6" />}
-          label={`Servicios hoy: ${servicesToday}`}
+          description="Recibir mercaderia de un proveedor"
+          href="/entries"
+          icon={<ArrowDownLeft className="h-5 w-5" />}
+          title="Registrar entrada"
         />
         <ShortcutCard
+          description="Venta, merma o uso interno"
+          href="/outputs"
+          icon={<ArrowUpRight className="h-5 w-5" />}
+          title="Registrar salida"
+        />
+        <ShortcutCard
+          description="Agregar al catalogo"
           href="/products"
-          icon={<BookOpen className="h-6 w-6" />}
-          label="Catalogo de productos"
+          icon={<PackagePlus className="h-5 w-5" />}
+          title="Nuevo producto"
         />
-        {user.role === "ADMIN" ? (
-          <ShortcutCard
-            href="/reports"
-            icon={<BarChart3 className="h-6 w-6" />}
-            label="Reportes administrativos"
-          />
-        ) : null}
+        <ShortcutCard
+          description="Ingresos, mermas, top vendidos"
+          href="/reports"
+          icon={<BarChart3 className="h-5 w-5" />}
+          title="Reportes del mes"
+        />
       </div>
     </div>
   );
 }
 
 function MetricCard({
-  href,
   icon,
   label,
   value,
+  subtitle,
   tone,
 }: {
-  href: string;
   icon: ReactNode;
   label: string;
   value: number;
-  tone: "success" | "error" | "muted" | "accent";
+  subtitle?: string;
+  tone: "entry" | "output" | "warning" | "muted";
+  delta: number | null;
 }) {
   const toneClass = {
-    accent: {
-      border: "border-l-accent-800",
-      icon: "bg-accent-100 text-accent-800",
-    },
-    error: {
-      border: "border-l-error",
-      icon: "bg-error-surface text-error",
-    },
-    muted: {
-      border: "border-l-muted-foreground",
-      icon: "bg-muted text-muted-foreground",
-    },
-    success: {
-      border: "border-l-success",
-      icon: "bg-secondary-100 text-success",
-    },
+    entry: "bg-accent-100 text-accent-700",
+    output: "bg-secondary-100 text-secondary-700",
+    warning: "bg-warning-surface text-warning",
+    muted: "bg-primary-50 text-primary-700",
   }[tone];
 
   return (
-    <Link
-      className={cn(
-        "min-h-[188px] rounded-card border border-l-[6px] border-border bg-surface-elevated p-7 shadow-soft transition hover:border-primary-200",
-        toneClass.border,
-      )}
-      href={href}
-    >
-      <div className="flex items-start justify-between gap-4">
-        <p className="text-sm font-medium uppercase tracking-widest text-foreground">
+    <div className="rounded-card border border-border bg-surface-elevated p-5 shadow-soft transition hover:shadow-elevated">
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           {label}
         </p>
         <span
           className={cn(
-            "flex h-14 w-11 items-center justify-center rounded-card",
-            toneClass.icon,
+            "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+            toneClass,
           )}
         >
           {icon}
         </span>
       </div>
-      <p className="mt-7 text-4xl font-semibold tracking-tight text-foreground">
+      <p className="mt-5 text-4xl font-semibold tracking-tight text-foreground">
         {value}
       </p>
-    </Link>
+      {subtitle ? (
+        <p className="mt-1.5 text-xs text-muted-foreground">{subtitle}</p>
+      ) : null}
+    </div>
   );
 }
 
-function FinanceMetric({
+function FinanceMain({
   label,
   value,
-  tone = "default",
+  change,
 }: {
   label: string;
   value: string;
-  tone?: "default" | "primary" | "success";
+  change: number;
 }) {
+  const positive = change >= 0;
   return (
-    <div className="rounded-card border border-border bg-surface-muted p-5">
-      <p className="text-sm font-medium text-muted-foreground">{label}</p>
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-ink-foreground/60">
+        {label}
+      </p>
+      <p className="mt-3 text-4xl font-semibold tracking-tight text-ink-foreground sm:text-5xl">
+        {value}
+      </p>
       <p
         className={cn(
-          "mt-2 text-3xl font-semibold tracking-tight",
-          tone === "primary"
-            ? "text-primary"
-            : tone === "success"
-              ? "text-success"
-              : "text-foreground",
+          "mt-3 inline-flex items-center gap-1.5 text-sm font-medium",
+          positive ? "text-accent-300" : "text-secondary-300",
+        )}
+      >
+        {positive ? "+" : ""}
+        {change.toFixed(1)}%
+        <span className="text-ink-foreground/55">vs. periodo anterior</span>
+      </p>
+    </div>
+  );
+}
+
+function FinanceSecondary({
+  label,
+  value,
+  note,
+  highlight = false,
+}: {
+  label: string;
+  value: string;
+  note?: string;
+  highlight?: boolean;
+}) {
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-ink-foreground/60">
+        {label}
+      </p>
+      <p
+        className={cn(
+          "mt-2 text-2xl font-semibold tracking-tight sm:text-3xl",
+          highlight ? "text-accent-300" : "text-ink-foreground",
         )}
       >
         {value}
       </p>
+      {note ? (
+        <p className="mt-1.5 text-xs text-ink-foreground/55">{note}</p>
+      ) : null}
     </div>
   );
 }
@@ -379,24 +497,25 @@ function FinanceMetric({
 function ShortcutCard({
   href,
   icon,
-  label,
+  title,
+  description,
 }: {
   href: string;
   icon: ReactNode;
-  label: string;
+  title: string;
+  description: string;
 }) {
   return (
     <Link
-      className="flex min-h-20 items-center justify-between gap-4 rounded-card border border-border bg-surface-elevated px-5 shadow-soft transition hover:border-primary-200 hover:bg-primary-50"
+      className="group flex flex-col gap-2 rounded-card border border-border bg-surface-elevated p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-elevated"
       href={href}
     >
-      <span className="flex items-center gap-4 text-lg font-medium text-foreground">
-        <span className="flex h-12 w-12 items-center justify-center rounded-card bg-primary-100 text-primary">
-          {icon}
-        </span>
-        {label}
+      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-50 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
+        {icon}
       </span>
-      <ChevronRight aria-hidden="true" className="h-6 w-6 text-foreground" />
+      <h3 className="mt-2 text-sm font-semibold text-foreground">{title}</h3>
+      <p className="text-xs text-muted-foreground">{description}</p>
     </Link>
   );
 }
+

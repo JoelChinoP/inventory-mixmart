@@ -1,4 +1,0 @@
-interface:
-  display_name: "Frontend Architecture Rules"
-  short_description: "Server-first frontend and endpoint efficiency rules"
-  default_prompt: "Use $frontend-architecture-rules to define Mixmart frontend architecture, Server Component loading, endpoint budgets, and cache rules."

@@ -11,6 +11,7 @@ import {
   StatusBadge,
   SubmitButton,
 } from "@/components/shared";
+import { FormModal } from "@/components/ui/modal";
 import {
   decimalToNumber,
   formatCurrency,
@@ -44,10 +45,6 @@ function dateTimeLocalValue() {
 export default function ServicesPage({ searchParams }: ServicesPageProps) {
   return (
     <div>
-      <PageHeader
-        title="Servicios"
-        description="Servicios internos con consumo de insumos y trabajos tercerizados."
-      />
       <Suspense fallback={<OperationalPageSkeleton />}>
         <ServicesContent searchParams={searchParams} />
       </Suspense>
@@ -99,6 +96,191 @@ async function ServicesContent({ searchParams }: ServicesPageProps) {
 
   return (
     <>
+      <PageHeader
+        title="Servicios"
+        description="Servicios internos con consumo de insumos y trabajos tercerizados."
+        action={
+          <div className="flex flex-wrap gap-2">
+            <FormModal
+              size="lg"
+              title="Registrar servicio"
+              description="Captura el servicio que se entrega."
+              trigger={
+                <>
+                  <Plus aria-hidden="true" className="h-4 w-4" />
+                  Registrar servicio
+                </>
+              }
+            >
+              <form action={createServiceRecord} className="grid gap-4 p-6 md:grid-cols-2">
+                <label className="space-y-1.5 md:col-span-2">
+                  <span className="text-xs font-semibold text-muted-foreground">Tipo</span>
+                  <select className="input" name="serviceTypeId" required>
+                    <option value="">Seleccionar</option>
+                    {serviceTypes.map((type) => (
+                      <option key={type.id} value={type.id}>
+                        {type.name} - {serviceKindLabels[type.kind]}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="space-y-1.5">
+                  <span className="text-xs font-semibold text-muted-foreground">Estado</span>
+                  <select className="input" name="status" defaultValue="RECEIVED">
+                    <option value="RECEIVED">Recibido</option>
+                    <option value="IN_PROGRESS">En proceso</option>
+                    <option value="COMPLETED">Completado</option>
+                    <option value="DELIVERED">Entregado</option>
+                    <option value="CANCELLED">Cancelado</option>
+                  </select>
+                </label>
+                <label className="space-y-1.5">
+                  <span className="text-xs font-semibold text-muted-foreground">Cantidad</span>
+                  <input
+                    className="input"
+                    defaultValue="1"
+                    min="0.001"
+                    name="quantity"
+                    required
+                    step="0.001"
+                    type="number"
+                  />
+                </label>
+                <label className="space-y-1.5">
+                  <span className="text-xs font-semibold text-muted-foreground">
+                    Fecha servicio
+                  </span>
+                  <input
+                    className="input"
+                    defaultValue={dateTimeLocalValue()}
+                    name="serviceDate"
+                    required
+                    type="datetime-local"
+                  />
+                </label>
+                <label className="space-y-1.5">
+                  <span className="text-xs font-semibold text-muted-foreground">
+                    Fecha entrega
+                  </span>
+                  <input className="input" name="deliveredAt" type="datetime-local" />
+                </label>
+                <label className="space-y-1.5 md:col-span-2">
+                  <span className="text-xs font-semibold text-muted-foreground">
+                    Proveedor externo
+                  </span>
+                  <input className="input" name="externalVendorName" />
+                </label>
+                <label className="space-y-1.5 md:col-span-2">
+                  <span className="text-xs font-semibold text-muted-foreground">Notas</span>
+                  <textarea className="input min-h-20 py-2" name="notes" />
+                </label>
+                <div className="flex justify-end md:col-span-2">
+                  <SubmitButton>
+                    <Plus aria-hidden="true" className="h-4 w-4" />
+                    Registrar servicio
+                  </SubmitButton>
+                </div>
+              </form>
+            </FormModal>
+
+            {canManage ? (
+              <FormModal
+                size="xl"
+                title="Nuevo tipo de servicio"
+                description="Define un servicio reutilizable con sus insumos."
+                triggerClassName="btn-soft"
+                trigger={
+                  <>
+                    <Plus aria-hidden="true" className="h-4 w-4" />
+                    Nuevo tipo
+                  </>
+                }
+              >
+                <form action={createServiceType} className="space-y-5 p-6">
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <label className="space-y-1.5 md:col-span-2">
+                      <span className="text-xs font-semibold text-muted-foreground">
+                        Nombre
+                      </span>
+                      <input className="input" name="name" required />
+                    </label>
+                    <label className="space-y-1.5">
+                      <span className="text-xs font-semibold text-muted-foreground">
+                        Tipo
+                      </span>
+                      <select className="input" name="kind" defaultValue="IN_HOUSE">
+                        <option value="IN_HOUSE">Interno</option>
+                        <option value="OUTSOURCED">Tercerizado</option>
+                      </select>
+                    </label>
+                    <label className="space-y-1.5">
+                      <span className="text-xs font-semibold text-muted-foreground">
+                        Unidad
+                      </span>
+                      <input
+                        className="input"
+                        defaultValue="servicio"
+                        name="unitName"
+                        required
+                      />
+                    </label>
+                    <label className="space-y-1.5 md:col-span-2">
+                      <span className="text-xs font-semibold text-muted-foreground">
+                        Descripcion
+                      </span>
+                      <textarea className="input min-h-16 py-2" name="description" />
+                    </label>
+                  </div>
+
+                  <div className="overflow-x-auto rounded-card border border-border">
+                    <table className="table-operational">
+                      <thead className="bg-surface-muted text-left text-xs uppercase text-muted-foreground">
+                        <tr>
+                          <th className="px-3 py-2">Insumo</th>
+                          <th className="px-3 py-2">Cantidad por unidad</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border">
+                        {Array.from({ length: 4 }).map((_, index) => (
+                          <tr key={index}>
+                            <td className="px-3 py-2">
+                              <select className="input" name="supplyProductId">
+                                <option value="">Seleccionar</option>
+                                {products.map((product) => (
+                                  <option key={product.id} value={product.id}>
+                                    {product.name} ({product.unitName})
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                            <td className="px-3 py-2">
+                              <input
+                                className="input"
+                                min="0.001"
+                                name="quantityPerUnit"
+                                step="0.001"
+                                type="number"
+                              />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <SubmitButton>
+                      <Plus aria-hidden="true" className="h-4 w-4" />
+                      Crear tipo
+                    </SubmitButton>
+                  </div>
+                </form>
+              </FormModal>
+            ) : null}
+          </div>
+        }
+      />
+
       {params.success ? (
         <FlashMessage type="success">Servicio guardado correctamente.</FlashMessage>
       ) : null}
@@ -106,126 +288,7 @@ async function ServicesContent({ searchParams }: ServicesPageProps) {
         <FlashMessage type="error">Stock insuficiente para consumir insumos.</FlashMessage>
       ) : null}
 
-      <div className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
-        <Section>
-          <SectionHeader title="Registrar servicio" />
-          <form action={createServiceRecord} className="grid gap-3 p-4 md:grid-cols-2">
-            <label className="space-y-1 md:col-span-2">
-              <span className="text-xs font-medium text-muted-foreground">Tipo</span>
-              <select className="input" name="serviceTypeId" required>
-                <option value="">Seleccionar</option>
-                {serviceTypes.map((type) => (
-                  <option key={type.id} value={type.id}>
-                    {type.name} - {serviceKindLabels[type.kind]}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground">Estado</span>
-              <select className="input" name="status" defaultValue="RECEIVED">
-                <option value="RECEIVED">Recibido</option>
-                <option value="IN_PROGRESS">En proceso</option>
-                <option value="COMPLETED">Completado</option>
-                <option value="DELIVERED">Entregado</option>
-                <option value="CANCELLED">Cancelado</option>
-              </select>
-            </label>
-            <label className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground">Cantidad</span>
-              <input className="input" defaultValue="1" min="0.001" name="quantity" required step="0.001" type="number" />
-            </label>
-            <label className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground">Fecha servicio</span>
-              <input className="input" defaultValue={dateTimeLocalValue()} name="serviceDate" required type="datetime-local" />
-            </label>
-            <label className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground">Fecha entrega</span>
-              <input className="input" name="deliveredAt" type="datetime-local" />
-            </label>
-            <label className="space-y-1 md:col-span-2">
-              <span className="text-xs font-medium text-muted-foreground">Proveedor externo</span>
-              <input className="input" name="externalVendorName" />
-            </label>
-            <label className="space-y-1 md:col-span-2">
-              <span className="text-xs font-medium text-muted-foreground">Notas</span>
-              <textarea className="input min-h-20 py-2" name="notes" />
-            </label>
-            <div className="md:col-span-2">
-              <SubmitButton>
-                <Plus aria-hidden="true" className="h-4 w-4" />
-                Registrar servicio
-              </SubmitButton>
-            </div>
-          </form>
-        </Section>
-
-        {canManage ? (
-          <Section>
-            <SectionHeader title="Nuevo tipo de servicio" />
-            <form action={createServiceType} className="space-y-4 p-4">
-              <div className="grid gap-3 md:grid-cols-2">
-                <label className="space-y-1 md:col-span-2">
-                  <span className="text-xs font-medium text-muted-foreground">Nombre</span>
-                  <input className="input" name="name" required />
-                </label>
-                <label className="space-y-1">
-                  <span className="text-xs font-medium text-muted-foreground">Tipo</span>
-                  <select className="input" name="kind" defaultValue="IN_HOUSE">
-                    <option value="IN_HOUSE">Interno</option>
-                    <option value="OUTSOURCED">Tercerizado</option>
-                  </select>
-                </label>
-                <label className="space-y-1">
-                  <span className="text-xs font-medium text-muted-foreground">Unidad</span>
-                  <input className="input" defaultValue="servicio" name="unitName" required />
-                </label>
-                <label className="space-y-1 md:col-span-2">
-                  <span className="text-xs font-medium text-muted-foreground">Descripcion</span>
-                  <textarea className="input min-h-16 py-2" name="description" />
-                </label>
-              </div>
-
-              <div className="overflow-x-auto rounded-card border border-border">
-                <table className="table-operational">
-                  <thead className="bg-surface-muted text-left text-xs uppercase text-muted-foreground">
-                    <tr>
-                      <th className="px-3 py-2">Insumo</th>
-                      <th className="px-3 py-2">Cantidad por unidad</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {Array.from({ length: 4 }).map((_, index) => (
-                      <tr key={index}>
-                        <td className="px-3 py-2">
-                          <select className="input" name="supplyProductId">
-                            <option value="">Seleccionar</option>
-                            {products.map((product) => (
-                              <option key={product.id} value={product.id}>
-                                {product.name} ({product.unitName})
-                              </option>
-                            ))}
-                          </select>
-                        </td>
-                        <td className="px-3 py-2">
-                          <input className="input" min="0.001" name="quantityPerUnit" step="0.001" type="number" />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <SubmitButton>
-                <Plus aria-hidden="true" className="h-4 w-4" />
-                Crear tipo
-              </SubmitButton>
-            </form>
-          </Section>
-        ) : null}
-      </div>
-
-      <div className="mt-5 grid gap-5 xl:grid-cols-2">
+      <div className="grid gap-5 xl:grid-cols-2">
         <ServiceTypeList
           canManage={canManage}
           title="Servicios internos"

@@ -1,4 +1,0 @@
-interface:
-  display_name: "UX/UI Palette System"
-  short_description: "Accessible Mixmart Tailwind palette workflow"
-  default_prompt: "Use $ux-ui-palette-system to preserve Mixmart's palette, semantic tokens, and dense operational UI patterns."

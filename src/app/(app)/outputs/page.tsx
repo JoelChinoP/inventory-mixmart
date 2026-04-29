@@ -2,6 +2,7 @@ import {
   BriefcaseBusiness,
   CircleAlert,
   ListFilter,
+  Plus,
   ShoppingCart,
 } from "lucide-react";
 import { Suspense } from "react";
@@ -17,6 +18,7 @@ import {
   StatusBadge,
 } from "@/components/shared";
 import { OutputForm } from "@/components/outputs/output-form";
+import { FormModal } from "@/components/ui/modal";
 import {
   decimalToNumber,
   formatCurrency,
@@ -37,10 +39,6 @@ type OutputsPageProps = {
 export default function OutputsPage({ searchParams }: OutputsPageProps) {
   return (
     <div>
-      <PageHeader
-        title="Salidas"
-        description="Ventas, mermas y uso interno con validacion de stock en el servidor."
-      />
       <Suspense fallback={<OperationalPageSkeleton />}>
         <OutputsContent searchParams={searchParams} />
       </Suspense>
@@ -93,6 +91,35 @@ async function OutputsContent({ searchParams }: OutputsPageProps) {
 
   return (
     <>
+      <PageHeader
+        title="Salidas"
+        description="Ventas, mermas y uso interno con validacion de stock en el servidor."
+        action={
+          <FormModal
+            size="xl"
+            title="Nueva salida"
+            description="Registra ventas, mermas o uso interno."
+            trigger={
+              <>
+                <Plus aria-hidden="true" className="h-4 w-4" />
+                Nueva salida
+              </>
+            }
+          >
+            <OutputForm
+              products={products.map((product) => ({
+                id: product.id,
+                name: product.name,
+                category: product.category,
+                unitName: product.unitName,
+                currentStock: formatDecimal(product.currentStock, 3),
+                salePrice: product.salePrice ? formatDecimal(product.salePrice, 2) : null,
+              }))}
+            />
+          </FormModal>
+        }
+      />
+
       {params.success ? (
         <FlashMessage type="success">Salida registrada correctamente.</FlashMessage>
       ) : null}
@@ -100,22 +127,80 @@ async function OutputsContent({ searchParams }: OutputsPageProps) {
         <FlashMessage type="error">Stock insuficiente para completar la salida.</FlashMessage>
       ) : null}
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="grid gap-5 xl:grid-cols-[1fr_22rem]">
         <Section>
-          <SectionHeader
-            title="Nueva salida"
-            description="Registra ventas, mermas o uso interno en una sola ventana."
-          />
-          <OutputForm
-            products={products.map((product) => ({
-              id: product.id,
-              name: product.name,
-              category: product.category,
-              unitName: product.unitName,
-              currentStock: formatDecimal(product.currentStock, 3),
-              salePrice: product.salePrice ? formatDecimal(product.salePrice, 2) : null,
-            }))}
-          />
+          <SectionHeader title="Historial completo" />
+          {outputs.length ? (
+            <div className="overflow-x-auto">
+              <table className="table-operational">
+                <thead className="bg-surface-muted text-left text-xs uppercase text-muted-foreground">
+                  <tr>
+                    <th className="px-4 py-3">Motivo</th>
+                    <th className="px-4 py-3">Fecha</th>
+                    <th className="px-4 py-3">Creado por</th>
+                    <th className="px-4 py-3">Items</th>
+                    <th className="px-4 py-3">Costo</th>
+                    <th className="px-4 py-3">Ingreso</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {outputs.map((output) => {
+                    const { cost, revenue } = getOutputTotals(output);
+
+                    return (
+                      <tr key={output.id}>
+                        <td className="px-4 py-3">
+                          <StatusBadge
+                            tone={output.reason === "SALE" ? "success" : "warning"}
+                          >
+                            {stockOutputReasonLabels[output.reason]}
+                          </StatusBadge>
+                        </td>
+                        <td className="px-4 py-3">{formatDate(output.occurredAt)}</td>
+                        <td className="px-4 py-3">
+                          {output.createdBy.firstName} {output.createdBy.lastName}
+                        </td>
+                        <td className="px-4 py-3">
+                          <details className="[&_summary::-webkit-details-marker]:hidden">
+                            <summary className="inline-flex cursor-pointer list-none items-center rounded-control border border-primary-200 bg-primary-50 px-2 py-1 text-primary">
+                              {output.items.length} items
+                            </summary>
+                            <ul className="popover-window mt-2 space-y-2">
+                              {output.items.map((item) => (
+                                <li
+                                  className="flex flex-wrap items-center gap-2"
+                                  key={item.id}
+                                >
+                                  <span>
+                                    {item.product.name}:{" "}
+                                    {formatDecimal(item.quantity, 3)}{" "}
+                                    {item.product.unitName}
+                                  </span>
+                                  <ProductCategoryBadge
+                                    category={item.product.category}
+                                    className="min-h-6 rounded-control px-2 py-0.5"
+                                  />
+                                </li>
+                              ))}
+                            </ul>
+                          </details>
+                        </td>
+                        <td className="px-4 py-3">{formatCurrency(cost)}</td>
+                        <td className="px-4 py-3">
+                          {output.reason === "SALE" ? formatCurrency(revenue) : "-"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <EmptyState
+              title="Sin salidas"
+              description="Registra una venta, merma o uso interno."
+            />
+          )}
         </Section>
 
         <aside className="space-y-5">
@@ -152,81 +237,6 @@ async function OutputsContent({ searchParams }: OutputsPageProps) {
           </Section>
         </aside>
       </div>
-
-      <Section className="mt-5">
-        <SectionHeader title="Historial completo" />
-        {outputs.length ? (
-          <div className="overflow-x-auto">
-            <table className="table-operational">
-              <thead className="bg-surface-muted text-left text-xs uppercase text-muted-foreground">
-                <tr>
-                  <th className="px-4 py-3">Motivo</th>
-                  <th className="px-4 py-3">Fecha</th>
-                  <th className="px-4 py-3">Creado por</th>
-                  <th className="px-4 py-3">Items</th>
-                  <th className="px-4 py-3">Costo</th>
-                  <th className="px-4 py-3">Ingreso</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {outputs.map((output) => {
-                  const { cost, revenue } = getOutputTotals(output);
-
-                  return (
-                    <tr key={output.id}>
-                      <td className="px-4 py-3">
-                        <StatusBadge
-                          tone={output.reason === "SALE" ? "success" : "warning"}
-                        >
-                          {stockOutputReasonLabels[output.reason]}
-                        </StatusBadge>
-                      </td>
-                      <td className="px-4 py-3">{formatDate(output.occurredAt)}</td>
-                      <td className="px-4 py-3">
-                        {output.createdBy.firstName} {output.createdBy.lastName}
-                      </td>
-                      <td className="px-4 py-3">
-                        <details className="[&_summary::-webkit-details-marker]:hidden">
-                          <summary className="inline-flex cursor-pointer list-none items-center rounded-control border border-primary-200 bg-primary-50 px-2 py-1 text-primary">
-                            {output.items.length} items
-                          </summary>
-                          <ul className="popover-window mt-2 space-y-2">
-                            {output.items.map((item) => (
-                              <li
-                                className="flex flex-wrap items-center gap-2"
-                                key={item.id}
-                              >
-                                <span>
-                                  {item.product.name}:{" "}
-                                  {formatDecimal(item.quantity, 3)}{" "}
-                                  {item.product.unitName}
-                                </span>
-                                <ProductCategoryBadge
-                                  category={item.product.category}
-                                  className="min-h-6 rounded-control px-2 py-0.5"
-                                />
-                              </li>
-                            ))}
-                          </ul>
-                        </details>
-                      </td>
-                      <td className="px-4 py-3">{formatCurrency(cost)}</td>
-                      <td className="px-4 py-3">
-                        {output.reason === "SALE" ? formatCurrency(revenue) : "-"}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <EmptyState
-            title="Sin salidas"
-            description="Registra una venta, merma o uso interno."
-          />
-        )}
-      </Section>
     </>
   );
 }

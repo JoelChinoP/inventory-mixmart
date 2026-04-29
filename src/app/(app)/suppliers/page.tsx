@@ -1,4 +1,4 @@
-import { Plus, RotateCcw, Search } from "lucide-react";
+import { Pencil, Plus, RotateCcw, Search } from "lucide-react";
 import { Fragment, Suspense } from "react";
 
 import {
@@ -11,6 +11,7 @@ import {
   StatusBadge,
   SubmitButton,
 } from "@/components/shared";
+import { FormModal } from "@/components/ui/modal";
 import { decimalToNumber, formatCurrency, formatDateOnly } from "@/lib/format";
 import { requireActiveUser } from "@/lib/auth";
 import { canManageCatalog } from "@/lib/permissions";
@@ -35,10 +36,6 @@ type SuppliersPageProps = {
 export default function SuppliersPage({ searchParams }: SuppliersPageProps) {
   return (
     <div>
-      <PageHeader
-        title="Proveedores"
-        description="Datos de contacto, estado y compras recientes."
-      />
       <Suspense fallback={<PageContentSkeleton />}>
         <SuppliersContent searchParams={searchParams} />
       </Suspense>
@@ -91,6 +88,28 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
 
   return (
     <>
+      <PageHeader
+        title="Proveedores"
+        description="Datos de contacto, estado y compras recientes."
+        action={
+          canManage ? (
+            <FormModal
+              size="lg"
+              title="Nuevo proveedor"
+              description="Registra los datos para vincularlo a entradas y productos."
+              trigger={
+                <>
+                  <Plus aria-hidden="true" className="h-4 w-4" />
+                  Nuevo proveedor
+                </>
+              }
+            >
+              <SupplierFormBody />
+            </FormModal>
+          ) : null
+        }
+      />
+
       {params.success ? (
         <FlashMessage type="success">Proveedor guardado correctamente.</FlashMessage>
       ) : null}
@@ -118,8 +137,6 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
           </div>
         </form>
       </Section>
-
-      {canManage ? <SupplierForm /> : null}
 
       <Section>
         <SectionHeader title="Lista de proveedores" />
@@ -161,7 +178,7 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
                       </td>
                       {canManage ? (
                         <td className="px-4 py-3">
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
                             {supplier.deletedAt ? (
                               <form action={restoreSupplier}>
                                 <input name="id" type="hidden" value={supplier.id} />
@@ -172,6 +189,19 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
                               </form>
                             ) : (
                               <>
+                                <FormModal
+                                  size="lg"
+                                  title="Editar proveedor"
+                                  triggerClassName="btn-soft"
+                                  trigger={
+                                    <>
+                                      <Pencil aria-hidden="true" className="h-4 w-4" />
+                                      Editar
+                                    </>
+                                  }
+                                >
+                                  <SupplierFormBody supplier={supplier} />
+                                </FormModal>
                                 <form
                                   action={
                                     supplier.isActive
@@ -243,9 +273,6 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
                               )}
                             </div>
                           </div>
-                          {canManage && !supplier.deletedAt ? (
-                            <SupplierForm mode="edit" supplier={supplier} />
-                          ) : null}
                         </details>
                       </td>
                     </tr>
@@ -262,11 +289,9 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
   );
 }
 
-function SupplierForm({
-  mode = "create",
+function SupplierFormBody({
   supplier,
 }: {
-  mode?: "create" | "edit";
   supplier?: {
     id: string;
     ruc: string;
@@ -277,56 +302,53 @@ function SupplierForm({
     notes: string | null;
   };
 }) {
-  const isEdit = mode === "edit" && supplier;
+  const isEdit = Boolean(supplier);
 
   return (
-    <Section className={isEdit ? "mt-3 border-border/70 shadow-none" : "mb-5"}>
-      <SectionHeader title={isEdit ? "Editar proveedor" : "Nuevo proveedor"} />
-      <form
-        action={isEdit ? updateSupplier : createSupplier}
-        className="grid gap-3 p-4 md:grid-cols-3"
-      >
-        {isEdit ? <input name="id" type="hidden" value={supplier.id} /> : null}
-        <label className="space-y-1">
-          <span className="text-xs font-medium text-muted-foreground">RUC</span>
-          <input className="input" defaultValue={supplier?.ruc} name="ruc" required />
-        </label>
-        <label className="space-y-1 md:col-span-2">
-          <span className="text-xs font-medium text-muted-foreground">Nombre</span>
-          <input className="input" defaultValue={supplier?.name} name="name" required />
-        </label>
-        <label className="space-y-1">
-          <span className="text-xs font-medium text-muted-foreground">Telefono</span>
-          <input className="input" defaultValue={supplier?.phone} name="phone" required />
-        </label>
-        <label className="space-y-1 md:col-span-2">
-          <span className="text-xs font-medium text-muted-foreground">Contacto</span>
-          <input
-            className="input"
-            defaultValue={supplier?.contactName}
-            name="contactName"
-            required
-          />
-        </label>
-        <label className="space-y-1 md:col-span-3">
-          <span className="text-xs font-medium text-muted-foreground">Direccion</span>
-          <input className="input" defaultValue={supplier?.address ?? ""} name="address" />
-        </label>
-        <label className="space-y-1 md:col-span-3">
-          <span className="text-xs font-medium text-muted-foreground">Notas</span>
-          <textarea
-            className="input min-h-20 py-2"
-            defaultValue={supplier?.notes ?? ""}
-            name="notes"
-          />
-        </label>
-        <div className="md:col-span-3">
-          <SubmitButton>
-            <Plus aria-hidden="true" className="h-4 w-4" />
-            {isEdit ? "Guardar cambios" : "Crear proveedor"}
-          </SubmitButton>
-        </div>
-      </form>
-    </Section>
+    <form
+      action={isEdit ? updateSupplier : createSupplier}
+      className="grid gap-4 p-6 md:grid-cols-3"
+    >
+      {isEdit && supplier ? <input name="id" type="hidden" value={supplier.id} /> : null}
+      <label className="space-y-1.5">
+        <span className="text-xs font-semibold text-muted-foreground">RUC</span>
+        <input className="input" defaultValue={supplier?.ruc} name="ruc" required />
+      </label>
+      <label className="space-y-1.5 md:col-span-2">
+        <span className="text-xs font-semibold text-muted-foreground">Nombre</span>
+        <input className="input" defaultValue={supplier?.name} name="name" required />
+      </label>
+      <label className="space-y-1.5">
+        <span className="text-xs font-semibold text-muted-foreground">Telefono</span>
+        <input className="input" defaultValue={supplier?.phone} name="phone" required />
+      </label>
+      <label className="space-y-1.5 md:col-span-2">
+        <span className="text-xs font-semibold text-muted-foreground">Contacto</span>
+        <input
+          className="input"
+          defaultValue={supplier?.contactName}
+          name="contactName"
+          required
+        />
+      </label>
+      <label className="space-y-1.5 md:col-span-3">
+        <span className="text-xs font-semibold text-muted-foreground">Direccion</span>
+        <input className="input" defaultValue={supplier?.address ?? ""} name="address" />
+      </label>
+      <label className="space-y-1.5 md:col-span-3">
+        <span className="text-xs font-semibold text-muted-foreground">Notas</span>
+        <textarea
+          className="input min-h-24 py-2"
+          defaultValue={supplier?.notes ?? ""}
+          name="notes"
+        />
+      </label>
+      <div className="flex justify-end md:col-span-3">
+        <SubmitButton>
+          <Plus aria-hidden="true" className="h-4 w-4" />
+          {isEdit ? "Guardar cambios" : "Crear proveedor"}
+        </SubmitButton>
+      </div>
+    </form>
   );
 }

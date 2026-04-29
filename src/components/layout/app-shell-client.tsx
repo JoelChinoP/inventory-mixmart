@@ -2,16 +2,13 @@
 
 import {
   BarChart3,
-  Bell,
   Boxes,
   Home,
   Package,
   PackagePlus,
   Send,
-  Settings,
   Settings2,
   Truck,
-  UserRound,
   Users,
 } from "lucide-react";
 import Link from "next/link";
@@ -104,45 +101,23 @@ export function AppTopBar({ user }: { user: AppTopBarUser }) {
   const visibleItems = getVisibleGroups(user.role).flatMap((group) => group.items);
   const currentModule =
     visibleItems.find((item) => isActive(pathname, item.href))?.label ?? "MixMart";
-  const isDashboard = pathname === "/dashboard";
+  const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
 
   return (
-    <header className="sticky top-0 z-20 border-b border-border bg-background/95 px-4 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/88 lg:px-10">
-      <div className="flex min-h-16 items-center justify-between gap-6">
+    <header className="sticky top-0 z-20 border-b border-border bg-background/85 px-4 py-5 backdrop-blur supports-[backdrop-filter]:bg-background/75 lg:px-10">
+      <div className="flex min-h-12 items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             {currentModule}
           </h1>
-          <p className="mt-2 text-lg text-muted-foreground">
-            {isDashboard
-              ? `Resumen operativo del inventario para ${
-                  user.role === "ADMIN" ? "Admin" : "Usuario"
-                }.`
-              : "Gestiona la operacion diaria de inventario."}
-          </p>
         </div>
-        <div className="flex shrink-0 items-center gap-6">
-          <button
-            aria-label="Notificaciones"
-            className="hidden h-14 w-14 items-center justify-center rounded-full border border-border bg-surface-elevated text-foreground shadow-soft transition hover:border-primary-200 hover:bg-primary-50 hover:text-primary sm:inline-flex"
-            type="button"
-          >
-            <Bell aria-hidden="true" className="h-6 w-6" />
-          </button>
-          <button
-            aria-label="Configuracion"
-            className="hidden h-16 w-16 items-center justify-center rounded-full border border-border bg-surface-elevated text-muted-foreground shadow-soft transition hover:border-primary-200 hover:bg-primary-50 hover:text-primary sm:inline-flex"
-            type="button"
-          >
-            <Settings aria-hidden="true" className="h-8 w-8" />
-          </button>
-          <button
+        <div className="flex shrink-0 items-center gap-3">
+          <span
             aria-label={`${user.firstName} ${user.lastName}`}
-            className="flex h-14 w-14 items-center justify-center rounded-full border border-border bg-primary-900 text-primary-foreground shadow-soft transition hover:border-primary-200 hover:bg-primary"
-            type="button"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground shadow-soft"
           >
-            <UserRound aria-hidden="true" className="h-7 w-7" />
-          </button>
+            {initials}
+          </span>
         </div>
       </div>
     </header>

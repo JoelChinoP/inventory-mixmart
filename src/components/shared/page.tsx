@@ -104,8 +104,8 @@ export function StatusBadge({
 const categoryConfig = {
   SCHOOL_SUPPLIES: {
     icon: Candy,
-    className: "border-accent-200 bg-accent-50 text-accent-800",
-    iconClassName: "bg-accent-100 text-accent-800",
+    className: "border-secondary-200 bg-secondary-50 text-secondary-800",
+    iconClassName: "bg-secondary-100 text-secondary-700",
   },
   BAZAAR: {
     icon: ShoppingBag,
@@ -114,8 +114,8 @@ const categoryConfig = {
   },
   SNACKS: {
     icon: Cookie,
-    className: "border-success-border bg-success-surface text-success",
-    iconClassName: "bg-secondary-100 text-success",
+    className: "border-accent-200 bg-accent-50 text-accent-700",
+    iconClassName: "bg-accent-100 text-accent-700",
   },
 } satisfies Record<
   ProductCategory,

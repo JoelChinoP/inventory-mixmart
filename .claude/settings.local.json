@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(cat C:/Users/Joel/AppData/Local/Temp/claude/d--inventory-mixmart/dfd3890c-799b-4861-9f83-7200d62c0058/tasks/beq6bvira.output)",
+      "Read(//tmp/**)",
+      "PowerShell($out = \"C:\\\\Users\\\\Joel\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--inventory-mixmart\\\\dfd3890c-799b-4861-9f83-7200d62c0058\\\\tasks\\\\beq6bvira.output\"; if \\(Test-Path $out\\) { \\(Get-Item $out\\).Length; Get-Content $out -Tail 50 } else { \"missing\" })",
+      "PowerShell($out = \"C:\\\\Users\\\\Joel\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--inventory-mixmart\\\\dfd3890c-799b-4861-9f83-7200d62c0058\\\\tasks\\\\beq6bvira.output\"; if \\(Test-Path $out\\) { \\(Get-Item $out\\).Length } else { \"missing\" }; Get-Content $out -Tail 80 -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-Process -Name node -ErrorAction SilentlyContinue | ForEach-Object { try { $cmd = \\(Get-CimInstance Win32_Process -Filter \"ProcessId=$\\($_.Id\\)\" -ErrorAction SilentlyContinue\\).CommandLine; \"$\\($_.Id\\): $cmd\" } catch {} })",
+      "PowerShell(npx tsc --noEmit 2>&1 | Out-File -FilePath \"D:\\\\inventory-mixmart\\\\tsc-check.log\" -Encoding utf8; Get-Content \"D:\\\\inventory-mixmart\\\\tsc-check.log\" | Select-Object -First 80; \"---END---\"; \\(Get-Item \"D:\\\\inventory-mixmart\\\\tsc-check.log\"\\).Length)",
+      "PowerShell(& \"C:\\\\Program Files\\\\nodejs\\\\node.exe\" .\\\\node_modules\\\\typescript\\\\bin\\\\tsc --noEmit 2>&1 | Out-File -FilePath \"D:\\\\inventory-mixmart\\\\tsc-check.log\" -Encoding utf8; \"EXITCODE=$LASTEXITCODE\"; Get-Content \"D:\\\\inventory-mixmart\\\\tsc-check.log\" | Select-Object -First 120)",
+      "PowerShell(\"ok\")"
+    ]
+  }
+}

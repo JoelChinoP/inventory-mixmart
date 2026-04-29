@@ -1,4 +1,4 @@
-import { Plus, RotateCcw, Search } from "lucide-react";
+import { Pencil, Plus, RotateCcw, Search } from "lucide-react";
 import { Fragment, Suspense } from "react";
 
 import {
@@ -12,6 +12,7 @@ import {
   StatusBadge,
   SubmitButton,
 } from "@/components/shared";
+import { FormModal } from "@/components/ui/modal";
 import {
   decimalToNumber,
   formatCurrency,
@@ -45,10 +46,6 @@ const categories: ProductCategory[] = ["SCHOOL_SUPPLIES", "BAZAAR", "SNACKS"];
 export default function ProductsPage({ searchParams }: ProductsPageProps) {
   return (
     <div>
-      <PageHeader
-        title="Productos"
-        description="Catalogo, precios de referencia y stock actual por producto."
-      />
       <Suspense fallback={<PageContentSkeleton />}>
         <ProductsContent searchParams={searchParams} />
       </Suspense>
@@ -88,6 +85,28 @@ async function ProductsContent({ searchParams }: ProductsPageProps) {
 
   return (
     <>
+      <PageHeader
+        title="Productos"
+        description="Catalogo, precios de referencia y stock actual por producto."
+        action={
+          canManage ? (
+            <FormModal
+              size="lg"
+              title="Nuevo producto"
+              description="Define los datos basicos y de inventario."
+              trigger={
+                <>
+                  <Plus aria-hidden="true" className="h-4 w-4" />
+                  Nuevo producto
+                </>
+              }
+            >
+              <ProductFormBody />
+            </FormModal>
+          ) : null
+        }
+      />
+
       {params.success ? (
         <FlashMessage type="success">Producto guardado correctamente.</FlashMessage>
       ) : null}
@@ -126,8 +145,6 @@ async function ProductsContent({ searchParams }: ProductsPageProps) {
           </div>
         </form>
       </Section>
-
-      {canManage ? <ProductForm /> : null}
 
       <Section>
         <SectionHeader title="Lista de productos" />
@@ -184,7 +201,7 @@ async function ProductsContent({ searchParams }: ProductsPageProps) {
                       </td>
                       {canManage ? (
                         <td className="px-4 py-3">
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
                             {product.deletedAt ? (
                               <form action={restoreProduct}>
                                 <input name="id" type="hidden" value={product.id} />
@@ -195,6 +212,20 @@ async function ProductsContent({ searchParams }: ProductsPageProps) {
                               </form>
                             ) : (
                               <>
+                                <FormModal
+                                  size="lg"
+                                  title="Editar producto"
+                                  description="Actualiza datos y precios."
+                                  triggerClassName="btn-soft"
+                                  trigger={
+                                    <>
+                                      <Pencil aria-hidden="true" className="h-4 w-4" />
+                                      Editar
+                                    </>
+                                  }
+                                >
+                                  <ProductFormBody product={product} />
+                                </FormModal>
                                 <form
                                   action={
                                     product.isActive
@@ -219,18 +250,6 @@ async function ProductsContent({ searchParams }: ProductsPageProps) {
                         </td>
                       ) : null}
                     </tr>
-                    {canManage && !product.deletedAt ? (
-                      <tr className="bg-surface-muted/45">
-                        <td className="px-4 py-3" colSpan={user.role === "ADMIN" ? 8 : 6}>
-                          <details className="group">
-                            <summary className="inline-flex cursor-pointer list-none items-center rounded-card border border-primary-200 bg-primary-50 px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary-100 [&::-webkit-details-marker]:hidden">
-                              Editar producto
-                            </summary>
-                            <ProductForm mode="edit" product={product} />
-                          </details>
-                        </td>
-                      </tr>
-                    ) : null}
                   </Fragment>
                 ))}
               </tbody>
@@ -259,11 +278,9 @@ function stockTone(product: { currentStock: unknown; minimumStock: unknown }) {
   return "success";
 }
 
-function ProductForm({
-  mode = "create",
+function ProductFormBody({
   product,
 }: {
-  mode?: "create" | "edit";
   product?: {
     id: string;
     sku: string | null;
@@ -277,95 +294,89 @@ function ProductForm({
     minimumStock: unknown;
   };
 }) {
-  const isEdit = mode === "edit" && product;
+  const isEdit = Boolean(product);
 
   return (
-    <Section className={isEdit ? "mt-3 border-border/70 shadow-none" : "mb-5"}>
-      <SectionHeader
-        title={isEdit ? "Editar datos" : "Nuevo producto"}
-        description="Los cambios de precio aplican a futuras operaciones."
-      />
-      <form
-        action={isEdit ? updateProduct : createProduct}
-        className="grid gap-3 p-4 md:grid-cols-3"
-      >
-        {isEdit ? <input name="id" type="hidden" value={product.id} /> : null}
-        <label className="space-y-1 md:col-span-2">
-          <span className="text-xs font-medium text-muted-foreground">Nombre</span>
-          <input className="input" defaultValue={product?.name} name="name" required />
-        </label>
-        <label className="space-y-1">
-          <span className="text-xs font-medium text-muted-foreground">Categoria</span>
-          <select className="input" defaultValue={product?.category ?? "SCHOOL_SUPPLIES"} name="category">
-            {categories.map((item) => (
-              <option key={item} value={item}>
-                {productCategoryLabels[item]}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="space-y-1">
-          <span className="text-xs font-medium text-muted-foreground">SKU</span>
-          <input className="input" defaultValue={product?.sku ?? ""} name="sku" />
-        </label>
-        <label className="space-y-1">
-          <span className="text-xs font-medium text-muted-foreground">Codigo barras</span>
-          <input className="input" defaultValue={product?.barcode ?? ""} name="barcode" />
-        </label>
-        <label className="space-y-1">
-          <span className="text-xs font-medium text-muted-foreground">Unidad</span>
-          <input className="input" defaultValue={product?.unitName ?? "unidad"} name="unitName" required />
-        </label>
-        <label className="space-y-1">
-          <span className="text-xs font-medium text-muted-foreground">Costo ref.</span>
-          <input
-            className="input"
-            defaultValue={product?.purchasePrice?.toString() ?? "0"}
-            min="0"
-            name="purchasePrice"
-            required
-            step="0.01"
-            type="number"
-          />
-        </label>
-        <label className="space-y-1">
-          <span className="text-xs font-medium text-muted-foreground">Venta sugerida</span>
-          <input
-            className="input"
-            defaultValue={product?.salePrice?.toString() ?? ""}
-            min="0"
-            name="salePrice"
-            step="0.01"
-            type="number"
-          />
-        </label>
-        <label className="space-y-1">
-          <span className="text-xs font-medium text-muted-foreground">Stock minimo</span>
-          <input
-            className="input"
-            defaultValue={product?.minimumStock?.toString() ?? "0"}
-            min="0"
-            name="minimumStock"
-            required
-            step="0.001"
-            type="number"
-          />
-        </label>
-        <label className="space-y-1 md:col-span-3">
-          <span className="text-xs font-medium text-muted-foreground">Descripcion</span>
-          <textarea
-            className="input min-h-20 py-2"
-            defaultValue={product?.description ?? ""}
-            name="description"
-          />
-        </label>
-        <div className="md:col-span-3">
-          <SubmitButton>
-            <Plus aria-hidden="true" className="h-4 w-4" />
-            {isEdit ? "Guardar cambios" : "Crear producto"}
-          </SubmitButton>
-        </div>
-      </form>
-    </Section>
+    <form
+      action={isEdit ? updateProduct : createProduct}
+      className="grid gap-4 p-6 md:grid-cols-3"
+    >
+      {isEdit && product ? <input name="id" type="hidden" value={product.id} /> : null}
+      <label className="space-y-1.5 md:col-span-2">
+        <span className="text-xs font-semibold text-muted-foreground">Nombre</span>
+        <input className="input" defaultValue={product?.name} name="name" required />
+      </label>
+      <label className="space-y-1.5">
+        <span className="text-xs font-semibold text-muted-foreground">Categoria</span>
+        <select className="input" defaultValue={product?.category ?? "SCHOOL_SUPPLIES"} name="category">
+          {categories.map((item) => (
+            <option key={item} value={item}>
+              {productCategoryLabels[item]}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="space-y-1.5">
+        <span className="text-xs font-semibold text-muted-foreground">SKU</span>
+        <input className="input" defaultValue={product?.sku ?? ""} name="sku" />
+      </label>
+      <label className="space-y-1.5">
+        <span className="text-xs font-semibold text-muted-foreground">Codigo barras</span>
+        <input className="input" defaultValue={product?.barcode ?? ""} name="barcode" />
+      </label>
+      <label className="space-y-1.5">
+        <span className="text-xs font-semibold text-muted-foreground">Unidad</span>
+        <input className="input" defaultValue={product?.unitName ?? "unidad"} name="unitName" required />
+      </label>
+      <label className="space-y-1.5">
+        <span className="text-xs font-semibold text-muted-foreground">Costo ref.</span>
+        <input
+          className="input"
+          defaultValue={product?.purchasePrice?.toString() ?? "0"}
+          min="0"
+          name="purchasePrice"
+          required
+          step="0.01"
+          type="number"
+        />
+      </label>
+      <label className="space-y-1.5">
+        <span className="text-xs font-semibold text-muted-foreground">Venta sugerida</span>
+        <input
+          className="input"
+          defaultValue={product?.salePrice?.toString() ?? ""}
+          min="0"
+          name="salePrice"
+          step="0.01"
+          type="number"
+        />
+      </label>
+      <label className="space-y-1.5">
+        <span className="text-xs font-semibold text-muted-foreground">Stock minimo</span>
+        <input
+          className="input"
+          defaultValue={product?.minimumStock?.toString() ?? "0"}
+          min="0"
+          name="minimumStock"
+          required
+          step="0.001"
+          type="number"
+        />
+      </label>
+      <label className="space-y-1.5 md:col-span-3">
+        <span className="text-xs font-semibold text-muted-foreground">Descripcion</span>
+        <textarea
+          className="input min-h-24 py-2"
+          defaultValue={product?.description ?? ""}
+          name="description"
+        />
+      </label>
+      <div className="flex justify-end md:col-span-3">
+        <SubmitButton>
+          <Plus aria-hidden="true" className="h-4 w-4" />
+          {isEdit ? "Guardar cambios" : "Crear producto"}
+        </SubmitButton>
+      </div>
+    </form>
   );
 }

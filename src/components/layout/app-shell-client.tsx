@@ -14,6 +14,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Fragment } from "react";
 
 import { canAccessPath } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
@@ -43,11 +44,6 @@ const navigationGroups = [
     items: [
       { href: "/products", label: "Productos", icon: Package },
       { href: "/suppliers", label: "Proveedores", icon: Truck },
-    ],
-  },
-  {
-    label: "Admin",
-    items: [
       { href: "/reports", label: "Reportes", icon: BarChart3 },
       { href: "/users", label: "Usuarios", icon: Users },
     ],
@@ -69,82 +65,93 @@ function getVisibleGroups(role: UserRole) {
 
 export function AppNavigation({ role }: { role: UserRole }) {
   const pathname = usePathname();
-  const visibleItems = getVisibleGroups(role).flatMap((group) => group.items);
+  const groups = getVisibleGroups(role);
 
   return (
-    <nav className="flex flex-1 flex-col gap-2 overflow-y-auto px-5 py-8">
-      {visibleItems.map((item) => {
-        const Icon = item.icon;
-        const active = isActive(pathname, item.href);
+    <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto">
+      {groups.map((group, groupIndex) => (
+        <Fragment key={group.label}>
+          {groupIndex > 0 ? (
+            <div className="mx-3 my-2 h-px bg-border" aria-hidden="true" />
+          ) : null}
+          {group.items.map((item) => {
+            const Icon = item.icon;
+            const active = isActive(pathname, item.href);
 
-        return (
-          <Link
-            className={cn(
-              "flex min-h-[60px] items-center gap-4 rounded-card px-6 text-lg font-medium transition duration-150 ease-out",
-              active
-                ? "bg-primary-100 text-primary"
-                : "text-muted-foreground hover:bg-primary-50 hover:text-primary",
-            )}
-            href={item.href}
-            key={item.href}
-            prefetch="auto"
-          >
-            <Icon aria-hidden="true" className="h-6 w-6" />
-            <span>{item.label}</span>
-          </Link>
-        );
-      })}
+            return (
+              <Link
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-normal transition",
+                  active
+                    ? "bg-foreground font-medium text-background"
+                    : "text-muted-foreground hover:bg-black/5 hover:text-foreground",
+                )}
+                href={item.href}
+                key={item.href}
+                prefetch="auto"
+              >
+                <Icon
+                  aria-hidden="true"
+                  className={cn(
+                    "h-4 w-4 shrink-0",
+                    active ? "opacity-100" : "opacity-70",
+                  )}
+                />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </Fragment>
+      ))}
     </nav>
   );
+}
+
+function getGreeting(role: UserRole) {
+  const hour = new Date().getHours();
+  if (role === "WORKER") return "Hola";
+  if (hour < 12) return "Buenos dias";
+  if (hour < 19) return "Buenas tardes";
+  return "Buenas noches";
 }
 
 export function AppTopBar({ user }: { user: AppTopBarUser }) {
   const pathname = usePathname();
   const visibleItems = getVisibleGroups(user.role).flatMap((group) => group.items);
-  const currentModule =
-    pathname.startsWith("/profile")
+  const onDashboard = isActive(pathname, "/dashboard");
+  const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
+
+  const heading = onDashboard
+    ? `${getGreeting(user.role)}, ${user.firstName}`
+    : pathname.startsWith("/profile")
       ? "Mi perfil"
       : visibleItems.find((item) => isActive(pathname, item.href))?.label ??
         "El Colorado";
-  const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
 
   return (
-    <header className="sticky top-0 z-20 border-b border-border bg-background/85 px-4 py-5 backdrop-blur supports-[backdrop-filter]:bg-background/75 lg:px-10">
-      <div className="flex min-h-12 items-center justify-between gap-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            {currentModule}
-          </h1>
-        </div>
-        <div className="flex shrink-0 items-center gap-3">
-          <Link
-            aria-label={`${user.firstName} ${user.lastName}`}
-            className="group flex items-center gap-3 rounded-pill border border-border bg-surface px-2 py-1.5 transition hover:border-primary-200 hover:bg-primary-50"
-            href="/profile"
-          >
-            <span className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-              {user.avatarUrl ? (
-                <Image
-                  alt=""
-                  className="object-cover"
-                  fill
-                  sizes="40px"
-                  src={user.avatarUrl}
-                />
-              ) : (
-                initials
-              )}
-            </span>
-            <span className="hidden pr-2 text-left sm:block">
-              <span className="block text-sm font-semibold leading-tight text-foreground">
-                {user.firstName}
-              </span>
-              <span className="block text-xs leading-tight text-muted-foreground">
-                Mi perfil
-              </span>
-            </span>
-          </Link>
-        </div>
+    <header className="sticky top-0 z-20 bg-background/85 px-4 pt-7 pb-4 backdrop-blur supports-backdrop-filter:bg-background/75 lg:px-9">
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="font-display text-[28px] font-medium leading-tight tracking-tight text-foreground">
+          {heading}
+        </h1>
+        <Link
+          aria-label={`${user.firstName} ${user.lastName} - Mi perfil`}
+          className="group flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-primary text-[13px] font-semibold text-primary-foreground transition hover:bg-primary-hover"
+          href="/profile"
+        >
+          {user.avatarUrl ? (
+            <Image
+              alt=""
+              className="h-full w-full object-cover"
+              height={36}
+              sizes="36px"
+              src={user.avatarUrl}
+              width={36}
+            />
+          ) : (
+            initials
+          )}
+        </Link>
       </div>
     </header>
   );

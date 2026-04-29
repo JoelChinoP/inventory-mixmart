@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { CircleHelp, Plus, UserRound } from 'lucide-react';
+import { CircleHelp, Plus } from 'lucide-react';
 
 import { SignOutButton } from '@/components/auth/sign-out-button';
 import {
@@ -26,49 +26,42 @@ type AppShellProps = {
 export function AppShell({ children, user }: AppShellProps) {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-80 border-r border-border bg-surface-muted text-foreground lg:flex lg:flex-col">
-        <div className="px-10 pb-8 pt-10">
-          <p className="text-3xl font-semibold tracking-tight text-primary">
-            Inventario
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-66 flex-col gap-5 border-r border-border bg-background px-5 py-7 lg:flex">
+        <div className="px-2">
+          <p className="font-display text-[30px] font-medium leading-[1.05] tracking-tight text-foreground">
+            El Colorado
           </p>
-          <p className="mt-2 text-lg text-muted-foreground">Libreria y Bazar</p>
+          <p className="mt-1 text-[12px] tracking-wide text-muted-foreground">
+            Libreria y Bazar
+          </p>
         </div>
 
-        <div className="px-5">
-          <Link
-            className="btn btn-primary h-14 w-full justify-center rounded-pill px-6 text-[17px]"
-            href="/entries"
-          >
-            <Plus aria-hidden="true" className="h-6 w-6" />
-            Nuevo registro
-          </Link>
-        </div>
+        <Link
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-pill bg-primary px-4 text-[13px] font-medium text-primary-foreground shadow-pill transition hover:-translate-y-px hover:bg-primary-hover"
+          href="/entries"
+        >
+          <Plus aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2.5} />
+          Nuevo registro
+        </Link>
 
         <AppNavigation role={user.role} />
 
-        <div className="mt-auto border-t border-border px-5 py-8">
-          <Link
-            className="flex h-12 w-full items-center gap-4 rounded-card px-6 text-base font-medium text-muted-foreground transition hover:bg-primary-50 hover:text-primary"
-            href="/profile"
-          >
-            <UserRound aria-hidden="true" className="h-6 w-6" />
-            Mi perfil
-          </Link>
+        <div className="mt-auto flex flex-col gap-1">
           <button
-            className="mt-3 flex h-12 w-full items-center gap-4 rounded-card px-6 text-base font-medium text-muted-foreground transition hover:bg-primary-50 hover:text-primary"
+            className="flex h-9 items-center gap-3 rounded-lg px-3 text-[13.5px] font-normal text-muted-foreground transition hover:bg-black/5 hover:text-foreground"
             type="button"
           >
-            <CircleHelp aria-hidden="true" className="h-6 w-6" />
+            <CircleHelp aria-hidden="true" className="h-4 w-4 opacity-70" />
             Ayuda
           </button>
-          <SignOutButton className="mt-3 h-12 w-full justify-start rounded-card px-6 text-base font-medium text-muted-foreground hover:bg-primary-50 hover:text-primary" />
+          <SignOutButton className="h-9 w-full justify-start gap-3 rounded-lg px-3 text-[13.5px] font-normal text-muted-foreground hover:bg-black/5 hover:text-foreground" />
         </div>
       </aside>
 
-      <div className="lg:pl-80">
+      <div className="lg:pl-66">
         <AppTopBar user={user} />
 
-        <main className="w-full px-4 py-7 pb-24 lg:px-10 lg:pb-10">
+        <main className="w-full px-4 pb-24 pt-5 lg:px-9 lg:pb-12 lg:pt-2">
           {children}
         </main>
 
@@ -81,54 +74,41 @@ export function AppShell({ children, user }: AppShellProps) {
 export function AppShellSkeleton() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-80 border-r border-border bg-surface-muted lg:flex lg:flex-col">
-        <div className="px-10 py-10">
-          <div className="h-8 w-32 animate-pulse rounded bg-primary-100" />
-          <div className="mt-3 h-3 w-32 animate-pulse rounded bg-muted" />
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-66 flex-col gap-5 border-r border-border bg-background px-5 py-7 lg:flex">
+        <div className="px-2">
+          <div className="h-7 w-32 animate-pulse rounded bg-oat-200" />
+          <div className="mt-2 h-3 w-24 animate-pulse rounded bg-oat-200" />
         </div>
-        <div className="flex flex-1 flex-col gap-5 px-3 py-4">
-          {Array.from({ length: 3 }).map((_, groupIndex) => (
-            <div className="space-y-2" key={groupIndex}>
-              <div className="mx-3 h-3 w-20 animate-pulse rounded bg-muted" />
-              {Array.from({ length: groupIndex === 0 ? 5 : 2 }).map(
-                (__, itemIndex) => (
-                  <div
-                    className="h-10 animate-pulse rounded-control bg-surface-muted"
-                    key={itemIndex}
-                  />
-                ),
-              )}
-            </div>
+        <div className="h-11 w-full animate-pulse rounded-pill bg-oat-200" />
+        <div className="flex flex-col gap-1.5">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div
+              className="h-9 animate-pulse rounded-lg bg-oat-200"
+              key={index}
+            />
           ))}
-        </div>
-        <div className="border-t border-border p-4">
-          <div className="h-4 w-36 animate-pulse rounded bg-muted" />
-          <div className="mt-2 h-3 w-44 animate-pulse rounded bg-muted" />
         </div>
       </aside>
 
-      <div className="lg:pl-80">
-        <header className="sticky top-0 z-20 border-b border-border bg-background/95 px-4 py-8 backdrop-blur lg:px-10">
+      <div className="lg:pl-66">
+        <header className="sticky top-0 z-20 bg-background/85 px-4 py-5 backdrop-blur lg:px-9">
           <div className="flex min-h-12 items-center justify-between gap-3">
-            <div>
-              <div className="h-3 w-32 animate-pulse rounded bg-muted" />
-              <div className="mt-2 h-5 w-40 animate-pulse rounded bg-primary-100" />
-            </div>
-            <div className="hidden h-9 w-28 animate-pulse rounded-control bg-muted sm:block" />
+            <div className="h-7 w-48 animate-pulse rounded bg-oat-200" />
+            <div className="h-9 w-9 animate-pulse rounded-full bg-oat-200" />
           </div>
         </header>
-        <main className="w-full px-4 py-7 pb-24 lg:px-10 lg:pb-10">
-          <div className="space-y-5">
-            <div className="h-20 animate-pulse rounded-card border border-border bg-surface" />
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <main className="w-full px-4 pb-24 pt-5 lg:px-9 lg:pt-2">
+          <div className="space-y-4">
+            <div className="grid gap-2.5 md:grid-cols-2 xl:grid-cols-4">
               {Array.from({ length: 4 }).map((_, index) => (
                 <div
-                  className="h-32 animate-pulse rounded-card border border-border bg-surface"
+                  className="h-17 animate-pulse rounded-card border border-border bg-surface"
                   key={index}
                 />
               ))}
             </div>
-            <div className="h-80 animate-pulse rounded-card border border-border bg-surface" />
+            <div className="h-56 animate-pulse rounded-card border border-border bg-surface" />
+            <div className="h-72 animate-pulse rounded-card border border-border bg-surface" />
           </div>
         </main>
       </div>

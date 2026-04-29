@@ -1,48 +1,77 @@
 @import "tailwindcss";
 @config "../../tailwind.config.js";
 
+/* ------------------------------------------------------------------
+   Design tokens — "El Colorado" warm parchment palette
+   Updated to match the dashboard redesign (admin + worker).
+   ------------------------------------------------------------------ */
 :root {
-  --bg-canvas: #f5efeb;
+  /* Surfaces */
+  --bg-canvas: #efe7da;
   --bg-surface: #ffffff;
-  --bg-surface-muted: #ede6e0;
-  --bg-tile-dark: #1f1b25;
-  --bg-tile-darker: #15121a;
-  --bg-overlay: rgb(28 27 31 / 42%);
+  --bg-surface-muted: #e8dfd0;
+  --bg-tile-dark: #16140f;
+  --bg-tile-darker: #2a2620;
+  --bg-tile-line: rgb(255 255 255 / 8%);
+  --bg-overlay: rgb(22 20 15 / 42%);
 
-  --brand: #6c5b7b;
-  --brand-hover: #5a4a68;
-  --brand-pressed: #4f3f5c;
-  --brand-soft: rgb(108 91 123 / 8%);
+  /* Brand purple — the only clickable color */
+  --brand: #5e4e8a;
+  --brand-hover: #514377;
+  --brand-pressed: #443866;
+  --brand-soft: #ece6f2;
   --brand-on: #ffffff;
-  --focus-ring: #7e6a8e;
+  --focus-ring: #7d6ea0;
 
-  --positive: #7aad2b;
-  --positive-vivid: #9bcb3c;
-  --positive-soft: rgb(155 203 60 / 16%);
-  --positive-on: #1c1b1f;
+  /* Positive — sage green (entries, healthy stock, sales) */
+  --positive: #6e9968;
+  --positive-vivid: #b5d49e;
+  --positive-soft: #e1ead9;
+  --positive-on: #1a1814;
 
-  --attention: #d85a1a;
-  --attention-vivid: #f3722c;
-  --attention-soft: rgb(243 114 44 / 14%);
-  --attention-on: #ffffff;
+  /* Warning — warm amber (low stock, secondary tone) */
+  --warning: #d88a4a;
+  --warning-vivid: #e9b387;
+  --warning-soft: #f7e3cd;
+  --warning-on: #ffffff;
 
-  --text-primary: #1c1b1f;
-  --text-secondary: rgb(28 27 31 / 62%);
-  --text-muted: rgb(28 27 31 / 42%);
+  /* Danger — red (out of stock, mermas) */
+  --danger: #c5453e;
+  --danger-vivid: #d97a73;
+  --danger-soft: #f4d7d4;
+  --danger-on: #ffffff;
+
+  /* Info — muted blue (entradas, neutral signals) */
+  --info: #4d7ca0;
+  --info-vivid: #7ea5c2;
+  --info-soft: #dae6ee;
+  --info-on: #ffffff;
+
+  /* Text */
+  --text-primary: #1a1814;
+  --text-secondary: #5c5852;
+  --text-muted: #948e83;
   --text-on-dark: #ffffff;
-  --text-on-dark-muted: rgb(255 255 255 / 64%);
+  --text-on-dark-muted: rgb(255 255 255 / 60%);
+  --text-on-dark-faint: rgb(255 255 255 / 50%);
 
-  --hairline: rgb(28 27 31 / 8%);
-  --hairline-strong: rgb(28 27 31 / 14%);
+  /* Hairlines */
+  --hairline: #e0d6c5;
+  --hairline-strong: #ddd2c0;
+  --hairline-soft: #efe7da;
 
+  /* Radii */
   --radius-input: 8px;
-  --radius-button: 12px;
+  --radius-control: 12px;
   --radius-card: 18px;
   --radius-modal: 24px;
   --radius-pill: 9999px;
 
-  --shadow-3: 0 8px 32px -8px rgb(28 27 31 / 18%);
+  /* Shadows */
+  --shadow-3: 0 8px 32px -8px rgb(22 20 15 / 14%);
+  --shadow-pill: 0 1px 0 rgb(0 0 0 / 4%), 0 6px 14px -8px rgb(94 78 138 / 50%);
 
+  /* Easing */
   --ease-out-expo: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-in-expo: cubic-bezier(0.4, 0, 1, 1);
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
@@ -56,17 +85,18 @@
 }
 
 @theme {
-  --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont,
+  --font-sans: var(--font-geist), system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-fraunces), "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
     Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  /* Warm parchment scale (canvas) */
-  --color-oat-50: #faf6f2;
-  --color-oat-100: #f5efeb;
-  --color-oat-200: #ede6e0;
-  --color-oat-300: #ddd2c7;
-  --color-oat-400: #c5b4a4;
+  /* Warm parchment scale (canvas / muted backgrounds) */
+  --color-oat-50: #f7f1e8;
+  --color-oat-100: #efe7da;
+  --color-oat-200: #e8dfd0;
+  --color-oat-300: #ddd2c0;
+  --color-oat-400: #c8b9a0;
   --color-oat-500: #a8927d;
   --color-oat-600: #8a735e;
   --color-oat-700: #6a5645;
@@ -74,63 +104,89 @@
   --color-oat-900: #2a2018;
   --color-oat-950: #18110b;
 
-  /* Brand purple — the only clickable color */
-  --color-primary-50: #f4f1f6;
-  --color-primary-100: #e8e4ed;
-  --color-primary-200: #d2c9da;
-  --color-primary-300: #b6a8c2;
-  --color-primary-400: #9686a4;
-  --color-primary-500: #7a6a8a;
-  --color-primary-600: #6c5b7b;
-  --color-primary-700: #5a4a68;
-  --color-primary-800: #4f3f5c;
-  --color-primary-900: #3e3148;
-  --color-primary-950: #231c2a;
+  /* Brand purple */
+  --color-primary-50: #f4f0f7;
+  --color-primary-100: #ece6f2;
+  --color-primary-200: #ddd2e3;
+  --color-primary-300: #c5b6cf;
+  --color-primary-400: #a899b8;
+  --color-primary-500: #8b7ba0;
+  --color-primary-600: #5e4e8a;
+  --color-primary-700: #514377;
+  --color-primary-800: #443866;
+  --color-primary-900: #382e54;
+  --color-primary-950: #1f1830;
 
-  /* Attention orange — warning + danger unified */
-  --color-secondary-50: #fef3eb;
-  --color-secondary-100: #fce0cc;
-  --color-secondary-200: #fac196;
-  --color-secondary-300: #f89d60;
-  --color-secondary-400: #f57f39;
-  --color-secondary-500: #f3722c;
-  --color-secondary-600: #d85a1a;
-  --color-secondary-700: #b14315;
-  --color-secondary-800: #883014;
-  --color-secondary-900: #6b2611;
-  --color-secondary-950: #3d1208;
+  /* Secondary — warm amber (low stock / outputs / warnings) */
+  --color-secondary-50: #fef5ec;
+  --color-secondary-100: #f7e3cd;
+  --color-secondary-200: #f3d2b0;
+  --color-secondary-300: #e9b387;
+  --color-secondary-400: #df9a64;
+  --color-secondary-500: #d88a4a;
+  --color-secondary-600: #b47237;
+  --color-secondary-700: #8e592a;
+  --color-secondary-800: #6c4321;
+  --color-secondary-900: #4f3019;
+  --color-secondary-950: #2c1a0c;
 
-  /* Positive lime green — entries, income, healthy stock */
-  --color-accent-50: #f4fae3;
-  --color-accent-100: #e5f4c0;
-  --color-accent-200: #d2ee96;
-  --color-accent-300: #bce368;
-  --color-accent-400: #a5d448;
-  --color-accent-500: #9bcb3c;
-  --color-accent-600: #7aad2b;
-  --color-accent-700: #5e8821;
-  --color-accent-800: #4a6a1a;
-  --color-accent-900: #385014;
-  --color-accent-950: #1f2d08;
+  /* Accent — sage green (positive / sales / income) */
+  --color-accent-50: #f0f5ed;
+  --color-accent-100: #e1ead9;
+  --color-accent-200: #c8d8c0;
+  --color-accent-300: #b5d49e;
+  --color-accent-400: #95b88a;
+  --color-accent-500: #6e9968;
+  --color-accent-600: #587b54;
+  --color-accent-700: #486343;
+  --color-accent-800: #354a32;
+  --color-accent-900: #243424;
+  --color-accent-950: #131c12;
 
-  /* Brand mappings */
+  /* Danger — red (out of stock, mermas) */
+  --color-danger-50: #fbeeec;
+  --color-danger-100: #f4d7d4;
+  --color-danger-200: #ecbab5;
+  --color-danger-300: #e09790;
+  --color-danger-400: #d2706a;
+  --color-danger-500: #c5453e;
+  --color-danger-600: #a53931;
+  --color-danger-700: #832c26;
+  --color-danger-800: #5f201c;
+  --color-danger-900: #3f1614;
+  --color-danger-950: #220a09;
+
+  /* Info — blue (entradas) */
+  --color-info-50: #eef3f8;
+  --color-info-100: #dae6ee;
+  --color-info-200: #b9cee0;
+  --color-info-300: #8eb1cb;
+  --color-info-400: #6995b4;
+  --color-info-500: #4d7ca0;
+  --color-info-600: #3e6582;
+  --color-info-700: #305067;
+  --color-info-800: #233b4c;
+  --color-info-900: #182833;
+  --color-info-950: #0c151c;
+
+  /* Brand semantic mappings */
   --color-primary: var(--brand);
   --color-primary-foreground: var(--brand-on);
   --color-primary-hover: var(--brand-hover);
   --color-primary-active: var(--brand-pressed);
-  --color-primary-disabled: #d2c9da;
+  --color-primary-disabled: #c5b6cf;
 
-  --color-secondary: var(--attention-vivid);
-  --color-secondary-foreground: var(--attention-on);
-  --color-secondary-hover: var(--attention);
-  --color-secondary-active: #b14315;
-  --color-secondary-disabled: #fac196;
+  --color-secondary: var(--warning);
+  --color-secondary-foreground: var(--warning-on);
+  --color-secondary-hover: #b47237;
+  --color-secondary-active: #8e592a;
+  --color-secondary-disabled: #f3d2b0;
 
   --color-accent: var(--positive-vivid);
   --color-accent-foreground: var(--positive-on);
   --color-accent-hover: var(--positive);
-  --color-accent-active: #5e8821;
-  --color-accent-disabled: #d2ee96;
+  --color-accent-active: #486343;
+  --color-accent-disabled: #c8d8c0;
 
   /* Surfaces */
   --color-background: var(--bg-canvas);
@@ -138,57 +194,61 @@
   --color-surface: var(--bg-surface);
   --color-surface-muted: var(--bg-surface-muted);
   --color-surface-elevated: var(--bg-surface);
-  --color-surface-sunken: #ddd2c7;
+  --color-surface-sunken: #ddd2c0;
   --color-card: var(--bg-surface);
   --color-card-foreground: var(--text-primary);
   --color-muted: var(--bg-surface-muted);
   --color-muted-foreground: var(--text-secondary);
   --color-border: var(--hairline);
+  --color-border-soft: var(--hairline-soft);
   --color-input: var(--hairline-strong);
   --color-ring: var(--focus-ring);
-  --color-focus: #e8e4ed;
-  --color-disabled: #ede6e0;
-  --color-disabled-foreground: #908a96;
+  --color-focus: #ece6f2;
+  --color-disabled: #e8dfd0;
+  --color-disabled-foreground: #948e83;
 
-  /* Semantic — positive (success) */
+  /* Semantic — success */
   --color-success: var(--positive);
-  --color-success-foreground: var(--positive-on);
+  --color-success-foreground: #ffffff;
   --color-success-surface: var(--positive-soft);
-  --color-success-border: #bce368;
+  --color-success-border: #c8d8c0;
 
-  /* Semantic — attention (warning) */
-  --color-warning: var(--attention);
-  --color-warning-foreground: var(--attention-on);
-  --color-warning-surface: var(--attention-soft);
-  --color-warning-border: #f89d60;
+  /* Semantic — warning */
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-on);
+  --color-warning-surface: var(--warning-soft);
+  --color-warning-border: #f3d2b0;
 
-  /* Severity unified — error reuses attention vivid */
-  --color-error: var(--attention);
-  --color-error-foreground: var(--attention-on);
-  --color-error-surface: var(--attention-soft);
-  --color-error-border: #f89d60;
+  /* Semantic — error / danger */
+  --color-error: var(--danger);
+  --color-error-foreground: var(--danger-on);
+  --color-error-surface: var(--danger-soft);
+  --color-error-border: #ecbab5;
 
-  /* Info — neutral brand-soft tone */
-  --color-info: var(--brand);
-  --color-info-foreground: var(--brand-on);
-  --color-info-surface: var(--brand-soft);
-  --color-info-border: #d2c9da;
+  /* Semantic — info */
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-on);
+  --color-info-surface: var(--info-soft);
+  --color-info-border: #b9cee0;
 
-  /* Dark tiles for hero financial card */
+  /* Dark tile (hero financial) */
   --color-ink: var(--bg-tile-dark);
   --color-ink-soft: var(--bg-tile-darker);
   --color-ink-foreground: var(--text-on-dark);
   --color-ink-muted: var(--text-on-dark-muted);
 
-  /* Six radii only — 0 / 8 / 12 / 18 / 24 / 9999 */
+  /* Radii */
   --radius-card: 18px;
   --radius-input: 8px;
   --radius-control: 12px;
   --radius-modal: 24px;
   --radius-pill: 9999px;
+
+  /* Shadows */
   --shadow-soft: none;
   --shadow-elevated: var(--shadow-3);
-  --shadow-focus: 0 0 0 4px rgb(126 106 142 / 22%);
+  --shadow-focus: 0 0 0 4px rgb(125 110 160 / 22%);
+  --shadow-pill: var(--shadow-pill);
 }
 
 @layer base {
@@ -207,12 +267,10 @@
     background: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 400;
-    line-height: 1.47;
-    letter-spacing: -0.01em;
-    font-feature-settings: "ss03", "cv11";
-    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
+    letter-spacing: 0;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
   }
@@ -245,8 +303,13 @@
 }
 
 @layer components {
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+
   .btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-control px-4 text-[15px] font-medium leading-none transition duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.95] disabled:pointer-events-none disabled:scale-100 disabled:bg-disabled disabled:text-disabled-foreground;
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-control px-4 text-[13px] font-medium leading-none transition duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.97] disabled:pointer-events-none disabled:scale-100 disabled:bg-disabled disabled:text-disabled-foreground;
   }
 
   .btn-primary {
@@ -276,17 +339,27 @@
   .card-ink {
     @apply rounded-card text-ink-foreground shadow-elevated;
     background: var(--color-ink);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-ink::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(80% 70% at 100% 0%, rgb(94 78 138 / 16%), transparent 60%);
+    pointer-events: none;
   }
 
   .input {
     @apply w-full border border-input bg-surface-elevated text-foreground transition-colors placeholder:text-muted-foreground hover:border-primary-300 focus:border-ring focus:outline-none focus:ring-4 focus:ring-focus disabled:bg-disabled disabled:text-disabled-foreground;
     border-radius: var(--radius-input);
     box-sizing: border-box;
-    min-height: 48px;
-    padding: 11px 14px;
+    min-height: 44px;
+    padding: 10px 14px;
     font: inherit;
-    font-size: 17px;
-    line-height: 1.25;
+    font-size: 14px;
+    line-height: 1.4;
   }
 
   select.input {
@@ -337,7 +410,7 @@
   }
 
   .badge {
-    @apply inline-flex min-h-6 items-center whitespace-nowrap rounded-pill border px-2.5 py-1 text-xs font-semibold leading-none;
+    @apply inline-flex min-h-6 items-center whitespace-nowrap rounded-pill border px-2.5 py-1 text-[11px] font-semibold leading-none;
   }
 
   .table-operational {
@@ -345,7 +418,7 @@
   }
 
   .table-operational thead {
-    @apply bg-surface-muted text-left text-xs uppercase text-muted-foreground;
+    @apply bg-surface-muted text-left text-[11px] uppercase tracking-wide text-muted-foreground;
   }
 
   .table-operational th {
@@ -361,7 +434,7 @@
   }
 
   .popover-window {
-    @apply rounded-card border border-border bg-surface-elevated p-3 shadow-soft;
+    @apply rounded-card border border-border bg-surface-elevated p-3 shadow-elevated;
   }
 
   .badge-success {

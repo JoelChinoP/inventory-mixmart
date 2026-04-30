@@ -50,8 +50,10 @@ export function buildTestDatabaseUrl() {
 
 export async function setupTestDatabase(): Promise<TestDatabase> {
   const { schemaName, schemaUrl, adminUrl } = buildTestDatabaseUrl();
-  process.env.NODE_ENV = "test";
-  process.env.TEST_DATABASE_URL = schemaUrl;
+  Object.assign(process.env, {
+    NODE_ENV: "test",
+    TEST_DATABASE_URL: schemaUrl,
+  });
 
   execFileSync(
     process.execPath,

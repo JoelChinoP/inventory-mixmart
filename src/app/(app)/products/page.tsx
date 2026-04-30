@@ -1,16 +1,16 @@
-import { Pencil, Plus, RotateCcw, Search } from 'lucide-react';
+import { Pencil, Plus, RotateCcw } from 'lucide-react';
 import { Fragment, Suspense } from 'react';
 
+import { FilterBar, SearchFilter, SelectFilter } from '@/components/filters';
 import {
   EmptyState,
   FlashMessage,
-  PageContentSkeleton,
   PageHeader,
   ProductCategoryBadge,
   Section,
-  SectionHeader,
   StatusBadge,
   SubmitButton,
+  TableSkeleton,
 } from '@/components/shared';
 import { FormModal } from '@/components/ui/modal';
 import { Select } from '@/components/ui/select';
@@ -33,62 +33,39 @@ import {
 } from '@/server/actions';
 import type { ProductCategory } from '../../../../prisma/generated/client';
 
+type ProductsSearchParams = {
+  q?: string;
+  category?: ProductCategory;
+  status?: 'active' | 'inactive' | 'deleted';
+  success?: string;
+};
+
 type ProductsPageProps = {
-  searchParams: Promise<{
-    q?: string;
-    category?: ProductCategory;
-    status?: 'active' | 'inactive' | 'deleted';
-    success?: string;
-  }>;
+  searchParams: Promise<ProductsSearchParams>;
 };
 
 const categories: ProductCategory[] = ['SCHOOL_SUPPLIES', 'BAZAAR', 'SNACKS'];
 
-export default function ProductsPage({ searchParams }: ProductsPageProps) {
-  return (
-    <div>
-      <Suspense fallback={<PageContentSkeleton />}>
-        <ProductsContent searchParams={searchParams} />
-      </Suspense>
-    </div>
-  );
-}
-
-async function ProductsContent({ searchParams }: ProductsPageProps) {
+export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const user = await requireActiveUser('/products');
   const params = await searchParams;
   const canManage = canManageCatalog(user.role);
-  const q = params.q?.trim() ?? '';
-  const category = params.category;
-  const status = params.status ?? 'active';
 
-  const products = await prisma.product.findMany({
-    where: {
-      ...(q
-        ? {
-            OR: [
-              { name: { contains: q, mode: 'insensitive' } },
-              { sku: { contains: q, mode: 'insensitive' } },
-              { barcode: { contains: q, mode: 'insensitive' } },
-            ],
-          }
-        : {}),
-      ...(category ? { category } : {}),
-      ...(status === 'inactive'
-        ? { isActive: false }
-        : status === 'deleted'
-          ? { deletedAt: { not: null } }
-          : { isActive: true }),
-    },
-    orderBy: [{ isActive: 'desc' }, { name: 'asc' }],
-    take: 100,
+  const filterKey = JSON.stringify({
+    category: params.category ?? '',
+    q: params.q ?? '',
+    status: params.status ?? '',
   });
 
+  const statusOptions = [
+    { label: 'Activos', value: 'active' },
+    { label: 'Inactivos', value: 'inactive' },
+    ...(canManage ? [{ label: 'Eliminados', value: 'deleted' }] : []),
+  ];
+
   return (
-    <>
+    <div className="space-y-5">
       <PageHeader
-        title="Productos"
-        description="Catalogo, precios de referencia y stock actual por producto."
         action={
           canManage ? (
             <FormModal
@@ -114,59 +91,74 @@ async function ProductsContent({ searchParams }: ProductsPageProps) {
         </FlashMessage>
       ) : null}
 
-      <Section className="mb-5">
-        <SectionHeader title="Filtros" />
-        <form
-          className="grid gap-3 p-4 md:grid-cols-[1fr_180px_160px_auto]"
-          action="/products"
-        >
-          <label className="space-y-1">
-            <span className="text-xs font-medium text-muted-foreground">
-              Buscar
-            </span>
-            <input
-              className="input"
-              defaultValue={q}
-              name="q"
-              placeholder="Nombre, SKU o codigo"
-            />
-          </label>
-          <label className="space-y-1">
-            <span className="text-xs font-medium text-muted-foreground">
-              Categoria
-            </span>
-            <Select defaultValue={category ?? ''} name="category">
-              <option value="">Todas</option>
-              {categories.map((item) => (
-                <option key={item} value={item}>
-                  {productCategoryLabels[item]}
-                </option>
-              ))}
-            </Select>
-          </label>
-          <label className="space-y-1">
-            <span className="text-xs font-medium text-muted-foreground">
-              Estado
-            </span>
-            <Select defaultValue={status} name="status">
-              <option value="active">Activos</option>
-              <option value="inactive">Inactivos</option>
-              {canManage ? <option value="deleted">Eliminados</option> : null}
-            </Select>
-          </label>
-          <div className="flex items-end">
-            <button className="btn btn-primary w-full" type="submit">
-              <Search aria-hidden="true" className="h-4 w-4" />
-              Filtrar
-            </button>
-          </div>
-        </form>
-      </Section>
+      <FilterBar>
+        <SearchFilter label="Buscar" name="q" placeholder="Nombre, SKU o codigo" />
+        <SelectFilter
+          allLabel="Todas"
+          label="Categoria"
+          name="category"
+          options={categories.map((item) => ({
+            label: productCategoryLabels[item],
+            value: item,
+          }))}
+        />
+        <SelectFilter
+          allLabel="Activos"
+          label="Estado"
+          name="status"
+          options={statusOptions}
+        />
+      </FilterBar>
 
-      <Section>
-        {/* <SectionHeader title="Lista de productos" /> */}
-        {products.length ? (
-          <div className="overflow-x-auto">
+      <Suspense
+        fallback={<TableSkeleton columns={6} rows={6} />}
+        key={filterKey}
+      >
+        <ProductsList canManage={canManage} role={user.role} searchParams={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function ProductsList({
+  canManage,
+  role,
+  searchParams,
+}: {
+  canManage: boolean;
+  role: 'ADMIN' | 'WORKER';
+  searchParams: ProductsSearchParams;
+}) {
+  const q = searchParams.q?.trim() ?? '';
+  const category = searchParams.category;
+  const status = searchParams.status ?? 'active';
+
+  const products = await prisma.product.findMany({
+    where: {
+      ...(q
+        ? {
+            OR: [
+              { name: { contains: q, mode: 'insensitive' } },
+              { sku: { contains: q, mode: 'insensitive' } },
+              { barcode: { contains: q, mode: 'insensitive' } },
+            ],
+          }
+        : {}),
+      ...(category ? { category } : {}),
+      ...(status === 'inactive'
+        ? { isActive: false }
+        : status === 'deleted'
+          ? { deletedAt: { not: null } }
+          : { isActive: true }),
+    },
+    orderBy: [{ isActive: 'desc' }, { name: 'asc' }],
+    take: 100,
+  });
+
+  return (
+    <Section>
+      {products.length ? (
+        <div className="overflow-x-auto">
             <table className="table-operational">
               <thead className="table-operational-head">
                 <tr>
@@ -174,10 +166,10 @@ async function ProductsContent({ searchParams }: ProductsPageProps) {
                   <th className="px-4 py-3">Categoria</th>
                   <th className="px-4 py-3">Stock</th>
                   <th className="px-4 py-3">Minimo</th>
-                  {user.role === 'ADMIN' ? (
+                  {role === 'ADMIN' ? (
                     <th className="px-4 py-3">Costo</th>
                   ) : null}
-                  {user.role === 'ADMIN' ? (
+                  {role === 'ADMIN' ? (
                     <th className="px-4 py-3">Venta sug.</th>
                   ) : null}
                   <th className="px-4 py-3">Estado</th>
@@ -207,12 +199,12 @@ async function ProductsContent({ searchParams }: ProductsPageProps) {
                       <td className="px-4 py-3">
                         {formatDecimal(product.minimumStock, 3)}
                       </td>
-                      {user.role === 'ADMIN' ? (
+                      {role === 'ADMIN' ? (
                         <td className="px-4 py-3">
                           {formatCurrency(product.purchasePrice)}
                         </td>
                       ) : null}
-                      {user.role === 'ADMIN' ? (
+                      {role === 'ADMIN' ? (
                         <td className="px-4 py-3">
                           {product.salePrice
                             ? formatCurrency(product.salePrice)
@@ -303,15 +295,14 @@ async function ProductsContent({ searchParams }: ProductsPageProps) {
                 ))}
               </tbody>
             </table>
-          </div>
-        ) : (
-          <EmptyState
-            title="Sin productos"
-            description="No hay productos con esos filtros."
-          />
-        )}
-      </Section>
-    </>
+        </div>
+      ) : (
+        <EmptyState
+          title="Sin productos"
+          description="No hay productos con esos filtros."
+        />
+      )}
+    </Section>
   );
 }
 

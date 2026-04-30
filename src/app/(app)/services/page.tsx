@@ -2,14 +2,19 @@ import { Plus } from "lucide-react";
 import { Suspense } from "react";
 
 import {
+  DateRangeFilter,
+  FilterBar,
+  SelectFilter,
+} from "@/components/filters";
+import {
   EmptyState,
   FlashMessage,
-  OperationalPageSkeleton,
   PageHeader,
   Section,
   SectionHeader,
   StatusBadge,
   SubmitButton,
+  TableSkeleton,
 } from "@/components/shared";
 import { FormModal } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
@@ -30,35 +35,35 @@ import {
   deactivateServiceType,
   reactivateServiceType,
 } from "@/server/actions";
-import type { ServiceKind } from "../../../../prisma/generated/client";
+import type {
+  ServiceKind,
+  ServiceStatus,
+} from "../../../../prisma/generated/client";
+
+type ServicesSearchParams = {
+  success?: string;
+  error?: string;
+  from?: string;
+  to?: string;
+  kind?: ServiceKind;
+  status?: ServiceStatus;
+  serviceTypeId?: string;
+};
 
 type ServicesPageProps = {
-  searchParams: Promise<{
-    success?: string;
-    error?: string;
-  }>;
+  searchParams: Promise<ServicesSearchParams>;
 };
 
 function dateTimeLocalValue() {
   return new Date().toISOString().slice(0, 16);
 }
 
-export default function ServicesPage({ searchParams }: ServicesPageProps) {
-  return (
-    <div>
-      <Suspense fallback={<OperationalPageSkeleton />}>
-        <ServicesContent searchParams={searchParams} />
-      </Suspense>
-    </div>
-  );
-}
-
-async function ServicesContent({ searchParams }: ServicesPageProps) {
+export default async function ServicesPage({ searchParams }: ServicesPageProps) {
   const user = await requireActiveUser("/services");
   const params = await searchParams;
   const canManage = canManageCatalog(user.role);
 
-  const [serviceTypes, products, records] = await Promise.all([
+  const [serviceTypes, products] = await Promise.all([
     prisma.serviceType.findMany({
       where: { isActive: true },
       include: {
@@ -77,29 +82,27 @@ async function ServicesContent({ searchParams }: ServicesPageProps) {
       orderBy: { name: "asc" },
       take: 300,
     }),
-    prisma.serviceRecord.findMany({
-      include: {
-        serviceType: { select: { name: true } },
-        createdBy: { select: { firstName: true, lastName: true } },
-        consumptions: {
-          include: {
-            product: { select: { name: true, unitName: true, purchasePrice: true } },
-          },
-        },
-      },
-      orderBy: { serviceDate: "desc" },
-      take: 50,
-    }),
   ]);
 
   const inHouseTypes = serviceTypes.filter((type) => type.kind === "IN_HOUSE");
   const outsourcedTypes = serviceTypes.filter((type) => type.kind === "OUTSOURCED");
 
+  const serviceTypeOptions = serviceTypes.map((type) => ({
+    label: `${type.name} - ${serviceKindLabels[type.kind]}`,
+    value: type.id,
+  }));
+
+  const filterKey = JSON.stringify({
+    from: params.from ?? "",
+    kind: params.kind ?? "",
+    serviceTypeId: params.serviceTypeId ?? "",
+    status: params.status ?? "",
+    to: params.to ?? "",
+  });
+
   return (
-    <>
+    <div className="space-y-5">
       <PageHeader
-        title="Servicios"
-        description="Servicios internos con consumo de insumos y trabajos tercerizados."
         action={
           <div className="flex flex-wrap gap-2">
             <FormModal
@@ -302,76 +305,154 @@ async function ServicesContent({ searchParams }: ServicesPageProps) {
         />
       </div>
 
-      <Section className="mt-5">
-        <SectionHeader title="Servicios recientes" />
-        {records.length ? (
-          <div className="overflow-x-auto">
-            <table className="table-operational">
-              <thead className="table-operational-head">
-                <tr>
-                  <th className="px-4 py-3">Servicio</th>
-                  <th className="px-4 py-3">Tipo</th>
-                  <th className="px-4 py-3">Estado</th>
-                  <th className="px-4 py-3">Cantidad</th>
-                  <th className="px-4 py-3">Fecha</th>
-                  <th className="px-4 py-3">Consumo</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {records.map((record) => {
-                  const consumptionCost = record.consumptions.reduce(
-                    (sum, item) =>
-                      sum +
-                      decimalToNumber(item.quantity) *
-                        decimalToNumber(item.product.purchasePrice),
-                    0,
-                  );
+      <FilterBar>
+        <SelectFilter
+          allLabel="Todos"
+          label="Tipo"
+          name="kind"
+          options={[
+            { label: "Interno", value: "IN_HOUSE" },
+            { label: "Tercerizado", value: "OUTSOURCED" },
+          ]}
+        />
+        <SelectFilter
+          allLabel="Todos"
+          label="Estado"
+          name="status"
+          options={[
+            { label: "Recibido", value: "RECEIVED" },
+            { label: "En proceso", value: "IN_PROGRESS" },
+            { label: "Completado", value: "COMPLETED" },
+            { label: "Entregado", value: "DELIVERED" },
+            { label: "Cancelado", value: "CANCELLED" },
+          ]}
+        />
+        <SelectFilter
+          allLabel="Todos"
+          label="Servicio"
+          className="xl:col-span-2"
+          name="serviceTypeId"
+          options={serviceTypeOptions}
+        />
+        <DateRangeFilter
+          className="md:col-span-2 xl:col-span-2"
+          label="Periodo de servicio"
+        />
+      </FilterBar>
 
-                  return (
-                    <tr key={record.id}>
-                      <td className="px-4 py-3 font-medium text-foreground">
-                        {record.serviceType.name}
-                      </td>
-                      <td className="px-4 py-3">{serviceKindLabels[record.kind]}</td>
-                      <td className="px-4 py-3">
-                        <StatusBadge
-                          tone={record.status === "CANCELLED" ? "error" : "info"}
-                        >
-                          {serviceStatusLabels[record.status]}
-                        </StatusBadge>
-                      </td>
-                      <td className="px-4 py-3">{formatDecimal(record.quantity, 3)}</td>
-                      <td className="px-4 py-3">{formatDate(record.serviceDate)}</td>
-                      <td className="px-4 py-3">
-                        {record.consumptions.length ? (
-                          <details>
-                            <summary className="cursor-pointer text-primary">
-                              {formatCurrency(consumptionCost)}
-                            </summary>
-                            <ul className="mt-2 space-y-1">
-                              {record.consumptions.map((item) => (
-                                <li key={item.id}>
-                                  {item.product.name}: {formatDecimal(item.quantity, 3)}{" "}
-                                  {item.product.unitName}
-                                </li>
-                              ))}
-                            </ul>
-                          </details>
-                        ) : (
-                          "-"
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <EmptyState title="Sin servicios" description="Registra el primer servicio." />
-        )}
-      </Section>
-    </>
+      <Suspense
+        fallback={<TableSkeleton columns={6} rows={6} />}
+        key={filterKey}
+      >
+        <ServicesList searchParams={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function ServicesList({
+  searchParams,
+}: {
+  searchParams: ServicesSearchParams;
+}) {
+  const dateFilter: Record<string, Date> = {};
+  if (searchParams.from)
+    dateFilter.gte = new Date(`${searchParams.from}T00:00:00.000`);
+  if (searchParams.to)
+    dateFilter.lte = new Date(`${searchParams.to}T23:59:59.999`);
+
+  const records = await prisma.serviceRecord.findMany({
+    where: {
+      ...(Object.keys(dateFilter).length ? { serviceDate: dateFilter } : {}),
+      ...(searchParams.kind ? { kind: searchParams.kind } : {}),
+      ...(searchParams.status ? { status: searchParams.status } : {}),
+      ...(searchParams.serviceTypeId
+        ? { serviceTypeId: searchParams.serviceTypeId }
+        : {}),
+    },
+    include: {
+      serviceType: { select: { name: true } },
+      createdBy: { select: { firstName: true, lastName: true } },
+      consumptions: {
+        include: {
+          product: { select: { name: true, unitName: true, purchasePrice: true } },
+        },
+      },
+    },
+    orderBy: { serviceDate: "desc" },
+    take: 100,
+  });
+
+  return (
+    <Section>
+      <SectionHeader title="Servicios recientes" />
+      {records.length ? (
+        <div className="overflow-x-auto">
+          <table className="table-operational">
+            <thead className="table-operational-head">
+              <tr>
+                <th className="px-4 py-3">Servicio</th>
+                <th className="px-4 py-3">Tipo</th>
+                <th className="px-4 py-3">Estado</th>
+                <th className="px-4 py-3">Cantidad</th>
+                <th className="px-4 py-3">Fecha</th>
+                <th className="px-4 py-3">Consumo</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {records.map((record) => {
+                const consumptionCost = record.consumptions.reduce(
+                  (sum, item) =>
+                    sum +
+                    decimalToNumber(item.quantity) *
+                      decimalToNumber(item.product.purchasePrice),
+                  0,
+                );
+
+                return (
+                  <tr key={record.id}>
+                    <td className="px-4 py-3 font-medium text-foreground">
+                      {record.serviceType.name}
+                    </td>
+                    <td className="px-4 py-3">{serviceKindLabels[record.kind]}</td>
+                    <td className="px-4 py-3">
+                      <StatusBadge
+                        tone={record.status === "CANCELLED" ? "error" : "info"}
+                      >
+                        {serviceStatusLabels[record.status]}
+                      </StatusBadge>
+                    </td>
+                    <td className="px-4 py-3">{formatDecimal(record.quantity, 3)}</td>
+                    <td className="px-4 py-3">{formatDate(record.serviceDate)}</td>
+                    <td className="px-4 py-3">
+                      {record.consumptions.length ? (
+                        <details>
+                          <summary className="cursor-pointer text-primary">
+                            {formatCurrency(consumptionCost)}
+                          </summary>
+                          <ul className="mt-2 space-y-1">
+                            {record.consumptions.map((item) => (
+                              <li key={item.id}>
+                                {item.product.name}: {formatDecimal(item.quantity, 3)}{" "}
+                                {item.product.unitName}
+                              </li>
+                            ))}
+                          </ul>
+                        </details>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <EmptyState title="Sin servicios" description="Sin resultados para los filtros." />
+      )}
+    </Section>
   );
 }
 

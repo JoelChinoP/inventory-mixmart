@@ -1,16 +1,18 @@
-import { Search } from "lucide-react";
 import { Suspense } from "react";
 
 import {
+  DateRangeFilter,
+  FilterBar,
+  SelectFilter,
+} from "@/components/filters";
+import {
   EmptyState,
   PageContentSkeleton,
-  PageHeader,
   ProductCategoryBadge,
   Section,
   SectionHeader,
   StatusBadge,
 } from "@/components/shared";
-import { Select } from "@/components/ui/select";
 import {
   decimalToNumber,
   formatCurrency,
@@ -293,12 +295,7 @@ async function ReportsContent({ searchParams }: ReportsPageProps) {
 
   return (
     <div>
-      <PageHeader
-        title="Reportes"
-        description="Analisis administrativo con datos historicos congelados en entradas, salidas y movimientos."
-      />
       <ReportsTables
-        category={category}
         entries={entries}
         from={from}
         inventoryValue={inventoryValue}
@@ -307,13 +304,11 @@ async function ReportsContent({ searchParams }: ReportsPageProps) {
         outOfStock={outOfStock}
         outputCost={outputCost}
         outputs={outputs}
-        productId={productId}
         products={products}
         purchaseTotal={purchaseTotal}
         saleCost={saleCost}
         saleRevenue={saleRevenue}
         services={services}
-        supplierId={supplierId}
         suppliers={suppliers}
         to={to}
       />
@@ -322,7 +317,6 @@ async function ReportsContent({ searchParams }: ReportsPageProps) {
 }
 
 function ReportsTables({
-  category,
   entries,
   from,
   inventoryValue,
@@ -331,17 +325,14 @@ function ReportsTables({
   outOfStock,
   outputCost,
   outputs,
-  productId,
   products,
   purchaseTotal,
   saleCost,
   saleRevenue,
   services,
-  supplierId,
   suppliers,
   to,
 }: {
-  category: ProductCategory | undefined;
   entries: EntryRow[];
   from: string;
   inventoryValue: number;
@@ -350,70 +341,54 @@ function ReportsTables({
   outOfStock: ReportProduct[];
   outputCost: number;
   outputs: OutputRow[];
-  productId: string | undefined;
   products: ReportProduct[];
   purchaseTotal: number;
   saleCost: number;
   saleRevenue: number;
   services: ServiceRow[];
-  supplierId: string | undefined;
   suppliers: ReportSupplier[];
   to: string;
 }) {
   return (
     <>
-      <Section className="mb-5">
-        <SectionHeader title="Filtros" />
-        <form className="grid gap-3 p-4 md:grid-cols-3 xl:grid-cols-[140px_140px_180px_1fr_1fr_auto]" action="/reports">
-          <label className="space-y-1">
-            <span className="text-xs font-medium text-muted-foreground">Desde</span>
-            <input className="input" defaultValue={from} name="from" type="date" />
-          </label>
-          <label className="space-y-1">
-            <span className="text-xs font-medium text-muted-foreground">Hasta</span>
-            <input className="input" defaultValue={to} name="to" type="date" />
-          </label>
-          <label className="space-y-1">
-            <span className="text-xs font-medium text-muted-foreground">Categoria</span>
-            <Select defaultValue={category ?? ""} name="category">
-              <option value="">Todas</option>
-              {categories.map((item) => (
-                <option key={item} value={item}>
-                  {productCategoryLabels[item]}
-                </option>
-              ))}
-            </Select>
-          </label>
-          <label className="space-y-1">
-            <span className="text-xs font-medium text-muted-foreground">Producto</span>
-            <Select defaultValue={productId ?? ""} name="productId">
-              <option value="">Todos</option>
-              {products.map((product) => (
-                <option key={product.id} value={product.id}>
-                  {product.name}
-                </option>
-              ))}
-            </Select>
-          </label>
-          <label className="space-y-1">
-            <span className="text-xs font-medium text-muted-foreground">Proveedor</span>
-            <Select defaultValue={supplierId ?? ""} name="supplierId">
-              <option value="">Todos</option>
-              {suppliers.map((supplier) => (
-                <option key={supplier.id} value={supplier.id}>
-                  {supplier.name}
-                </option>
-              ))}
-            </Select>
-          </label>
-          <div className="flex items-end">
-            <button className="btn btn-primary w-full" type="submit">
-              <Search aria-hidden="true" className="h-4 w-4" />
-              Filtrar
-            </button>
-          </div>
-        </form>
-      </Section>
+      <FilterBar className="mb-5" contentClassName="xl:grid-cols-6" title="Filtros">
+        <DateRangeFilter
+          allowClear={false}
+          className="md:col-span-2 xl:col-span-2"
+          fallbackFromValue={from}
+          fallbackToValue={to}
+          label="Periodo"
+          placeholder="Ultimos 30 dias"
+        />
+        <SelectFilter
+          allLabel="Todas"
+          label="Categoria"
+          name="category"
+          options={categories.map((item) => ({
+            label: productCategoryLabels[item],
+            value: item,
+          }))}
+        />
+        <SelectFilter
+          allLabel="Todos"
+          className="xl:col-span-2"
+          label="Producto"
+          name="productId"
+          options={products.map((product) => ({
+            label: product.name,
+            value: product.id,
+          }))}
+        />
+        <SelectFilter
+          allLabel="Todos"
+          label="Proveedor"
+          name="supplierId"
+          options={suppliers.map((supplier) => ({
+            label: supplier.name,
+            value: supplier.id,
+          }))}
+        />
+      </FilterBar>
 
       <div className="mb-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <ReportMetric label="Valor inventario" value={formatCurrency(inventoryValue)} />

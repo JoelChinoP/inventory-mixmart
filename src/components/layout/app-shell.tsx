@@ -92,13 +92,10 @@ export function AppShellSkeleton() {
 
       <div className="lg:pl-66">
         <header className="sticky top-0 z-20 border-b border-border/80 bg-background/92 px-4 pt-6 pb-4 backdrop-blur lg:px-9">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-            <div className="space-y-2">
-              <div className="h-7 w-48 animate-pulse rounded bg-oat-200" />
-              <div className="h-4 w-72 max-w-full animate-pulse rounded bg-oat-200" />
-            </div>
-            <div className="flex items-center gap-3 rounded-[18px] border border-border bg-surface px-2 py-1.5">
-              <div className="h-11 w-11 animate-pulse rounded-[14px] bg-oat-200" />
+          <div className="flex items-center justify-between gap-4">
+            <div className="h-7 w-48 animate-pulse rounded bg-oat-200" />
+            <div className="flex items-center gap-3 rounded-card border border-border bg-surface px-2 py-1.5">
+              <div className="h-11 w-11 animate-pulse rounded-2xl bg-oat-200" />
               <div className="hidden space-y-2 sm:block">
                 <div className="h-4 w-28 animate-pulse rounded bg-oat-200" />
                 <div className="h-3 w-22 animate-pulse rounded bg-oat-200" />

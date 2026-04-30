@@ -8,14 +8,19 @@ import {
 import { Suspense } from "react";
 
 import {
+  DateRangeFilter,
+  FilterBar,
+  SelectFilter,
+} from "@/components/filters";
+import {
   EmptyState,
   FlashMessage,
-  OperationalPageSkeleton,
   PageHeader,
   ProductCategoryBadge,
   Section,
   SectionHeader,
   StatusBadge,
+  TableSkeleton,
 } from "@/components/shared";
 import { OutputForm } from "@/components/outputs/output-form";
 import { FormModal } from "@/components/ui/modal";
@@ -28,72 +33,46 @@ import {
 } from "@/lib/format";
 import { requireActiveUser } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import type { StockOutputReason } from "../../../../prisma/generated/client";
 
-type OutputsPageProps = {
-  searchParams: Promise<{
-    success?: string;
-    error?: string;
-  }>;
+type OutputsSearchParams = {
+  success?: string;
+  error?: string;
+  from?: string;
+  to?: string;
+  reason?: StockOutputReason;
 };
 
-export default function OutputsPage({ searchParams }: OutputsPageProps) {
-  return (
-    <div>
-      <Suspense fallback={<OperationalPageSkeleton />}>
-        <OutputsContent searchParams={searchParams} />
-      </Suspense>
-    </div>
-  );
-}
+type OutputsPageProps = {
+  searchParams: Promise<OutputsSearchParams>;
+};
 
-async function OutputsContent({ searchParams }: OutputsPageProps) {
+export default async function OutputsPage({ searchParams }: OutputsPageProps) {
   await requireActiveUser("/outputs");
   const params = await searchParams;
-  const [products, outputs] = await Promise.all([
-    prisma.product.findMany({
-      where: { isActive: true },
-      orderBy: { name: "asc" },
-      select: {
-        id: true,
-        name: true,
-        category: true,
-        unitName: true,
-        currentStock: true,
-        salePrice: true,
-      },
-      take: 300,
-    }),
-    prisma.stockOutput.findMany({
-      include: {
-        createdBy: { select: { firstName: true, lastName: true } },
-        items: {
-          include: {
-            product: { select: { name: true, unitName: true, category: true } },
-          },
-        },
-      },
-      orderBy: { occurredAt: "desc" },
-      take: 50,
-    }),
-  ]);
-  const outputSummary = outputs.reduce(
-    (summary, output) => {
-      const totals = getOutputTotals(output);
-
-      return {
-        cost: summary.cost + totals.cost,
-        items: summary.items + output.items.length,
-        revenue: summary.revenue + totals.revenue,
-      };
+  const products = await prisma.product.findMany({
+    where: { isActive: true },
+    orderBy: { name: "asc" },
+    select: {
+      id: true,
+      name: true,
+      category: true,
+      unitName: true,
+      currentStock: true,
+      salePrice: true,
     },
-    { cost: 0, items: 0, revenue: 0 },
-  );
+    take: 300,
+  });
+
+  const filterKey = JSON.stringify({
+    from: params.from ?? "",
+    reason: params.reason ?? "",
+    to: params.to ?? "",
+  });
 
   return (
-    <>
+    <div className="space-y-5">
       <PageHeader
-        title="Salidas"
-        description="Ventas, mermas y uso interno con validacion de stock en el servidor."
         action={
           <FormModal
             size="xl"
@@ -127,117 +106,182 @@ async function OutputsContent({ searchParams }: OutputsPageProps) {
         <FlashMessage type="error">Stock insuficiente para completar la salida.</FlashMessage>
       ) : null}
 
-      <div className="grid gap-5 xl:grid-cols-[1fr_22rem]">
-        <Section>
-          <SectionHeader title="Historial completo" />
-          {outputs.length ? (
-            <div className="overflow-x-auto">
-              <table className="table-operational">
-                <thead className="table-operational-head">
-                  <tr>
-                    <th className="px-4 py-3">Motivo</th>
-                    <th className="px-4 py-3">Fecha</th>
-                    <th className="px-4 py-3">Creado por</th>
-                    <th className="px-4 py-3">Items</th>
-                    <th className="px-4 py-3">Costo</th>
-                    <th className="px-4 py-3">Ingreso</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {outputs.map((output) => {
-                    const { cost, revenue } = getOutputTotals(output);
+      <FilterBar contentClassName="xl:grid-cols-3">
+        <SelectFilter
+          allLabel="Todos"
+          label="Motivo"
+          name="reason"
+          options={[
+            { label: "Venta", value: "SALE" },
+            { label: "Merma", value: "WASTE" },
+            { label: "Uso interno", value: "INTERNAL_USE" },
+          ]}
+        />
+        <DateRangeFilter
+          className="md:col-span-2 xl:col-span-3"
+          label="Periodo de salida"
+        />
+      </FilterBar>
 
-                    return (
-                      <tr key={output.id}>
-                        <td className="px-4 py-3">
-                          <StatusBadge
-                            tone={output.reason === "SALE" ? "success" : "warning"}
-                          >
-                            {stockOutputReasonLabels[output.reason]}
-                          </StatusBadge>
-                        </td>
-                        <td className="px-4 py-3">{formatDate(output.occurredAt)}</td>
-                        <td className="px-4 py-3">
-                          {output.createdBy.firstName} {output.createdBy.lastName}
-                        </td>
-                        <td className="px-4 py-3">
-                          <details className="[&_summary::-webkit-details-marker]:hidden">
-                            <summary className="inline-flex cursor-pointer list-none items-center rounded-control border border-primary-200 bg-primary-50 px-2 py-1 text-primary">
-                              {output.items.length} items
-                            </summary>
-                            <ul className="popover-window mt-2 space-y-2">
-                              {output.items.map((item) => (
-                                <li
-                                  className="flex flex-wrap items-center gap-2"
-                                  key={item.id}
-                                >
-                                  <span>
-                                    {item.product.name}:{" "}
-                                    {formatDecimal(item.quantity, 3)}{" "}
-                                    {item.product.unitName}
-                                  </span>
-                                  <ProductCategoryBadge
-                                    category={item.product.category}
-                                    className="min-h-6 rounded-control px-2 py-0.5"
-                                  />
-                                </li>
-                              ))}
-                            </ul>
-                          </details>
-                        </td>
-                        <td className="px-4 py-3">{formatCurrency(cost)}</td>
-                        <td className="px-4 py-3">
-                          {output.reason === "SALE" ? formatCurrency(revenue) : "-"}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+      <Suspense
+        fallback={<TableSkeleton columns={6} rows={6} />}
+        key={filterKey}
+      >
+        <OutputsList searchParams={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function OutputsList({ searchParams }: { searchParams: OutputsSearchParams }) {
+  const occurredAtFilter: Record<string, Date> = {};
+  if (searchParams.from)
+    occurredAtFilter.gte = new Date(`${searchParams.from}T00:00:00.000`);
+  if (searchParams.to)
+    occurredAtFilter.lte = new Date(`${searchParams.to}T23:59:59.999`);
+
+  const outputs = await prisma.stockOutput.findMany({
+    where: {
+      ...(Object.keys(occurredAtFilter).length
+        ? { occurredAt: occurredAtFilter }
+        : {}),
+      ...(searchParams.reason ? { reason: searchParams.reason } : {}),
+    },
+    include: {
+      createdBy: { select: { firstName: true, lastName: true } },
+      items: {
+        include: {
+          product: { select: { name: true, unitName: true, category: true } },
+        },
+      },
+    },
+    orderBy: { occurredAt: "desc" },
+    take: 100,
+  });
+
+  const outputSummary = outputs.reduce(
+    (summary, output) => {
+      const totals = getOutputTotals(output);
+      return {
+        cost: summary.cost + totals.cost,
+        items: summary.items + output.items.length,
+        revenue: summary.revenue + totals.revenue,
+      };
+    },
+    { cost: 0, items: 0, revenue: 0 },
+  );
+
+  return (
+    <div className="grid gap-5 xl:grid-cols-[1fr_22rem]">
+      <Section>
+        <SectionHeader title="Historial completo" />
+        {outputs.length ? (
+          <div className="overflow-x-auto">
+            <table className="table-operational">
+              <thead className="table-operational-head">
+                <tr>
+                  <th className="px-4 py-3">Motivo</th>
+                  <th className="px-4 py-3">Fecha</th>
+                  <th className="px-4 py-3">Creado por</th>
+                  <th className="px-4 py-3">Items</th>
+                  <th className="px-4 py-3">Costo</th>
+                  <th className="px-4 py-3">Ingreso</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {outputs.map((output) => {
+                  const { cost, revenue } = getOutputTotals(output);
+
+                  return (
+                    <tr key={output.id}>
+                      <td className="px-4 py-3">
+                        <StatusBadge
+                          tone={output.reason === "SALE" ? "success" : "warning"}
+                        >
+                          {stockOutputReasonLabels[output.reason]}
+                        </StatusBadge>
+                      </td>
+                      <td className="px-4 py-3">{formatDate(output.occurredAt)}</td>
+                      <td className="px-4 py-3">
+                        {output.createdBy.firstName} {output.createdBy.lastName}
+                      </td>
+                      <td className="px-4 py-3">
+                        <details className="[&_summary::-webkit-details-marker]:hidden">
+                          <summary className="inline-flex cursor-pointer list-none items-center rounded-control border border-primary-200 bg-primary-50 px-2 py-1 text-primary">
+                            {output.items.length} items
+                          </summary>
+                          <ul className="popover-window mt-2 space-y-2">
+                            {output.items.map((item) => (
+                              <li
+                                className="flex flex-wrap items-center gap-2"
+                                key={item.id}
+                              >
+                                <span>
+                                  {item.product.name}:{" "}
+                                  {formatDecimal(item.quantity, 3)}{" "}
+                                  {item.product.unitName}
+                                </span>
+                                <ProductCategoryBadge
+                                  category={item.product.category}
+                                  className="min-h-6 rounded-control px-2 py-0.5"
+                                />
+                              </li>
+                            ))}
+                          </ul>
+                        </details>
+                      </td>
+                      <td className="px-4 py-3">{formatCurrency(cost)}</td>
+                      <td className="px-4 py-3">
+                        {output.reason === "SALE" ? formatCurrency(revenue) : "-"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <EmptyState
+            title="Sin salidas"
+            description="Sin resultados para los filtros."
+          />
+        )}
+      </Section>
+
+      <aside className="space-y-5">
+        <Section>
+          <SectionHeader title="Resumen rapido" />
+          <div className="space-y-3 p-4">
+            <SummaryRow label="Salidas visibles" value={String(outputs.length)} />
+            <SummaryRow label="Items retirados" value={String(outputSummary.items)} />
+            <SummaryRow
+              label="Ingreso ventas"
+              value={formatCurrency(outputSummary.revenue)}
+            />
+            <SummaryRow
+              label="Costo salidas"
+              value={formatCurrency(outputSummary.cost)}
+            />
+          </div>
+        </Section>
+
+        <Section>
+          <SectionHeader title="Salidas recientes" />
+          {outputs.length ? (
+            <div className="divide-y divide-border">
+              {outputs.slice(0, 5).map((output) => (
+                <RecentOutputItem key={output.id} output={output} />
+              ))}
             </div>
           ) : (
             <EmptyState
               title="Sin salidas"
-              description="Registra una venta, merma o uso interno."
+              description="Sin resultados para los filtros."
             />
           )}
         </Section>
-
-        <aside className="space-y-5">
-          <Section>
-            <SectionHeader title="Resumen rapido" />
-            <div className="space-y-3 p-4">
-              <SummaryRow label="Salidas visibles" value={String(outputs.length)} />
-              <SummaryRow label="Items retirados" value={String(outputSummary.items)} />
-              <SummaryRow
-                label="Ingreso ventas"
-                value={formatCurrency(outputSummary.revenue)}
-              />
-              <SummaryRow
-                label="Costo salidas"
-                value={formatCurrency(outputSummary.cost)}
-              />
-            </div>
-          </Section>
-
-          <Section>
-            <SectionHeader title="Salidas recientes" />
-            {outputs.length ? (
-              <div className="divide-y divide-border">
-                {outputs.slice(0, 5).map((output) => (
-                  <RecentOutputItem key={output.id} output={output} />
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                title="Sin salidas"
-                description="Registra una venta, merma o uso interno."
-              />
-            )}
-          </Section>
-        </aside>
-      </div>
-    </>
+      </aside>
+    </div>
   );
 }
 

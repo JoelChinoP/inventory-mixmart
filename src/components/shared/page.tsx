@@ -6,8 +6,6 @@ import { cn } from "@/lib/utils";
 import type { ProductCategory } from "../../../prisma/generated/client";
 
 type PageHeaderProps = {
-  title: string;
-  description?: string;
   action?: ReactNode;
 };
 

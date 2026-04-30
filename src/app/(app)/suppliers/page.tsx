@@ -90,8 +90,6 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
   return (
     <>
       <PageHeader
-        title="Proveedores"
-        description="Datos de contacto, estado y compras recientes."
         action={
           canManage ? (
             <FormModal

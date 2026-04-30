@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { Camera, ShieldCheck } from "lucide-react";
 
+import { SignOutButton } from "@/components/auth/sign-out-button";
 import {
   FlashMessage,
-  PageHeader,
   Section,
   SectionHeader,
   StatusBadge,
@@ -38,11 +38,6 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
 
   return (
     <div className="space-y-5">
-      <PageHeader
-        title="Mi perfil"
-        description="Actualiza tus datos visibles y la imagen que te identifica dentro del sistema."
-      />
-
       {params.success ? (
         <FlashMessage type="success">Perfil actualizado correctamente.</FlashMessage>
       ) : null}
@@ -94,6 +89,8 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
                 Ultimo acceso: {formatDate(user.lastLoginAt)}
               </p>
             </div>
+
+            <SignOutButton className="mt-4 h-10 w-full justify-center rounded-control border border-border bg-surface text-sm font-medium text-foreground hover:border-error/30 hover:bg-error-surface hover:text-error" />
           </div>
         </Section>
 

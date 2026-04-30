@@ -5,6 +5,7 @@ import {
   Boxes,
   ChevronRight,
   Home,
+  LogOut,
   Package,
   PackagePlus,
   Send,
@@ -15,6 +16,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import { Fragment } from 'react';
 
 import { roleLabels } from '@/lib/format';
@@ -52,57 +54,16 @@ const navigationGroups = [
   },
 ] as const;
 
-const routeDescriptions = [
-  {
-    href: '/stock',
-    title: 'Stock',
-    description: 'Disponibilidad actual y ultima actividad por producto.',
-  },
-  {
-    href: '/entries',
-    title: 'Entradas',
-    description:
-      'Ordenes y compras recibidas. Recibir una orden actualiza el stock una sola vez.',
-  },
-  {
-    href: '/outputs',
-    title: 'Salidas',
-    description:
-      'Ventas, mermas y uso interno con validacion de stock en el servidor.',
-  },
-  {
-    href: '/services',
-    title: 'Servicios',
-    description:
-      'Servicios internos con consumo de insumos y trabajos tercerizados.',
-  },
-  {
-    href: '/products',
-    title: 'Productos',
-    description: 'Catalogo, precios de referencia y stock actual por producto.',
-  },
-  {
-    href: '/suppliers',
-    title: 'Proveedores',
-    description: 'Datos de contacto, estado y compras recientes.',
-  },
-  {
-    href: '/reports',
-    title: 'Reportes',
-    description:
-      'Analisis administrativo con datos historicos congelados en entradas, salidas y movimientos.',
-  },
-  {
-    href: '/users',
-    title: 'Usuarios',
-    description: 'Gestion administrativa de cuentas internas y roles.',
-  },
-  {
-    href: '/profile',
-    title: 'Mi perfil',
-    description:
-      'Actualiza tus datos visibles y la imagen que te identifica dentro del sistema.',
-  },
+const routeTitles = [
+  { href: '/stock', title: 'Stock' },
+  { href: '/entries', title: 'Entradas' },
+  { href: '/outputs', title: 'Salidas' },
+  { href: '/services', title: 'Servicios' },
+  { href: '/products', title: 'Productos' },
+  { href: '/suppliers', title: 'Proveedores' },
+  { href: '/reports', title: 'Reportes' },
+  { href: '/users', title: 'Usuarios' },
+  { href: '/profile', title: 'Mi perfil' },
 ] as const;
 
 function isActive(pathname: string, href: string) {
@@ -177,61 +138,63 @@ export function AppTopBar({ user }: { user: AppTopBarUser }) {
     `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
   const fullName = `${user.firstName} ${user.lastName}`;
   const currentRoute =
-    routeDescriptions.find((route) => isActive(pathname, route.href)) ?? null;
+    routeTitles.find((route) => isActive(pathname, route.href)) ?? null;
 
   const heading = onDashboard
     ? `${getGreeting(user.role)}, ${user.firstName}`
     : (currentRoute?.title ?? 'El Colorado');
-  const description = onDashboard
-    ? user.role === 'ADMIN'
-      ? 'Resumen financiero, movimientos recientes y alertas para toda la tienda.'
-      : 'Resumen operativo, movimientos recientes y alertas para tu jornada.'
-    : (currentRoute?.description ?? 'Libreria y Bazar');
 
   return (
-    <header className="sticky top-0 z-20 border-b border-border/80 bg-background/92 px-4 pb-3 pt-4 backdrop-blur supports-backdrop-filter:bg-background/80 sm:pb-4 sm:pt-6 lg:px-9">
-      <div className="flex items-start justify-between gap-3">
+    <header className="sticky top-0 z-20 border-b border-border/80 bg-background/92 px-4 pb-2 pt-2 backdrop-blur supports-backdrop-filter:bg-background/80 sm:pb-2 sm:pt-2 lg:px-9">
+      <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h1 className="font-display text-[24px] font-medium leading-tight tracking-tight text-foreground sm:text-[28px]">
             {heading}
           </h1>
-          <p className="mt-1 line-clamp-2 max-w-3xl text-[12.5px] leading-5 text-foreground/72 sm:text-[14px] sm:leading-6">
-            {description}
-          </p>
         </div>
-        <Link
-          aria-label={`${fullName} - Mi perfil`}
-          className="group flex max-w-full shrink-0 items-center gap-3 rounded-[16px] border border-border bg-surface/90 p-1.5 shadow-soft transition hover:-translate-y-px hover:border-primary-200 hover:bg-surface hover:shadow-elevated sm:rounded-[18px] sm:pr-4"
-          href="/profile"
-        >
-          <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-primary-100 bg-primary-50 text-sm font-semibold text-primary sm:h-11 sm:w-11 sm:rounded-full">
-            {user.avatarUrl ? (
-              <Image
-                alt=""
-                className="h-full w-full object-cover"
-                height={44}
-                sizes="44px"
-                src={user.avatarUrl}
-                unoptimized
-                width={44}
-              />
-            ) : (
-              initials
-            )}
-          </span>
-          <span className="hidden min-w-0 sm:block">
-            <span className="block truncate text-left text-sm font-semibold text-foreground">
-              {fullName}
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            aria-label="Cerrar sesion"
+            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-surface/90 text-muted-foreground shadow-soft transition hover:-translate-y-px hover:border-error/30 hover:bg-error-surface hover:text-error hover:shadow-elevated lg:hidden"
+            onClick={() => signOut({ callbackUrl: '/login' })}
+            type="button"
+          >
+            <LogOut aria-hidden="true" className="h-4 w-4" />
+          </button>
+          <Link
+            aria-label={`${fullName} - Mi perfil`}
+            className="group flex max-w-full items-center gap-3 rounded-full border border-border bg-surface/90 p-0.5 shadow-soft transition hover:-translate-y-px hover:border-primary-200 hover:bg-surface hover:shadow-elevated sm:rounded-card sm:pr-4 sm:p-1.5"
+            href="/profile"
+          >
+            <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-primary-100 bg-primary-50 text-sm font-semibold text-primary sm:h-11 sm:w-11 sm:rounded-full">
+              {user.avatarUrl ? (
+                <Image
+                  alt=""
+                  className="h-full w-full object-cover"
+                  height={44}
+                  sizes="44px"
+                  src={user.avatarUrl}
+                  unoptimized
+                  width={44}
+                />
+              ) : (
+                initials
+              )}
             </span>
-            <span className="block truncate text-left text-[12px] text-foreground/70">
-              {roleLabels[user.role]}
+            <span className="hidden min-w-0 sm:block">
+              <span className="block truncate text-left text-sm font-semibold text-foreground">
+                {fullName}
+              </span>
+              <span className="block truncate text-left text-[12px] text-foreground/70">
+                {roleLabels[user.role]}
+              </span>
             </span>
-          </span>
-          <ChevronRight
-            aria-hidden="true"
-            className="hidden h-4 w-4 shrink-0 text-muted-foreground transition group-hover:text-primary sm:block"
-          />
-        </Link>
+            <ChevronRight
+              aria-hidden="true"
+              className="hidden h-4 w-4 shrink-0 text-muted-foreground transition group-hover:text-primary sm:block"
+            />
+          </Link>
+        </div>
       </div>
     </header>
   );

@@ -46,8 +46,6 @@ async function UsersContent({ searchParams }: UsersPageProps) {
   return (
     <div>
       <PageHeader
-        title="Usuarios"
-        description="Gestion administrativa de cuentas internas y roles."
         action={
           <FormModal
             size="lg"

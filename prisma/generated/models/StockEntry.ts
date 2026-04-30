@@ -963,7 +963,7 @@ export type $StockEntryPayload<ExtArgs extends runtime.Types.Extensions.Internal
 export type StockEntryGetPayload<S extends boolean | null | undefined | StockEntryDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$StockEntryPayload, S>
 
 export type StockEntryCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<StockEntryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<StockEntryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: StockEntryCountAggregateInputType | true
   }
 
@@ -1416,6 +1416,7 @@ export type StockEntryFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.In
    * Filter, which StockEntry to fetch.
    */
   where: Prisma.StockEntryWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1438,6 +1439,7 @@ export type StockEntryFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extens
    * Filter, which StockEntry to fetch.
    */
   where: Prisma.StockEntryWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1490,6 +1492,7 @@ export type StockEntryFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Filter by unique combinations of StockEntries.
    */
   distinct?: Prisma.StockEntryScalarFieldEnum | Prisma.StockEntryScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1542,6 +1545,7 @@ export type StockEntryFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensi
    * Filter by unique combinations of StockEntries.
    */
   distinct?: Prisma.StockEntryScalarFieldEnum | Prisma.StockEntryScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1594,6 +1598,7 @@ export type StockEntryFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Filter by unique combinations of StockEntries.
    */
   distinct?: Prisma.StockEntryScalarFieldEnum | Prisma.StockEntryScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1616,6 +1621,7 @@ export type StockEntryCreateArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * The data needed to create a StockEntry.
    */
   data: Prisma.XOR<Prisma.StockEntryCreateInput, Prisma.StockEntryUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1676,6 +1682,7 @@ export type StockEntryUpdateArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Choose, which StockEntry to update.
    */
   where: Prisma.StockEntryWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1754,6 +1761,7 @@ export type StockEntryUpsertArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * In case the StockEntry was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.StockEntryUpdateInput, Prisma.StockEntryUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1776,6 +1784,7 @@ export type StockEntryDeleteArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Filter which StockEntry to delete.
    */
   where: Prisma.StockEntryWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

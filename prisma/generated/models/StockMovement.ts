@@ -1566,7 +1566,7 @@ export type $StockMovementPayload<ExtArgs extends runtime.Types.Extensions.Inter
 export type StockMovementGetPayload<S extends boolean | null | undefined | StockMovementDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$StockMovementPayload, S>
 
 export type StockMovementCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<StockMovementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<StockMovementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: StockMovementCountAggregateInputType | true
   }
 
@@ -2025,6 +2025,7 @@ export type StockMovementFindUniqueArgs<ExtArgs extends runtime.Types.Extensions
    * Filter, which StockMovement to fetch.
    */
   where: Prisma.StockMovementWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -2047,6 +2048,7 @@ export type StockMovementFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Ext
    * Filter, which StockMovement to fetch.
    */
   where: Prisma.StockMovementWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -2099,6 +2101,7 @@ export type StockMovementFindFirstArgs<ExtArgs extends runtime.Types.Extensions.
    * Filter by unique combinations of StockMovements.
    */
   distinct?: Prisma.StockMovementScalarFieldEnum | Prisma.StockMovementScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -2151,6 +2154,7 @@ export type StockMovementFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exte
    * Filter by unique combinations of StockMovements.
    */
   distinct?: Prisma.StockMovementScalarFieldEnum | Prisma.StockMovementScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -2203,6 +2207,7 @@ export type StockMovementFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Filter by unique combinations of StockMovements.
    */
   distinct?: Prisma.StockMovementScalarFieldEnum | Prisma.StockMovementScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -2225,6 +2230,7 @@ export type StockMovementCreateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * The data needed to create a StockMovement.
    */
   data: Prisma.XOR<Prisma.StockMovementCreateInput, Prisma.StockMovementUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -2285,6 +2291,7 @@ export type StockMovementUpdateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Choose, which StockMovement to update.
    */
   where: Prisma.StockMovementWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -2363,6 +2370,7 @@ export type StockMovementUpsertArgs<ExtArgs extends runtime.Types.Extensions.Int
    * In case the StockMovement was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.StockMovementUpdateInput, Prisma.StockMovementUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -2385,6 +2393,7 @@ export type StockMovementDeleteArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Filter which StockMovement to delete.
    */
   where: Prisma.StockMovementWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

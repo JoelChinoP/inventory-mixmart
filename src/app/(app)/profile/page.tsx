@@ -65,6 +65,7 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
                     priority
                     sizes="128px"
                     src={user.avatarUrl}
+                    unoptimized
                   />
                 ) : (
                   initials

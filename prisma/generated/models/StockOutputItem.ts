@@ -979,7 +979,7 @@ export type $StockOutputItemPayload<ExtArgs extends runtime.Types.Extensions.Int
 export type StockOutputItemGetPayload<S extends boolean | null | undefined | StockOutputItemDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$StockOutputItemPayload, S>
 
 export type StockOutputItemCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<StockOutputItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<StockOutputItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: StockOutputItemCountAggregateInputType | true
   }
 
@@ -1431,6 +1431,7 @@ export type StockOutputItemFindUniqueArgs<ExtArgs extends runtime.Types.Extensio
    * Filter, which StockOutputItem to fetch.
    */
   where: Prisma.StockOutputItemWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1453,6 +1454,7 @@ export type StockOutputItemFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.E
    * Filter, which StockOutputItem to fetch.
    */
   where: Prisma.StockOutputItemWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1505,6 +1507,7 @@ export type StockOutputItemFindFirstArgs<ExtArgs extends runtime.Types.Extension
    * Filter by unique combinations of StockOutputItems.
    */
   distinct?: Prisma.StockOutputItemScalarFieldEnum | Prisma.StockOutputItemScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1557,6 +1560,7 @@ export type StockOutputItemFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Ex
    * Filter by unique combinations of StockOutputItems.
    */
   distinct?: Prisma.StockOutputItemScalarFieldEnum | Prisma.StockOutputItemScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1609,6 +1613,7 @@ export type StockOutputItemFindManyArgs<ExtArgs extends runtime.Types.Extensions
    * Filter by unique combinations of StockOutputItems.
    */
   distinct?: Prisma.StockOutputItemScalarFieldEnum | Prisma.StockOutputItemScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1631,6 +1636,7 @@ export type StockOutputItemCreateArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data needed to create a StockOutputItem.
    */
   data: Prisma.XOR<Prisma.StockOutputItemCreateInput, Prisma.StockOutputItemUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1691,6 +1697,7 @@ export type StockOutputItemUpdateArgs<ExtArgs extends runtime.Types.Extensions.I
    * Choose, which StockOutputItem to update.
    */
   where: Prisma.StockOutputItemWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1769,6 +1776,7 @@ export type StockOutputItemUpsertArgs<ExtArgs extends runtime.Types.Extensions.I
    * In case the StockOutputItem was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.StockOutputItemUpdateInput, Prisma.StockOutputItemUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1791,6 +1799,7 @@ export type StockOutputItemDeleteArgs<ExtArgs extends runtime.Types.Extensions.I
    * Filter which StockOutputItem to delete.
    */
   where: Prisma.StockOutputItemWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

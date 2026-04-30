@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   BarChart3,
@@ -11,16 +11,16 @@ import {
   Settings2,
   Truck,
   Users,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Fragment } from "react";
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Fragment } from 'react';
 
-import { roleLabels } from "@/lib/format";
-import { canAccessPath } from "@/lib/permissions";
-import { cn } from "@/lib/utils";
-import type { UserRole } from "../../../prisma/generated/client";
+import { roleLabels } from '@/lib/format';
+import { canAccessPath } from '@/lib/permissions';
+import { cn } from '@/lib/utils';
+import type { UserRole } from '../../../prisma/generated/client';
 
 type AppTopBarUser = {
   firstName: string;
@@ -32,76 +32,76 @@ type AppTopBarUser = {
 
 const navigationGroups = [
   {
-    label: "Operaciones",
+    label: 'Operaciones',
     items: [
-      { href: "/dashboard", label: "Dashboard", icon: Home },
-      { href: "/stock", label: "Stock", icon: Boxes },
-      { href: "/entries", label: "Entradas", icon: PackagePlus },
-      { href: "/outputs", label: "Salidas", icon: Send },
-      { href: "/services", label: "Servicios", icon: Settings2 },
+      { href: '/dashboard', label: 'Dashboard', icon: Home },
+      { href: '/stock', label: 'Stock', icon: Boxes },
+      { href: '/entries', label: 'Entradas', icon: PackagePlus },
+      { href: '/outputs', label: 'Salidas', icon: Send },
+      { href: '/services', label: 'Servicios', icon: Settings2 },
     ],
   },
   {
-    label: "Catalogo",
+    label: 'Catalogo',
     items: [
-      { href: "/products", label: "Productos", icon: Package },
-      { href: "/suppliers", label: "Proveedores", icon: Truck },
-      { href: "/reports", label: "Reportes", icon: BarChart3 },
-      { href: "/users", label: "Usuarios", icon: Users },
+      { href: '/products', label: 'Productos', icon: Package },
+      { href: '/suppliers', label: 'Proveedores', icon: Truck },
+      { href: '/reports', label: 'Reportes', icon: BarChart3 },
+      { href: '/users', label: 'Usuarios', icon: Users },
     ],
   },
 ] as const;
 
 const routeDescriptions = [
   {
-    href: "/stock",
-    title: "Stock",
-    description: "Disponibilidad actual y ultima actividad por producto.",
+    href: '/stock',
+    title: 'Stock',
+    description: 'Disponibilidad actual y ultima actividad por producto.',
   },
   {
-    href: "/entries",
-    title: "Entradas",
+    href: '/entries',
+    title: 'Entradas',
     description:
-      "Ordenes y compras recibidas. Recibir una orden actualiza el stock una sola vez.",
+      'Ordenes y compras recibidas. Recibir una orden actualiza el stock una sola vez.',
   },
   {
-    href: "/outputs",
-    title: "Salidas",
+    href: '/outputs',
+    title: 'Salidas',
     description:
-      "Ventas, mermas y uso interno con validacion de stock en el servidor.",
+      'Ventas, mermas y uso interno con validacion de stock en el servidor.',
   },
   {
-    href: "/services",
-    title: "Servicios",
+    href: '/services',
+    title: 'Servicios',
     description:
-      "Servicios internos con consumo de insumos y trabajos tercerizados.",
+      'Servicios internos con consumo de insumos y trabajos tercerizados.',
   },
   {
-    href: "/products",
-    title: "Productos",
-    description: "Catalogo, precios de referencia y stock actual por producto.",
+    href: '/products',
+    title: 'Productos',
+    description: 'Catalogo, precios de referencia y stock actual por producto.',
   },
   {
-    href: "/suppliers",
-    title: "Proveedores",
-    description: "Datos de contacto, estado y compras recientes.",
+    href: '/suppliers',
+    title: 'Proveedores',
+    description: 'Datos de contacto, estado y compras recientes.',
   },
   {
-    href: "/reports",
-    title: "Reportes",
+    href: '/reports',
+    title: 'Reportes',
     description:
-      "Analisis administrativo con datos historicos congelados en entradas, salidas y movimientos.",
+      'Analisis administrativo con datos historicos congelados en entradas, salidas y movimientos.',
   },
   {
-    href: "/users",
-    title: "Usuarios",
-    description: "Gestion administrativa de cuentas internas y roles.",
+    href: '/users',
+    title: 'Usuarios',
+    description: 'Gestion administrativa de cuentas internas y roles.',
   },
   {
-    href: "/profile",
-    title: "Mi perfil",
+    href: '/profile',
+    title: 'Mi perfil',
     description:
-      "Actualiza tus datos visibles y la imagen que te identifica dentro del sistema.",
+      'Actualiza tus datos visibles y la imagen que te identifica dentro del sistema.',
   },
 ] as const;
 
@@ -136,10 +136,10 @@ export function AppNavigation({ role }: { role: UserRole }) {
             return (
               <Link
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-normal transition",
+                  'flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-normal transition',
                   active
-                    ? "bg-foreground font-medium text-background"
-                    : "text-muted-foreground hover:bg-black/5 hover:text-foreground",
+                    ? 'bg-foreground font-medium text-background'
+                    : 'text-muted-foreground hover:bg-black/5 hover:text-foreground',
                 )}
                 href={item.href}
                 key={item.href}
@@ -148,8 +148,8 @@ export function AppNavigation({ role }: { role: UserRole }) {
                 <Icon
                   aria-hidden="true"
                   className={cn(
-                    "h-4 w-4 shrink-0",
-                    active ? "opacity-100" : "opacity-70",
+                    'h-4 w-4 shrink-0',
+                    active ? 'opacity-100' : 'opacity-70',
                   )}
                 />
                 <span>{item.label}</span>
@@ -164,28 +164,29 @@ export function AppNavigation({ role }: { role: UserRole }) {
 
 function getGreeting(role: UserRole) {
   const hour = new Date().getHours();
-  if (role === "WORKER") return "Hola";
-  if (hour < 12) return "Buenos dias";
-  if (hour < 19) return "Buenas tardes";
-  return "Buenas noches";
+  if (role === 'WORKER') return 'Hola';
+  if (hour < 12) return 'Buenos dias';
+  if (hour < 19) return 'Buenas tardes';
+  return 'Buenas noches';
 }
 
 export function AppTopBar({ user }: { user: AppTopBarUser }) {
   const pathname = usePathname();
-  const onDashboard = isActive(pathname, "/dashboard");
-  const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
+  const onDashboard = isActive(pathname, '/dashboard');
+  const initials =
+    `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
   const fullName = `${user.firstName} ${user.lastName}`;
   const currentRoute =
     routeDescriptions.find((route) => isActive(pathname, route.href)) ?? null;
 
   const heading = onDashboard
     ? `${getGreeting(user.role)}, ${user.firstName}`
-    : currentRoute?.title ?? "El Colorado";
+    : (currentRoute?.title ?? 'El Colorado');
   const description = onDashboard
-    ? user.role === "ADMIN"
-      ? "Resumen financiero, movimientos recientes y alertas para toda la tienda."
-      : "Resumen operativo, movimientos recientes y alertas para tu jornada."
-    : currentRoute?.description ?? "Libreria y Bazar";
+    ? user.role === 'ADMIN'
+      ? 'Resumen financiero, movimientos recientes y alertas para toda la tienda.'
+      : 'Resumen operativo, movimientos recientes y alertas para tu jornada.'
+    : (currentRoute?.description ?? 'Libreria y Bazar');
 
   return (
     <header className="sticky top-0 z-20 border-b border-border/80 bg-background/92 px-4 pb-3 pt-4 backdrop-blur supports-backdrop-filter:bg-background/80 sm:pb-4 sm:pt-6 lg:px-9">
@@ -203,7 +204,7 @@ export function AppTopBar({ user }: { user: AppTopBarUser }) {
           className="group flex max-w-full shrink-0 items-center gap-3 rounded-[16px] border border-border bg-surface/90 p-1.5 shadow-soft transition hover:-translate-y-px hover:border-primary-200 hover:bg-surface hover:shadow-elevated sm:rounded-[18px] sm:pr-4"
           href="/profile"
         >
-          <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[13px] border border-primary-100 bg-primary-50 text-sm font-semibold text-primary sm:h-11 sm:w-11 sm:rounded-[14px]">
+          <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-primary-100 bg-primary-50 text-sm font-semibold text-primary sm:h-11 sm:w-11 sm:rounded-full">
             {user.avatarUrl ? (
               <Image
                 alt=""
@@ -211,6 +212,7 @@ export function AppTopBar({ user }: { user: AppTopBarUser }) {
                 height={44}
                 sizes="44px"
                 src={user.avatarUrl}
+                unoptimized
                 width={44}
               />
             ) : (
@@ -222,7 +224,7 @@ export function AppTopBar({ user }: { user: AppTopBarUser }) {
               {fullName}
             </span>
             <span className="block truncate text-left text-[12px] text-foreground/70">
-              {roleLabels[user.role]} - Mi perfil
+              {roleLabels[user.role]}
             </span>
           </span>
           <ChevronRight
@@ -249,10 +251,10 @@ export function MobileNavigation({ role }: { role: UserRole }) {
           <Link
             aria-label={item.label}
             className={cn(
-              "flex h-12 flex-col items-center justify-center gap-0.5 rounded-[16px] text-[10.5px] font-semibold transition",
+              'flex h-12 flex-col items-center justify-center gap-0.5 rounded-[16px] text-[10.5px] font-semibold transition',
               active
-                ? "bg-primary text-primary-foreground shadow-pill"
-                : "text-muted-foreground hover:bg-primary-50 hover:text-primary",
+                ? 'bg-primary text-primary-foreground shadow-pill'
+                : 'text-muted-foreground hover:bg-primary-50 hover:text-primary',
             )}
             href={item.href}
             key={item.href}

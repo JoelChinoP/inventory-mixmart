@@ -1,6 +1,8 @@
 import { decimalToNumber } from "@/lib/format";
 import { getRange } from "@/lib/date-range";
+import { getDatabaseConnection } from "@/lib/database-url";
 import prisma from "@/lib/prisma";
+import { Prisma } from "../../prisma/generated/client";
 import type {
   StockMovementDirection,
   StockMovementType,
@@ -97,7 +99,12 @@ type RawDashboardMovement = {
   quantity: string;
 };
 
+function quoteIdentifier(value: string) {
+  return `"${value.replace(/"/g, '""')}"`;
+}
+
 export async function getRecentDashboardMovements(): Promise<DashboardMovement[]> {
+  const schema = Prisma.raw(quoteIdentifier(getDatabaseConnection().schema));
   const rows = await prisma.$queryRaw<RawDashboardMovement[]>`
     SELECT
       ranked.id::text AS "id",
@@ -116,7 +123,7 @@ export async function getRecentDashboardMovements(): Promise<DashboardMovement[]
           PARTITION BY movement.movement_type
           ORDER BY movement.occurred_at DESC
         ) AS type_rank
-      FROM stock_movements movement
+      FROM ${schema}.stock_movements movement
       WHERE movement.movement_type::text IN (
         'PURCHASE_ENTRY',
         'SALE',
@@ -125,8 +132,8 @@ export async function getRecentDashboardMovements(): Promise<DashboardMovement[]
         'SERVICE_CONSUMPTION'
       )
     ) ranked
-    INNER JOIN products product ON product.id = ranked.product_id
-    LEFT JOIN users performer ON performer.id = ranked.performed_by_id
+    INNER JOIN ${schema}.products product ON product.id = ranked.product_id
+    LEFT JOIN ${schema}.users performer ON performer.id = ranked.performed_by_id
     WHERE ranked.type_rank <= 5
     ORDER BY ranked.occurred_at DESC
   `;

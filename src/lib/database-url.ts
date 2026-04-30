@@ -1,10 +1,21 @@
 const LOCAL_DATABASE_HOSTS = new Set(['localhost', '127.0.0.1', '::1']);
 
+type DatabaseUrlEnvName =
+  | 'DATABASE_URL'
+  | 'DB_DIRECT_URL'
+  | 'DB_POOLER_URL'
+  | 'DIRECT_URL'
+  | 'TEST_DATABASE_URL';
+
 function getDefaultSchema() {
+  if (process.env.NODE_ENV === 'test') {
+    return 'public';
+  }
+
   return process.env.DATABASE_SCHEMA ?? 'mixmart';
 }
 
-function readUrlFromEnv(name: 'DATABASE_URL' | 'DIRECT_URL') {
+function readUrlFromEnv(name: DatabaseUrlEnvName) {
   const value = process.env[name];
 
   if (!value) {
@@ -18,15 +29,51 @@ function readUrlFromEnv(name: 'DATABASE_URL' | 'DIRECT_URL') {
   }
 }
 
+function readFirstUrlFromEnv(names: DatabaseUrlEnvName[]) {
+  for (const name of names) {
+    const databaseUrl = readUrlFromEnv(name);
+
+    if (databaseUrl) {
+      return databaseUrl;
+    }
+  }
+
+  return null;
+}
+
 function isLocalDatabaseHost(hostname: string) {
   return LOCAL_DATABASE_HOSTS.has(hostname) || hostname.endsWith('.local');
 }
 
 function readRequiredDatabaseUrl() {
-  const databaseUrl = readUrlFromEnv('DATABASE_URL');
+  const databaseUrl =
+    process.env.NODE_ENV === 'test'
+      ? readUrlFromEnv('TEST_DATABASE_URL')
+      : readFirstUrlFromEnv(['DB_POOLER_URL', 'DATABASE_URL']);
 
   if (!databaseUrl) {
-    throw new Error('DATABASE_URL is required.');
+    throw new Error(
+      process.env.NODE_ENV === 'test'
+        ? 'TEST_DATABASE_URL is required.'
+        : 'DB_POOLER_URL is required.',
+    );
+  }
+
+  return databaseUrl;
+}
+
+function readRequiredDirectDatabaseUrl() {
+  const databaseUrl =
+    process.env.NODE_ENV === 'test'
+      ? readUrlFromEnv('TEST_DATABASE_URL')
+      : readFirstUrlFromEnv(['DB_DIRECT_URL', 'DIRECT_URL']);
+
+  if (!databaseUrl) {
+    throw new Error(
+      process.env.NODE_ENV === 'test'
+        ? 'TEST_DATABASE_URL is required.'
+        : 'DB_DIRECT_URL is required.',
+    );
   }
 
   return databaseUrl;
@@ -98,9 +145,7 @@ function resolveRuntimeDatabaseUrl() {
 }
 
 function resolveDirectDatabaseUrl() {
-  return normalizeDatabaseUrl(
-    readUrlFromEnv('DIRECT_URL') ?? readRequiredDatabaseUrl(),
-  );
+  return normalizeDatabaseUrl(readRequiredDirectDatabaseUrl());
 }
 
 function buildConnectionInfo(databaseUrl: URL) {

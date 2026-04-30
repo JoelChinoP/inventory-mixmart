@@ -10,7 +10,7 @@ export default defineConfig({
     seed: 'tsx ./prisma/seed.ts',
   },
   datasource: {
-    // DIRECT_URL is optional for local migrations/CLI and falls back to DATABASE_URL.
+    // DB_DIRECT_URL is used for Prisma CLI, migrations, and seed.
     url: getDirectDatabaseUrl(),
   },
 });

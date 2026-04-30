@@ -92,6 +92,9 @@ export const UserScalarFieldEnum = {
   phone: 'phone',
   dateOfBirth: 'dateOfBirth',
   avatarUrl: 'avatarUrl',
+  avatarData: 'avatarData',
+  avatarMimeType: 'avatarMimeType',
+  avatarUpdatedAt: 'avatarUpdatedAt',
   passwordHash: 'passwordHash',
   role: 'role',
   isActive: 'isActive',
@@ -102,6 +105,14 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const RelationLoadStrategy = {
+  query: 'query',
+  join: 'join'
+} as const
+
+export type RelationLoadStrategy = (typeof RelationLoadStrategy)[keyof typeof RelationLoadStrategy]
 
 
 export const SupplierScalarFieldEnum = {

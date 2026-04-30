@@ -709,7 +709,7 @@ export type $ProductSupplierPayload<ExtArgs extends runtime.Types.Extensions.Int
 export type ProductSupplierGetPayload<S extends boolean | null | undefined | ProductSupplierDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ProductSupplierPayload, S>
 
 export type ProductSupplierCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<ProductSupplierFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<ProductSupplierFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: ProductSupplierCountAggregateInputType | true
   }
 
@@ -1158,6 +1158,7 @@ export type ProductSupplierFindUniqueArgs<ExtArgs extends runtime.Types.Extensio
    * Filter, which ProductSupplier to fetch.
    */
   where: Prisma.ProductSupplierWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1180,6 +1181,7 @@ export type ProductSupplierFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.E
    * Filter, which ProductSupplier to fetch.
    */
   where: Prisma.ProductSupplierWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1232,6 +1234,7 @@ export type ProductSupplierFindFirstArgs<ExtArgs extends runtime.Types.Extension
    * Filter by unique combinations of ProductSuppliers.
    */
   distinct?: Prisma.ProductSupplierScalarFieldEnum | Prisma.ProductSupplierScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1284,6 +1287,7 @@ export type ProductSupplierFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Ex
    * Filter by unique combinations of ProductSuppliers.
    */
   distinct?: Prisma.ProductSupplierScalarFieldEnum | Prisma.ProductSupplierScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1336,6 +1340,7 @@ export type ProductSupplierFindManyArgs<ExtArgs extends runtime.Types.Extensions
    * Filter by unique combinations of ProductSuppliers.
    */
   distinct?: Prisma.ProductSupplierScalarFieldEnum | Prisma.ProductSupplierScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1358,6 +1363,7 @@ export type ProductSupplierCreateArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data needed to create a ProductSupplier.
    */
   data: Prisma.XOR<Prisma.ProductSupplierCreateInput, Prisma.ProductSupplierUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1418,6 +1424,7 @@ export type ProductSupplierUpdateArgs<ExtArgs extends runtime.Types.Extensions.I
    * Choose, which ProductSupplier to update.
    */
   where: Prisma.ProductSupplierWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1496,6 +1503,7 @@ export type ProductSupplierUpsertArgs<ExtArgs extends runtime.Types.Extensions.I
    * In case the ProductSupplier was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.ProductSupplierUpdateInput, Prisma.ProductSupplierUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1518,6 +1526,7 @@ export type ProductSupplierDeleteArgs<ExtArgs extends runtime.Types.Extensions.I
    * Filter which ProductSupplier to delete.
    */
   where: Prisma.ProductSupplierWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

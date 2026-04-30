@@ -1,7 +1,3 @@
-import { randomUUID } from "node:crypto";
-import { mkdir, unlink, writeFile } from "node:fs/promises";
-import path from "node:path";
-
 import { hashPassword } from "@/lib/password";
 import prisma, { prismaRaw } from "@/lib/prisma";
 import type {
@@ -11,7 +7,7 @@ import type {
 } from "@/services/form-schemas";
 import type { UserRole } from "../../prisma/generated/client";
 
-export const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
+export const MAX_AVATAR_BYTES = 4 * 1024 * 1024;
 export const RECOMMENDED_AVATAR_BYTES = 2 * 1024 * 1024;
 
 const avatarMimeTypes = {
@@ -21,6 +17,12 @@ const avatarMimeTypes = {
 } as const;
 
 type AvatarUploadErrorCode = "size" | "type";
+type ProfileAvatarUpload = {
+  data: Uint8Array<ArrayBuffer>;
+  mimeType: keyof typeof avatarMimeTypes;
+  updatedAt: Date;
+  url: string;
+};
 
 export class SelfDeactivationError extends Error {
   constructor() {
@@ -43,57 +45,36 @@ function getAvatarExtension(file: File) {
   return avatarMimeTypes[file.type as keyof typeof avatarMimeTypes];
 }
 
-function getLocalAvatarPath(avatarUrl: string) {
-  if (!avatarUrl.startsWith("/uploads/avatars/")) {
-    return null;
-  }
-
-  return path.join(process.cwd(), "public", ...avatarUrl.split("/").filter(Boolean));
+function getAvatarUrl(userId: string, updatedAt: Date) {
+  return `/api/users/${userId}/avatar?v=${updatedAt.getTime()}`;
 }
 
-async function deleteLocalAvatar(avatarUrl: string | null | undefined) {
-  if (!avatarUrl) {
-    return;
-  }
-
-  const avatarPath = getLocalAvatarPath(avatarUrl);
-
-  if (!avatarPath) {
-    return;
-  }
-
-  await unlink(avatarPath).catch(() => undefined);
-}
-
-export async function saveProfileAvatar({
+export async function readProfileAvatarUpload({
   userId,
   file,
-  previousAvatarUrl,
 }: {
   userId: string;
   file: File;
-  previousAvatarUrl: string | null;
-}) {
+}): Promise<ProfileAvatarUpload> {
   if (file.size > MAX_AVATAR_BYTES) {
     throw new AvatarUploadError("size");
   }
 
+  const mimeType = file.type as keyof typeof avatarMimeTypes;
   const extension = getAvatarExtension(file);
 
   if (!extension) {
     throw new AvatarUploadError("type");
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const uploadDir = path.join(process.cwd(), "public", "uploads", "avatars");
-  const fileName = `${userId}-${Date.now()}-${randomUUID()}.${extension}`;
-  const publicPath = `/uploads/avatars/${fileName}`;
+  const updatedAt = new Date();
 
-  await mkdir(uploadDir, { recursive: true });
-  await writeFile(path.join(uploadDir, fileName), buffer);
-  await deleteLocalAvatar(previousAvatarUrl);
-
-  return publicPath;
+  return {
+    data: new Uint8Array(await file.arrayBuffer()),
+    mimeType,
+    updatedAt,
+    url: getAvatarUrl(userId, updatedAt),
+  };
 }
 
 export async function createUserAccount(data: UserCreateInput) {
@@ -162,23 +143,14 @@ export async function hasProfileIdentityConflict({
 export async function updateOwnProfile({
   id,
   data,
-  avatarUrl,
+  avatar,
   removeAvatar,
 }: {
   id: string;
   data: OwnProfileUpdateInput;
-  avatarUrl?: string;
+  avatar?: ProfileAvatarUpload;
   removeAvatar?: boolean;
 }) {
-  const currentUser = await prisma.user.findUniqueOrThrow({
-    where: { id },
-    select: { avatarUrl: true },
-  });
-
-  if (removeAvatar) {
-    await deleteLocalAvatar(currentUser.avatarUrl);
-  }
-
   return prisma.user.update({
     where: { id },
     data: {
@@ -187,10 +159,20 @@ export async function updateOwnProfile({
       email: data.email?.toLowerCase() ?? null,
       phone: data.phone,
       dni: data.dni,
-      ...(avatarUrl !== undefined
-        ? { avatarUrl }
+      ...(avatar
+        ? {
+            avatarData: avatar.data,
+            avatarMimeType: avatar.mimeType,
+            avatarUpdatedAt: avatar.updatedAt,
+            avatarUrl: avatar.url,
+          }
         : removeAvatar
-          ? { avatarUrl: null }
+          ? {
+              avatarData: null,
+              avatarMimeType: null,
+              avatarUpdatedAt: null,
+              avatarUrl: null,
+            }
           : {}),
     },
   });

@@ -8,7 +8,7 @@ import { PrismaClient } from "../../prisma/generated/client";
 const { Client } = pg;
 
 const DEFAULT_TEST_DATABASE_URL =
-  "postgresql://myuser:mypassword@127.0.0.1:5420/mydb?schema=public";
+  "postgresql://myuser:mypassword@127.0.0.1:5420/mydb?sslmode=disable&schema=public";
 
 const TABLES = [
   "stock_movements",
@@ -50,6 +50,8 @@ export function buildTestDatabaseUrl() {
 
 export async function setupTestDatabase(): Promise<TestDatabase> {
   const { schemaName, schemaUrl, adminUrl } = buildTestDatabaseUrl();
+  process.env.NODE_ENV = "test";
+  process.env.TEST_DATABASE_URL = schemaUrl;
 
   execFileSync(
     process.execPath,
@@ -65,6 +67,11 @@ export async function setupTestDatabase(): Promise<TestDatabase> {
     ],
     {
       cwd: process.cwd(),
+      env: {
+        ...process.env,
+        NODE_ENV: "test",
+        TEST_DATABASE_URL: schemaUrl,
+      },
       stdio: "pipe",
     },
   );
@@ -74,7 +81,8 @@ export async function setupTestDatabase(): Promise<TestDatabase> {
     stdio: "pipe",
     env: {
       ...process.env,
-      DATABASE_URL: schemaUrl,
+      NODE_ENV: "test",
+      TEST_DATABASE_URL: schemaUrl,
     },
   });
 

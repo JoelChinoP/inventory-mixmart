@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getDashboardFinancialSummary } from "@/services/dashboard.service";
 
+export const runtime = "nodejs";
+
 export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
 

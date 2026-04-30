@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import { AppShell, AppShellSkeleton } from "@/components/layout/app-shell";
 import { requireActiveUser } from "@/lib/auth";
 
+export const runtime = "nodejs";
+
 export default function ProtectedAppLayout({
   children,
 }: Readonly<{

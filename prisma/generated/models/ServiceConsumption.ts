@@ -835,7 +835,7 @@ export type $ServiceConsumptionPayload<ExtArgs extends runtime.Types.Extensions.
 export type ServiceConsumptionGetPayload<S extends boolean | null | undefined | ServiceConsumptionDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ServiceConsumptionPayload, S>
 
 export type ServiceConsumptionCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<ServiceConsumptionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<ServiceConsumptionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: ServiceConsumptionCountAggregateInputType | true
   }
 
@@ -1284,6 +1284,7 @@ export type ServiceConsumptionFindUniqueArgs<ExtArgs extends runtime.Types.Exten
    * Filter, which ServiceConsumption to fetch.
    */
   where: Prisma.ServiceConsumptionWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1306,6 +1307,7 @@ export type ServiceConsumptionFindUniqueOrThrowArgs<ExtArgs extends runtime.Type
    * Filter, which ServiceConsumption to fetch.
    */
   where: Prisma.ServiceConsumptionWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1358,6 +1360,7 @@ export type ServiceConsumptionFindFirstArgs<ExtArgs extends runtime.Types.Extens
    * Filter by unique combinations of ServiceConsumptions.
    */
   distinct?: Prisma.ServiceConsumptionScalarFieldEnum | Prisma.ServiceConsumptionScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1410,6 +1413,7 @@ export type ServiceConsumptionFindFirstOrThrowArgs<ExtArgs extends runtime.Types
    * Filter by unique combinations of ServiceConsumptions.
    */
   distinct?: Prisma.ServiceConsumptionScalarFieldEnum | Prisma.ServiceConsumptionScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1462,6 +1466,7 @@ export type ServiceConsumptionFindManyArgs<ExtArgs extends runtime.Types.Extensi
    * Filter by unique combinations of ServiceConsumptions.
    */
   distinct?: Prisma.ServiceConsumptionScalarFieldEnum | Prisma.ServiceConsumptionScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1484,6 +1489,7 @@ export type ServiceConsumptionCreateArgs<ExtArgs extends runtime.Types.Extension
    * The data needed to create a ServiceConsumption.
    */
   data: Prisma.XOR<Prisma.ServiceConsumptionCreateInput, Prisma.ServiceConsumptionUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1544,6 +1550,7 @@ export type ServiceConsumptionUpdateArgs<ExtArgs extends runtime.Types.Extension
    * Choose, which ServiceConsumption to update.
    */
   where: Prisma.ServiceConsumptionWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1622,6 +1629,7 @@ export type ServiceConsumptionUpsertArgs<ExtArgs extends runtime.Types.Extension
    * In case the ServiceConsumption was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.ServiceConsumptionUpdateInput, Prisma.ServiceConsumptionUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1644,6 +1652,7 @@ export type ServiceConsumptionDeleteArgs<ExtArgs extends runtime.Types.Extension
    * Filter which ServiceConsumption to delete.
    */
   where: Prisma.ServiceConsumptionWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

@@ -8,10 +8,13 @@ import pg from "pg";
 
 const { Client } = pg;
 
-const connectionString = process.env.DATABASE_URL;
+const connectionString =
+  process.env.NODE_ENV === "test"
+    ? process.env.TEST_DATABASE_URL
+    : (process.env.DB_DIRECT_URL ?? process.env.DIRECT_URL);
 
 if (!connectionString) {
-  throw new Error("DATABASE_URL is required to apply database rules.");
+  throw new Error("DB_DIRECT_URL is required to apply database rules.");
 }
 
 const connectionUrl = new URL(connectionString);

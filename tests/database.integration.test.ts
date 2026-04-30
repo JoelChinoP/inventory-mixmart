@@ -105,6 +105,46 @@ test("RF-01/RF-06: required fields, non-negative values, and unique supplier tax
   );
 });
 
+test("Profile avatar is stored in the database and capped at 4 MB", async () => {
+  const user = await createUser();
+
+  const updated = await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      avatarData: new Uint8Array([1, 2, 3]),
+      avatarMimeType: "image/png",
+      avatarUpdatedAt: new Date("2026-04-30T10:00:00.000Z"),
+      avatarUrl: `/api/users/${user.id}/avatar?v=1`,
+    },
+  });
+
+  assert.equal(updated.avatarMimeType, "image/png");
+  assert.equal(updated.avatarData?.length, 3);
+
+  await expectDbError(
+    prisma.user.update({
+      where: { id: user.id },
+      data: {
+        avatarData: new Uint8Array(4 * 1024 * 1024 + 1),
+        avatarMimeType: "image/png",
+        avatarUpdatedAt: new Date("2026-04-30T10:05:00.000Z"),
+      },
+    }),
+    "chk_users_avatar_size",
+  );
+
+  await expectDbError(
+    db.schemaClient.query(`
+      UPDATE users
+      SET avatar_data = '\\x01'::bytea,
+          avatar_mime_type = 'image/gif',
+          avatar_updated_at = now()
+      WHERE id = '${user.id}'
+    `),
+    "chk_users_avatar_payload",
+  );
+});
+
 test("RF-03/RF-09/RF-10/RF-11: snacks use simple inventory and only RECEIVED entries increase stock", async () => {
   const user = await createUser();
   const supplier = await createSupplier();
@@ -847,6 +887,50 @@ test("RF-17/RF-18/RF-20/RF-25/RF-26/RF-28/RF-29: stock, alerts, movements, and s
   });
   assert.equal(serviceSummary.length, 1);
   assert.equal(serviceSummary[0]!.status, "DELIVERED");
+});
+
+test("Dashboard recent movements raw query uses the configured schema", async () => {
+  const user = await createUser();
+  const supplier = await createSupplier();
+  const product = await createProduct({
+    name: "Dashboard Movement Product",
+    minimumStock: 1,
+  });
+
+  await prisma.stockEntry.create({
+    data: {
+      supplierId: supplier.id,
+      createdById: user.id,
+      status: "RECEIVED",
+      orderedAt: new Date("2026-04-30T08:00:00.000Z"),
+      receivedAt: new Date("2026-04-30T08:05:00.000Z"),
+      items: {
+        create: [
+          {
+            productId: product.id,
+            quantity: 3,
+            unitCost: 1,
+          },
+        ],
+      },
+    },
+  });
+
+  const { getRecentDashboardMovements } = await import(
+    "../src/services/dashboard.service"
+  );
+  const movements = await getRecentDashboardMovements();
+
+  assert.ok(
+    movements.some(
+      (movement) =>
+        movement.product.name === product.name &&
+        movement.movementType === "PURCHASE_ENTRY",
+    ),
+  );
+
+  const prismaModule = await import("../src/lib/prisma");
+  await prismaModule.default.$disconnect();
 });
 
 test("Soft delete extension: catalog deletes are hidden, restorable, and bypassable", async () => {

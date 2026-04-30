@@ -1095,7 +1095,7 @@ export type $ServiceRecordPayload<ExtArgs extends runtime.Types.Extensions.Inter
 export type ServiceRecordGetPayload<S extends boolean | null | undefined | ServiceRecordDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ServiceRecordPayload, S>
 
 export type ServiceRecordCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<ServiceRecordFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<ServiceRecordFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: ServiceRecordCountAggregateInputType | true
   }
 
@@ -1550,6 +1550,7 @@ export type ServiceRecordFindUniqueArgs<ExtArgs extends runtime.Types.Extensions
    * Filter, which ServiceRecord to fetch.
    */
   where: Prisma.ServiceRecordWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1572,6 +1573,7 @@ export type ServiceRecordFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Ext
    * Filter, which ServiceRecord to fetch.
    */
   where: Prisma.ServiceRecordWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1624,6 +1626,7 @@ export type ServiceRecordFindFirstArgs<ExtArgs extends runtime.Types.Extensions.
    * Filter by unique combinations of ServiceRecords.
    */
   distinct?: Prisma.ServiceRecordScalarFieldEnum | Prisma.ServiceRecordScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1676,6 +1679,7 @@ export type ServiceRecordFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exte
    * Filter by unique combinations of ServiceRecords.
    */
   distinct?: Prisma.ServiceRecordScalarFieldEnum | Prisma.ServiceRecordScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1728,6 +1732,7 @@ export type ServiceRecordFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Filter by unique combinations of ServiceRecords.
    */
   distinct?: Prisma.ServiceRecordScalarFieldEnum | Prisma.ServiceRecordScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1750,6 +1755,7 @@ export type ServiceRecordCreateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * The data needed to create a ServiceRecord.
    */
   data: Prisma.XOR<Prisma.ServiceRecordCreateInput, Prisma.ServiceRecordUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1810,6 +1816,7 @@ export type ServiceRecordUpdateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Choose, which ServiceRecord to update.
    */
   where: Prisma.ServiceRecordWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1888,6 +1895,7 @@ export type ServiceRecordUpsertArgs<ExtArgs extends runtime.Types.Extensions.Int
    * In case the ServiceRecord was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.ServiceRecordUpdateInput, Prisma.ServiceRecordUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1910,6 +1918,7 @@ export type ServiceRecordDeleteArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Filter which ServiceRecord to delete.
    */
   where: Prisma.ServiceRecordWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

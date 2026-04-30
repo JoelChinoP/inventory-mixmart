@@ -48,7 +48,7 @@ import {
   AvatarUploadError,
   userCreateSchema,
   userUpdateSchema,
-  saveProfileAvatar,
+  readProfileAvatarUpload,
 } from "@/services";
 
 const adminOnly = [ADMIN_ROLE];
@@ -285,7 +285,9 @@ export async function updateOwnProfile(formData: FormData) {
   const data = parseForm(ownProfileUpdateSchema, formData);
   const avatar = formData.get("avatar");
   const removeAvatar = stringValue(formData, "removeAvatar") === "true";
-  let avatarUrl: string | undefined;
+  let avatarUpload:
+    | Awaited<ReturnType<typeof readProfileAvatarUpload>>
+    | undefined;
 
   if (
     await hasProfileIdentityConflict({
@@ -299,10 +301,9 @@ export async function updateOwnProfile(formData: FormData) {
 
   try {
     if (avatar instanceof File && avatar.size > 0) {
-      avatarUrl = await saveProfileAvatar({
+      avatarUpload = await readProfileAvatarUpload({
         userId: user.id,
         file: avatar,
-        previousAvatarUrl: user.avatarUrl,
       });
     }
   } catch (error) {
@@ -316,8 +317,8 @@ export async function updateOwnProfile(formData: FormData) {
   await updateOwnProfileRecord({
     id: user.id,
     data,
-    avatarUrl,
-    removeAvatar: removeAvatar && !avatarUrl,
+    avatar: avatarUpload,
+    removeAvatar: removeAvatar && !avatarUpload,
   });
   revalidatePath("/profile");
   revalidatePath("/dashboard");

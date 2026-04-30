@@ -1,8 +1,8 @@
-import "dotenv/config";
+import 'dotenv/config';
 
-import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaPg } from '@prisma/adapter-pg';
 
-import { PrismaClient } from "./generated/client";
+import { PrismaClient } from './generated/client';
 import type {
   ProductCategory,
   ServiceKind,
@@ -10,19 +10,25 @@ import type {
   StockEntryStatus,
   StockOutputReason,
   UserRole,
-} from "./generated/client";
-import { getDatabaseConnection } from "../src/lib/database-url";
-import { hashPassword } from "../src/lib/password";
-import { log } from "console";
+} from './generated/client';
+import { getDirectDatabaseConnection } from '../src/lib/database-url';
+import { hashPassword } from '../src/lib/password';
 
 const ADMIN_EMAIL =
   process.env.ADMIN_SEED_EMAIL?.trim().toLowerCase() ||
-  "libreriamilton8@gmail.com";
+  'libreriamilton8@gmail.com';
 const ADMIN_PASSWORD = process.env.ADMIN_SEED_PASSWORD;
 const DEMO_PASSWORD = process.env.DEMO_SEED_PASSWORD || ADMIN_PASSWORD;
 
-const database = getDatabaseConnection();
-log(database);
+const database = getDirectDatabaseConnection();
+const searchPath = `${database.schema},public`;
+const pgOptions = process.env.PGOPTIONS ?? '';
+
+if (!pgOptions.includes('search_path')) {
+  process.env.PGOPTIONS = [pgOptions, `--search_path=${searchPath}`]
+    .filter(Boolean)
+    .join(' ');
+}
 const adapter = new PrismaPg(
   {
     connectionString: database.connectionString,
@@ -254,7 +260,7 @@ async function ensureStockEntry({
       createdById,
       status,
       orderedAt,
-      receivedAt: status === "RECEIVED" ? receivedAt ?? orderedAt : null,
+      receivedAt: status === 'RECEIVED' ? (receivedAt ?? orderedAt) : null,
       referenceNumber,
       notes,
       items: {
@@ -396,7 +402,7 @@ async function ensureServiceRecord({
       status,
       quantity,
       serviceDate,
-      deliveredAt: status === "DELIVERED" ? deliveredAt ?? serviceDate : null,
+      deliveredAt: status === 'DELIVERED' ? (deliveredAt ?? serviceDate) : null,
       externalVendorName,
       notes,
     },
@@ -406,77 +412,79 @@ async function ensureServiceRecord({
 async function main() {
   if (!ADMIN_PASSWORD || !DEMO_PASSWORD) {
     throw new Error(
-      "ADMIN_SEED_PASSWORD is required to seed users and demo data.",
+      'ADMIN_SEED_PASSWORD is required to seed users and demo data.',
     );
   }
 
   const passwordHash = await hashPassword(ADMIN_PASSWORD);
   const demoPasswordHash =
-    DEMO_PASSWORD === ADMIN_PASSWORD ? passwordHash : await hashPassword(DEMO_PASSWORD);
+    DEMO_PASSWORD === ADMIN_PASSWORD
+      ? passwordHash
+      : await hashPassword(DEMO_PASSWORD);
 
   const admin = await upsertUser({
-    username: "admin",
+    username: 'admin',
     email: ADMIN_EMAIL,
-    firstName: "Administrador",
-    lastName: "El Colorado",
+    firstName: 'Administrador',
+    lastName: 'El Colorado',
     passwordHash,
-    role: "ADMIN",
-    phone: "959000001",
-    dni: "70000001",
+    role: 'ADMIN',
+    phone: '959000001',
+    dni: '70000001',
   });
   const worker = await upsertUser({
-    username: "caja",
-    email: "caja@elcolorado.local",
-    firstName: "Marisol",
-    lastName: "Quispe",
+    username: 'caja',
+    email: 'caja@elcolorado.local',
+    firstName: 'Marisol',
+    lastName: 'Quispe',
     passwordHash: demoPasswordHash,
-    role: "WORKER",
-    phone: "959000002",
-    dni: "70000002",
+    role: 'WORKER',
+    phone: '959000002',
+    dni: '70000002',
   });
   await upsertUser({
-    username: "apoyo",
-    email: "apoyo@elcolorado.local",
-    firstName: "Luis",
-    lastName: "Ramos",
+    username: 'apoyo',
+    email: 'apoyo@elcolorado.local',
+    firstName: 'Luis',
+    lastName: 'Ramos',
     passwordHash: demoPasswordHash,
-    role: "WORKER",
-    phone: "959000003",
-    dni: "70000003",
+    role: 'WORKER',
+    phone: '959000003',
+    dni: '70000003',
     isActive: false,
   });
 
   const supplierSchool = await upsertSupplier({
-    ruc: "20481234561",
-    name: "Distribuidora Escolar Sur",
-    contactName: "Rosa Paredes",
-    phone: "054-221100",
-    address: "Av. Independencia 125, Arequipa",
-    notes: "Proveedor preferido para utiles escolares.",
+    ruc: '20481234561',
+    name: 'Distribuidora Escolar Sur',
+    contactName: 'Rosa Paredes',
+    phone: '054-221100',
+    address: 'Av. Independencia 125, Arequipa',
+    notes: 'Proveedor preferido para utiles escolares.',
   });
   const supplierBazaar = await upsertSupplier({
-    ruc: "20557890123",
-    name: "Bazar Mayorista Santa Catalina",
-    contactName: "Hector Salas",
-    phone: "054-334455",
-    address: "Calle Mercaderes 410, Arequipa",
-    notes: "Entrega los martes y viernes.",
+    ruc: '20557890123',
+    name: 'Bazar Mayorista Santa Catalina',
+    contactName: 'Hector Salas',
+    phone: '054-334455',
+    address: 'Calle Mercaderes 410, Arequipa',
+    notes: 'Entrega los martes y viernes.',
   });
   const supplierSnacks = await upsertSupplier({
-    ruc: "20661234098",
-    name: "Snacks Rapidos del Sur",
-    contactName: "Carla Medina",
-    phone: "054-445566",
-    address: "Parque Industrial Mz. C Lt. 8",
-    notes: "Snacks tratados como inventario regular.",
+    ruc: '20661234098',
+    name: 'Snacks Rapidos del Sur',
+    contactName: 'Carla Medina',
+    phone: '054-445566',
+    address: 'Parque Industrial Mz. C Lt. 8',
+    notes: 'Snacks tratados como inventario regular.',
   });
   await upsertSupplier({
-    ruc: "20990000111",
-    name: "Proveedor Inactivo de Prueba",
-    contactName: "Archivo",
-    phone: "054-000000",
-    address: "Sin direccion activa",
-    notes: "Fila para validar filtros de proveedores inactivos.",
+    ruc: '20990000111',
+    name: 'Proveedor Inactivo de Prueba',
+    contactName: 'Archivo',
+    phone: '054-000000',
+    address: 'Sin direccion activa',
+    notes: 'Fila para validar filtros de proveedores inactivos.',
     isActive: false,
   });
 
@@ -492,94 +500,94 @@ async function main() {
     deletedProduct,
   ] = await Promise.all([
     upsertProduct({
-      sku: "EC-UTI-PAP-A4",
-      name: "Papel bond A4 75 g",
-      category: "SCHOOL_SUPPLIES",
-      unitName: "paquete",
+      sku: 'EC-UTI-PAP-A4',
+      name: 'Papel bond A4 75 g',
+      category: 'SCHOOL_SUPPLIES',
+      unitName: 'paquete',
       purchasePrice: 11.8,
       salePrice: 18,
       minimumStock: 8,
-      description: "Paquete para venta y servicios de copiado.",
+      description: 'Paquete para venta y servicios de copiado.',
     }),
     upsertProduct({
-      sku: "EC-UTI-CUA-100",
-      name: "Cuaderno cuadriculado 100 hojas",
-      category: "SCHOOL_SUPPLIES",
-      unitName: "unidad",
+      sku: 'EC-UTI-CUA-100',
+      name: 'Cuaderno cuadriculado 100 hojas',
+      category: 'SCHOOL_SUPPLIES',
+      unitName: 'unidad',
       purchasePrice: 2.7,
       salePrice: 4.5,
       minimumStock: 10,
-      description: "Producto de alta rotacion para campana escolar.",
+      description: 'Producto de alta rotacion para campana escolar.',
     }),
     upsertProduct({
-      sku: "EC-UTI-GOM-21",
-      name: "Goma en barra 21 g",
-      category: "SCHOOL_SUPPLIES",
-      unitName: "unidad",
+      sku: 'EC-UTI-GOM-21',
+      name: 'Goma en barra 21 g',
+      category: 'SCHOOL_SUPPLIES',
+      unitName: 'unidad',
       purchasePrice: 1.2,
       salePrice: 2.8,
       minimumStock: 8,
-      description: "Insumo y producto de venta.",
+      description: 'Insumo y producto de venta.',
     }),
     upsertProduct({
-      sku: "EC-UTI-MIC-A4",
-      name: "Mica transparente A4",
-      category: "SCHOOL_SUPPLIES",
-      unitName: "unidad",
+      sku: 'EC-UTI-MIC-A4',
+      name: 'Mica transparente A4',
+      category: 'SCHOOL_SUPPLIES',
+      unitName: 'unidad',
       purchasePrice: 0.35,
       salePrice: 0.8,
       minimumStock: 20,
-      description: "Insumo para servicios internos.",
+      description: 'Insumo para servicios internos.',
     }),
     upsertProduct({
-      sku: "EC-BAZ-PAP-REG",
-      name: "Papel de regalo surtido",
-      category: "BAZAAR",
-      unitName: "pliego",
+      sku: 'EC-BAZ-PAP-REG',
+      name: 'Papel de regalo surtido',
+      category: 'BAZAAR',
+      unitName: 'pliego',
       purchasePrice: 0.9,
       salePrice: 2,
       minimumStock: 6,
-      description: "Bazar y consumo para forrado.",
+      description: 'Bazar y consumo para forrado.',
     }),
     upsertProduct({
-      sku: "EC-BAZ-GLO-12",
-      name: "Globos latex x12",
-      category: "BAZAAR",
-      unitName: "bolsa",
+      sku: 'EC-BAZ-GLO-12',
+      name: 'Globos latex x12',
+      category: 'BAZAAR',
+      unitName: 'bolsa',
       purchasePrice: 3.5,
       salePrice: 6,
       minimumStock: 15,
-      description: "Producto bajo stock para validar alertas.",
+      description: 'Producto bajo stock para validar alertas.',
     }),
     upsertProduct({
-      sku: "EC-SNA-CHO-25",
-      name: "Chocolate personal 25 g",
-      category: "SNACKS",
-      unitName: "unidad",
+      sku: 'EC-SNA-CHO-25',
+      name: 'Chocolate personal 25 g',
+      category: 'SNACKS',
+      unitName: 'unidad',
       purchasePrice: 0.9,
       salePrice: 1.7,
       minimumStock: 12,
-      description: "Snack sin lotes ni vencimiento por politica del negocio.",
+      description: 'Snack sin lotes ni vencimiento por politica del negocio.',
     }),
     upsertProduct({
-      sku: "EC-SNA-GAL-VAI",
-      name: "Galleta vainilla personal",
-      category: "SNACKS",
-      unitName: "unidad",
+      sku: 'EC-SNA-GAL-VAI',
+      name: 'Galleta vainilla personal',
+      category: 'SNACKS',
+      unitName: 'unidad',
       purchasePrice: 0.7,
       salePrice: 1.5,
       minimumStock: 8,
-      description: "Producto que queda sin stock tras una merma.",
+      description: 'Producto que queda sin stock tras una merma.',
     }),
     upsertProduct({
-      sku: "EC-DEL-ARCHIVO",
-      name: "Producto oculto de prueba",
-      category: "BAZAAR",
-      unitName: "unidad",
+      sku: 'EC-DEL-ARCHIVO',
+      name: 'Producto oculto de prueba',
+      category: 'BAZAAR',
+      unitName: 'unidad',
       purchasePrice: 1,
       salePrice: 2,
       minimumStock: 1,
-      description: "Fila para validar restauracion de catalogo.",
+      description: 'Fila para validar restauracion de catalogo.',
     }),
   ]);
 
@@ -592,43 +600,43 @@ async function main() {
     upsertProductSupplier({
       productId: copyPaper.id,
       supplierId: supplierSchool.id,
-      supplierProductCode: "PAP-A4-75",
+      supplierProductCode: 'PAP-A4-75',
       isPreferred: true,
     }),
     upsertProductSupplier({
       productId: notebook.id,
       supplierId: supplierSchool.id,
-      supplierProductCode: "CUA-100-C",
+      supplierProductCode: 'CUA-100-C',
       isPreferred: true,
     }),
     upsertProductSupplier({
       productId: notebook.id,
       supplierId: supplierBazaar.id,
-      supplierProductCode: "ESC-CUA-100",
+      supplierProductCode: 'ESC-CUA-100',
       isPreferred: false,
     }),
     upsertProductSupplier({
       productId: giftWrap.id,
       supplierId: supplierBazaar.id,
-      supplierProductCode: "REG-SURT",
+      supplierProductCode: 'REG-SURT',
       isPreferred: true,
     }),
     upsertProductSupplier({
       productId: balloons.id,
       supplierId: supplierBazaar.id,
-      supplierProductCode: "GLO-12",
+      supplierProductCode: 'GLO-12',
       isPreferred: true,
     }),
     upsertProductSupplier({
       productId: chocolate.id,
       supplierId: supplierSnacks.id,
-      supplierProductCode: "CHO-25",
+      supplierProductCode: 'CHO-25',
       isPreferred: true,
     }),
     upsertProductSupplier({
       productId: cookies.id,
       supplierId: supplierSnacks.id,
-      supplierProductCode: "GAL-VAI",
+      supplierProductCode: 'GAL-VAI',
       isPreferred: true,
     }),
   ]);
@@ -636,11 +644,11 @@ async function main() {
   await ensureStockEntry({
     supplierId: supplierSchool.id,
     createdById: admin.id,
-    status: "RECEIVED",
-    referenceNumber: "EC-SEED-REC-001",
+    status: 'RECEIVED',
+    referenceNumber: 'EC-SEED-REC-001',
     orderedAt: atDaysAgo(18, 9),
     receivedAt: atDaysAgo(18, 10),
-    notes: "SEED: compra recibida inicial para utiles.",
+    notes: 'SEED: compra recibida inicial para utiles.',
     items: [
       { productId: copyPaper.id, quantity: 40, unitCost: 11.8 },
       { productId: notebook.id, quantity: 60, unitCost: 2.7 },
@@ -651,11 +659,11 @@ async function main() {
   await ensureStockEntry({
     supplierId: supplierSchool.id,
     createdById: admin.id,
-    status: "RECEIVED",
-    referenceNumber: "EC-SEED-REC-002",
+    status: 'RECEIVED',
+    referenceNumber: 'EC-SEED-REC-002',
     orderedAt: atDaysAgo(12, 9),
     receivedAt: atDaysAgo(12, 11),
-    notes: "SEED: segunda compra con costo distinto para promedio ponderado.",
+    notes: 'SEED: segunda compra con costo distinto para promedio ponderado.',
     items: [
       { productId: copyPaper.id, quantity: 20, unitCost: 12.4 },
       { productId: notebook.id, quantity: 20, unitCost: 3.1 },
@@ -664,11 +672,11 @@ async function main() {
   await ensureStockEntry({
     supplierId: supplierBazaar.id,
     createdById: worker.id,
-    status: "RECEIVED",
-    referenceNumber: "EC-SEED-REC-003",
+    status: 'RECEIVED',
+    referenceNumber: 'EC-SEED-REC-003',
     orderedAt: atDaysAgo(8, 9),
     receivedAt: atDaysAgo(8, 12),
-    notes: "SEED: compra recibida de bazar.",
+    notes: 'SEED: compra recibida de bazar.',
     items: [
       { productId: giftWrap.id, quantity: 18, unitCost: 0.9 },
       { productId: balloons.id, quantity: 10, unitCost: 3.5 },
@@ -677,11 +685,11 @@ async function main() {
   await ensureStockEntry({
     supplierId: supplierSnacks.id,
     createdById: worker.id,
-    status: "RECEIVED",
-    referenceNumber: "EC-SEED-REC-004",
+    status: 'RECEIVED',
+    referenceNumber: 'EC-SEED-REC-004',
     orderedAt: atDaysAgo(6, 8),
     receivedAt: atDaysAgo(6, 9),
-    notes: "SEED: compra recibida de snacks sin lotes.",
+    notes: 'SEED: compra recibida de snacks sin lotes.',
     items: [
       { productId: chocolate.id, quantity: 24, unitCost: 0.9 },
       { productId: cookies.id, quantity: 8, unitCost: 0.7 },
@@ -690,10 +698,10 @@ async function main() {
   await ensureStockEntry({
     supplierId: supplierBazaar.id,
     createdById: worker.id,
-    status: "ORDERED",
-    referenceNumber: "EC-SEED-ORD-001",
+    status: 'ORDERED',
+    referenceNumber: 'EC-SEED-ORD-001',
     orderedAt: atDaysAgo(1, 16),
-    notes: "SEED: orden pendiente que no debe afectar stock.",
+    notes: 'SEED: orden pendiente que no debe afectar stock.',
     items: [
       { productId: balloons.id, quantity: 30, unitCost: 3.4 },
       { productId: giftWrap.id, quantity: 12, unitCost: 0.85 },
@@ -702,9 +710,9 @@ async function main() {
 
   await ensureStockOutput({
     createdById: worker.id,
-    reason: "SALE",
+    reason: 'SALE',
     occurredAt: atDaysAgo(4, 10),
-    notes: "SEED: salida venta con precio real distinto al sugerido.",
+    notes: 'SEED: salida venta con precio real distinto al sugerido.',
     items: [
       { productId: notebook.id, quantity: 15, unitSalePrice: 4 },
       { productId: glue.id, quantity: 3, unitSalePrice: 2.5 },
@@ -719,9 +727,9 @@ async function main() {
 
   await ensureStockOutput({
     createdById: worker.id,
-    reason: "SALE",
+    reason: 'SALE',
     occurredAt: atDaysAgo(2, 17),
-    notes: "SEED: salida venta regular con precio sugerido vigente.",
+    notes: 'SEED: salida venta regular con precio sugerido vigente.',
     items: [
       { productId: notebook.id, quantity: 5 },
       { productId: giftWrap.id, quantity: 4 },
@@ -730,9 +738,9 @@ async function main() {
   });
   await ensureStockOutput({
     createdById: worker.id,
-    reason: "WASTE",
+    reason: 'WASTE',
     occurredAt: atDaysAgo(1, 18),
-    notes: "SEED: salida por merma para validar costos sin ingreso.",
+    notes: 'SEED: salida por merma para validar costos sin ingreso.',
     items: [
       { productId: cookies.id, quantity: 8, unitSalePrice: 9 },
       { productId: chocolate.id, quantity: 2, unitSalePrice: 9 },
@@ -740,9 +748,9 @@ async function main() {
   });
   await ensureStockOutput({
     createdById: admin.id,
-    reason: "INTERNAL_USE",
+    reason: 'INTERNAL_USE',
     occurredAt: atDaysAgo(0, 11),
-    notes: "SEED: salida por uso interno.",
+    notes: 'SEED: salida por uso interno.',
     items: [
       { productId: copyPaper.id, quantity: 1 },
       { productId: glue.id, quantity: 1 },
@@ -751,77 +759,77 @@ async function main() {
   });
 
   const copyService = await ensureServiceType({
-    name: "Fotocopias blanco y negro",
-    kind: "IN_HOUSE",
-    unitName: "copia",
-    description: "Servicio interno que consume papel bond.",
+    name: 'Fotocopias blanco y negro',
+    kind: 'IN_HOUSE',
+    unitName: 'copia',
+    description: 'Servicio interno que consume papel bond.',
     supplies: [{ productId: copyPaper.id, quantityPerUnit: 0.02 }],
   });
   const coverService = await ensureServiceType({
-    name: "Forrado de cuaderno",
-    kind: "IN_HOUSE",
-    unitName: "servicio",
-    description: "Servicio interno que consume papel de regalo y goma.",
+    name: 'Forrado de cuaderno',
+    kind: 'IN_HOUSE',
+    unitName: 'servicio',
+    description: 'Servicio interno que consume papel de regalo y goma.',
     supplies: [
       { productId: giftWrap.id, quantityPerUnit: 0.2 },
       { productId: glue.id, quantityPerUnit: 0.1 },
     ],
   });
   const outsourcedPrint = await ensureServiceType({
-    name: "Impresion formato grande",
-    kind: "OUTSOURCED",
-    unitName: "trabajo",
-    description: "Servicio tercerizado sin consumo automatico de stock.",
+    name: 'Impresion formato grande',
+    kind: 'OUTSOURCED',
+    unitName: 'trabajo',
+    description: 'Servicio tercerizado sin consumo automatico de stock.',
   });
 
   await ensureServiceRecord({
     serviceTypeId: copyService.id,
     createdById: worker.id,
-    kind: "IN_HOUSE",
-    status: "COMPLETED",
+    kind: 'IN_HOUSE',
+    status: 'COMPLETED',
     quantity: 100,
     serviceDate: atDaysAgo(3, 15),
-    notes: "SEED: servicio interno completado con consumo automatico.",
+    notes: 'SEED: servicio interno completado con consumo automatico.',
   });
   await ensureServiceRecord({
     serviceTypeId: coverService.id,
     createdById: worker.id,
-    kind: "IN_HOUSE",
-    status: "DELIVERED",
+    kind: 'IN_HOUSE',
+    status: 'DELIVERED',
     quantity: 5,
     serviceDate: atDaysAgo(1, 10),
     deliveredAt: atDaysAgo(1, 13),
-    notes: "SEED: servicio interno entregado con consumo automatico.",
+    notes: 'SEED: servicio interno entregado con consumo automatico.',
   });
   await ensureServiceRecord({
     serviceTypeId: copyService.id,
     createdById: worker.id,
-    kind: "IN_HOUSE",
-    status: "CANCELLED",
+    kind: 'IN_HOUSE',
+    status: 'CANCELLED',
     quantity: 20,
     serviceDate: atDaysAgo(1, 15),
-    notes: "SEED: servicio interno cancelado sin consumo.",
+    notes: 'SEED: servicio interno cancelado sin consumo.',
   });
   await ensureServiceRecord({
     serviceTypeId: outsourcedPrint.id,
     createdById: admin.id,
-    kind: "OUTSOURCED",
-    status: "RECEIVED",
+    kind: 'OUTSOURCED',
+    status: 'RECEIVED',
     quantity: 1,
     serviceDate: atDaysAgo(2, 9),
-    externalVendorName: "Grafica Aliada",
-    notes: "SEED: servicio tercerizado recibido sin consumo de stock.",
+    externalVendorName: 'Grafica Aliada',
+    notes: 'SEED: servicio tercerizado recibido sin consumo de stock.',
   });
   await ensureServiceRecord({
     serviceTypeId: outsourcedPrint.id,
     createdById: admin.id,
-    kind: "OUTSOURCED",
-    status: "DELIVERED",
+    kind: 'OUTSOURCED',
+    status: 'DELIVERED',
     quantity: 1,
     serviceDate: atDaysAgo(1, 9),
     deliveredAt: atDaysAgo(1, 17),
-    externalVendorName: "Grafica Aliada",
-    notes: "SEED: servicio tercerizado entregado sin consumo de stock.",
+    externalVendorName: 'Grafica Aliada',
+    notes: 'SEED: servicio tercerizado entregado sin consumo de stock.',
   });
 
   const [productCount, movementCount, outputCount, serviceCount] =

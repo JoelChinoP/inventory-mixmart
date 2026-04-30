@@ -85,20 +85,34 @@ function applyRuntimePoolerDefaults(databaseUrl: URL) {
   return databaseUrl;
 }
 
-function resolveRuntimeDatabaseUrl() {
-  const databaseUrl = readRequiredDatabaseUrl();
+function normalizeDatabaseUrl(databaseUrl: URL) {
+  return applyTlsCompatibilityDefaults(
+    applySharedConnectionDefaults(databaseUrl),
+  );
+}
 
+function resolveRuntimeDatabaseUrl() {
   return applyRuntimePoolerDefaults(
-    applyTlsCompatibilityDefaults(applySharedConnectionDefaults(databaseUrl)),
+    normalizeDatabaseUrl(readRequiredDatabaseUrl()),
   );
 }
 
 function resolveDirectDatabaseUrl() {
-  const databaseUrl = readUrlFromEnv('DIRECT_URL') ?? readRequiredDatabaseUrl();
-
-  return applyTlsCompatibilityDefaults(
-    applySharedConnectionDefaults(databaseUrl),
+  return normalizeDatabaseUrl(
+    readUrlFromEnv('DIRECT_URL') ?? readRequiredDatabaseUrl(),
   );
+}
+
+function buildConnectionInfo(databaseUrl: URL) {
+  const schema = databaseUrl.searchParams.get('schema') ?? getDefaultSchema();
+  const connectionUrl = new URL(databaseUrl.toString());
+
+  connectionUrl.searchParams.delete('schema');
+
+  return {
+    connectionString: connectionUrl.toString(),
+    schema,
+  };
 }
 
 export function getDirectDatabaseUrl() {
@@ -106,13 +120,9 @@ export function getDirectDatabaseUrl() {
 }
 
 export function getDatabaseConnection() {
-  const databaseUrl = resolveRuntimeDatabaseUrl();
-  const schema = databaseUrl.searchParams.get('schema') ?? getDefaultSchema();
+  return buildConnectionInfo(resolveRuntimeDatabaseUrl());
+}
 
-  databaseUrl.searchParams.delete('schema');
-
-  return {
-    connectionString: databaseUrl.toString(),
-    schema,
-  };
+export function getDirectDatabaseConnection() {
+  return buildConnectionInfo(resolveDirectDatabaseUrl());
 }

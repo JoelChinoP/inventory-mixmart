@@ -1,19 +1,30 @@
-export type DateRangeKey = "today" | "week" | "month";
+export type DateRangeKey = 'today' | 'week' | 'month' | 'thirty_days';
 
 export const DATE_RANGE_LABELS: Record<DateRangeKey, string> = {
-  today: "Hoy",
-  week: "Esta semana",
-  month: "Ultimos 30 dias",
+  today: 'Hoy',
+  week: 'Esta semana',
+  month: 'Este mes',
+  thirty_days: 'Últimos 30 días',
 };
 
-export const DATE_RANGE_KEYS: DateRangeKey[] = ["today", "week", "month"];
+export const DATE_RANGE_KEYS: DateRangeKey[] = [
+  'today',
+  'week',
+  'month',
+  'thirty_days',
+];
 
 export function isValidRange(value: string | undefined): value is DateRangeKey {
-  return value === "today" || value === "week" || value === "month";
+  return (
+    value === 'today' ||
+    value === 'week' ||
+    value === 'month' ||
+    value === 'thirty_days'
+  );
 }
 
 export function resolveRange(value: string | undefined): DateRangeKey {
-  return isValidRange(value) ? value : "week";
+  return isValidRange(value) ? value : 'week';
 }
 
 function startOfDay(date: Date) {
@@ -46,9 +57,9 @@ export type ResolvedRange = {
   detail: string;
 };
 
-const dateFormatter = new Intl.DateTimeFormat("es-PE", {
-  day: "2-digit",
-  month: "short",
+const dateFormatter = new Intl.DateTimeFormat('es-PE', {
+  day: '2-digit',
+  month: 'short',
 });
 
 export function getRange(value: string | undefined): ResolvedRange {
@@ -57,7 +68,7 @@ export function getRange(value: string | undefined): ResolvedRange {
   const todayStart = startOfDay(now);
   const todayEnd = endOfDay(now);
 
-  if (key === "today") {
+  if (key === 'today') {
     const previousStart = new Date(todayStart);
     previousStart.setDate(previousStart.getDate() - 1);
     const previousEnd = new Date(todayEnd);
@@ -73,7 +84,7 @@ export function getRange(value: string | undefined): ResolvedRange {
     };
   }
 
-  if (key === "week") {
+  if (key === 'week') {
     const start = startOfWeekMonday(now);
     const end = todayEnd;
     const previousEnd = new Date(start);
@@ -91,6 +102,28 @@ export function getRange(value: string | undefined): ResolvedRange {
     };
   }
 
+  if (key === 'month') {
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = todayEnd;
+
+    const previousStart = new Date(start);
+    previousStart.setMonth(previousStart.getMonth() - 1);
+
+    const previousEnd = new Date(start);
+    previousEnd.setMilliseconds(-1);
+
+    return {
+      key,
+      start,
+      end,
+      previousStart,
+      previousEnd,
+      label: DATE_RANGE_LABELS[key],
+      detail: `${dateFormatter.format(start)} - ${dateFormatter.format(end)}`,
+    };
+  }
+
+  // thirty_days
   const start = new Date(todayStart);
   start.setDate(start.getDate() - 29);
   const previousStart = new Date(start);
@@ -109,16 +142,16 @@ export function getRange(value: string | undefined): ResolvedRange {
 }
 
 export function formatRelativeTime(value: Date | string | null | undefined) {
-  if (!value) return "-";
+  if (!value) return '-';
   const date = new Date(value);
   const diffMs = Date.now() - date.getTime();
   const diffMin = Math.round(diffMs / 60000);
 
-  if (diffMin < 1) return "Hace un momento";
+  if (diffMin < 1) return 'Hace un momento';
   if (diffMin < 60) return `Hace ${diffMin} min`;
   const diffH = Math.round(diffMin / 60);
   if (diffH < 24) return `Hace ${diffH} h`;
   const diffD = Math.round(diffH / 24);
   if (diffD < 7) return `Hace ${diffD} d`;
-  return new Intl.DateTimeFormat("es-PE", { dateStyle: "medium" }).format(date);
+  return new Intl.DateTimeFormat('es-PE', { dateStyle: 'medium' }).format(date);
 }

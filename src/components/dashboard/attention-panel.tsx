@@ -1,6 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { AlertTriangle } from "lucide-react";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 import { decimalToNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -10,11 +12,13 @@ export type AttentionItem = {
     id: string;
     name: string;
     sku: string | null;
-    currentStock: { toNumber: () => number } | number | string;
-    minimumStock: { toNumber: () => number } | number | string;
+    currentStock: number | string;
+    minimumStock: number | string;
   };
   status: "out" | "low";
 };
+
+type AttentionFilter = "all" | AttentionItem["status"];
 
 type AttentionPanelProps = {
   items: AttentionItem[];
@@ -27,13 +31,22 @@ export function AttentionPanel({
   outOfStock,
   lowStock,
 }: AttentionPanelProps) {
+  const [filter, setFilter] = useState<AttentionFilter>("all");
   const total = outOfStock + lowStock;
+  const filters: { label: string; value: AttentionFilter; count: number }[] = [
+    { label: "Todos", value: "all", count: total },
+    { label: "Sin stock", value: "out", count: outOfStock },
+    { label: "Bajo", value: "low", count: lowStock },
+  ];
+  const visibleItems = items
+    .filter((item) => filter === "all" || item.status === filter)
+    .slice(0, 5);
 
   return (
     <section className="rounded-card border border-border bg-card p-4 sm:p-6">
       <header className="flex items-center justify-between gap-3">
         <h3 className="font-display text-[17px] font-medium sm:text-[18px]">
-          Atencion
+          Atención
         </h3>
         <Link
           className="text-[12px] font-medium text-muted-foreground transition hover:text-foreground"
@@ -44,14 +57,20 @@ export function AttentionPanel({
       </header>
 
       <div className="mt-3 flex gap-1.5 overflow-x-auto pb-1">
-        <Chip active>{`Todos - ${total}`}</Chip>
-        <Chip>{`Sin stock - ${outOfStock}`}</Chip>
-        <Chip>{`Bajo - ${lowStock}`}</Chip>
+        {filters.map((item) => (
+          <Chip
+            active={filter === item.value}
+            key={item.value}
+            onClick={() => setFilter(item.value)}
+          >
+            {`${item.label} - ${item.count}`}
+          </Chip>
+        ))}
       </div>
 
-      {items.length ? (
-        <ul className="mt-3 grid gap-2 sm:block sm:space-y-2">
-          {items.map(({ product, status }) => (
+      {visibleItems.length ? (
+        <ul className="mt-2.5 flex flex-col gap-1.5">
+          {visibleItems.map(({ product, status }) => (
             <AttentionRow key={product.id} product={product} status={status} />
           ))}
         </ul>
@@ -79,7 +98,7 @@ function AttentionRow({
   return (
     <li
       className={cn(
-        "grid grid-cols-[1fr_auto] items-center gap-2.5 rounded-[12px] border px-3.5 py-3",
+        "grid grid-cols-[1fr_auto] items-center gap-2.5 rounded-[12px] border px-3.5 py-2.5",
         isOut
           ? "border-error/18 bg-error-surface"
           : "border-transparent bg-warning-surface",
@@ -120,20 +139,25 @@ function AttentionRow({
 function Chip({
   active = false,
   children,
+  onClick,
 }: {
   active?: boolean;
   children: ReactNode;
+  onClick: () => void;
 }) {
   return (
-    <span
+    <button
+      aria-pressed={active}
       className={cn(
-        "shrink-0 rounded-pill border px-2.5 py-1 text-[11.5px] font-medium",
+        "shrink-0 rounded-pill border px-2.5 py-1 text-[11.5px] font-medium transition",
         active
           ? "border-transparent bg-foreground text-background"
-          : "border-transparent bg-surface-muted text-muted-foreground",
+          : "border-transparent bg-surface-muted text-muted-foreground hover:border-border hover:text-foreground",
       )}
+      onClick={onClick}
+      type="button"
     >
       {children}
-    </span>
+    </button>
   );
 }

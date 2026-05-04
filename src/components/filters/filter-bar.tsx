@@ -109,7 +109,7 @@ export function FilterBar({ children, className }: FilterBarProps) {
       <section
         aria-label="Filtros"
         className={cn(
-          "flex flex-wrap items-center gap-2 rounded-control border border-border bg-surface-elevated px-2.5 py-2 shadow-soft",
+          "flex flex-wrap items-center gap-2 rounded-control  px-2.5 pt-2 md:pt-4 shadow-soft",
           className,
         )}
       >

@@ -99,20 +99,35 @@ export async function getDashboardInventoryStats(): Promise<DashboardInventorySt
         status: "out" | "low";
       }[]
     >`
+      WITH ranked_attention AS (
+        SELECT
+          id,
+          name,
+          sku,
+          current_stock,
+          minimum_stock,
+          CASE WHEN current_stock <= 0 THEN 'out' ELSE 'low' END AS status,
+          row_number() OVER (
+            PARTITION BY CASE WHEN current_stock <= 0 THEN 'out' ELSE 'low' END
+            ORDER BY name ASC, id ASC
+          ) AS status_rank
+        FROM ${schema}.products
+        WHERE is_active = TRUE
+          AND current_stock <= minimum_stock
+      )
       SELECT
-        id::text                  AS "id",
-        name                      AS "name",
-        sku                       AS "sku",
-        current_stock::text       AS "currentStock",
-        minimum_stock::text       AS "minimumStock",
-        CASE WHEN current_stock <= 0 THEN 'out' ELSE 'low' END AS "status"
-      FROM ${schema}.products
-      WHERE is_active = TRUE
-        AND current_stock <= minimum_stock
+        id::text             AS "id",
+        name                 AS "name",
+        sku                  AS "sku",
+        current_stock::text  AS "currentStock",
+        minimum_stock::text  AS "minimumStock",
+        status               AS "status"
+      FROM ranked_attention
+      WHERE status_rank <= 5
       ORDER BY
-        CASE WHEN current_stock <= 0 THEN 0 ELSE 1 END,
-        name ASC
-      LIMIT 4
+        CASE WHEN status = 'out' THEN 0 ELSE 1 END,
+        name ASC,
+        id ASC
     `,
   ]);
 

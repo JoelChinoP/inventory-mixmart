@@ -50,8 +50,9 @@ export function RecentMovementsPanel({
       if (filter === "mine") return movement.performedById === currentUserId;
       return movement.movementType === filter;
     })
-    .slice(0, filter === "all" ? 10 : 5);
+    .slice(0, 5); // Show only the 5 most recent movements for the selected filter
 
+    /* .slice(0, filter === "all" ? 10 : 5); */
   return (
     <section className="rounded-card border border-border bg-card p-4 sm:p-6">
       <header className="flex items-center justify-between gap-3">

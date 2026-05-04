@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useTransition } from "react";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useTransition } from 'react';
 
-import { Select } from "@/components/ui/select";
-import { PAGE_SIZE_OPTIONS } from "@/lib/pagination";
+import { Select } from '@/components/ui/select';
+import { PAGE_SIZE_OPTIONS } from '@/lib/pagination';
 
 type PaginationBarProps = {
   page: number;
@@ -40,17 +40,17 @@ export function PaginationBar({
   const setPage = (nextPage: number) => {
     const next = new URLSearchParams(searchParams.toString());
     if (nextPage <= 1) {
-      next.delete("page");
+      next.delete('page');
     } else {
-      next.set("page", String(nextPage));
+      next.set('page', String(nextPage));
     }
     navigate(next);
   };
 
   const setPageSize = (size: number) => {
     const next = new URLSearchParams(searchParams.toString());
-    next.set("pageSize", String(size));
-    next.delete("page");
+    next.set('pageSize', String(size));
+    next.delete('page');
     navigate(next);
   };
 
@@ -63,7 +63,7 @@ export function PaginationBar({
         <span>
           {totalItems > 0
             ? `${start}-${end} de ${totalItems}`
-            : "Sin resultados"}
+            : 'Sin resultados'}
         </span>
         {pending ? (
           <span
@@ -75,7 +75,7 @@ export function PaginationBar({
 
       <div className="flex flex-wrap items-center gap-3">
         <label className="flex items-center gap-2">
-          <span className="text-muted-foreground">Por pagina</span>
+          <span className="text-muted-foreground">Mostrar</span>
           <Select
             aria-label="Filas por pagina"
             className="h-8 min-h-8 w-20 px-2 py-0 text-xs"

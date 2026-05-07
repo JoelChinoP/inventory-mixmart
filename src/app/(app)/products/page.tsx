@@ -69,38 +69,47 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         </FlashMessage>
       ) : null}
 
-      <FilterBar>
-        <SearchFilter label="Buscar" name="q" placeholder="Nombre o codigo" />
-        <SelectFilter
-          allLabel="Todas"
-          label="Categoria"
-          name="category"
-          options={categories.map((item) => ({
-            label: productCategoryLabels[item],
-            value: item,
-          }))}
-        />
-        {brands.length > 0 ? (
-          <SelectFilter
-            allLabel="Todas"
-            label="Marca"
-            name="brandId"
-            options={brands.map((b) => ({ label: b.name, value: b.id }))}
-          />
-        ) : null}
-        <SelectFilter
-          allLabel="Todos"
-          label="Estado"
-          name="status"
-          options={statusOptions}
-        />
-      </FilterBar>
-
       <Suspense
         fallback={<TableSkeleton columns={6} rows={6} />}
         key={filterKey}
       >
-        <ProductsList canManage={canManage} role={user.role} searchParams={params} />
+        <ProductsList
+          canManage={canManage}
+          filters={
+            <FilterBar>
+              <SearchFilter
+                label="Buscar"
+                name="q"
+                placeholder="Nombre o codigo"
+              />
+              <SelectFilter
+                allLabel="Todas"
+                label="Categoria"
+                name="category"
+                options={categories.map((item) => ({
+                  label: productCategoryLabels[item],
+                  value: item,
+                }))}
+              />
+              {brands.length > 0 ? (
+                <SelectFilter
+                  allLabel="Todas"
+                  label="Marca"
+                  name="brandId"
+                  options={brands.map((b) => ({ label: b.name, value: b.id }))}
+                />
+              ) : null}
+              <SelectFilter
+                allLabel="Todos"
+                label="Estado"
+                name="status"
+                options={statusOptions}
+              />
+            </FilterBar>
+          }
+          role={user.role}
+          searchParams={params}
+        />
       </Suspense>
     </div>
   );

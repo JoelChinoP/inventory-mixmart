@@ -58,7 +58,7 @@ export function PaginationBar({
   const canNext = page < totalPages;
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border bg-surface px-3 py-2 text-xs">
+    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border bg-surface px-4 py-2.5 text-xs">
       <div className="flex items-center gap-2 text-muted-foreground">
         <span>
           {totalItems > 0
@@ -93,7 +93,7 @@ export function PaginationBar({
         <div className="flex items-center gap-1">
           <button
             aria-label="Pagina anterior"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-control border border-border bg-surface-elevated text-muted-foreground transition hover:border-primary-300 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex size-8 items-center justify-center rounded-[8px] border border-border bg-surface-elevated text-muted-foreground transition hover:border-primary-300 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
             disabled={!canPrev || pending}
             onClick={() => setPage(page - 1)}
             type="button"
@@ -105,7 +105,7 @@ export function PaginationBar({
           </span>
           <button
             aria-label="Pagina siguiente"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-control border border-border bg-surface-elevated text-muted-foreground transition hover:border-primary-300 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex size-8 items-center justify-center rounded-[8px] border border-border bg-surface-elevated text-muted-foreground transition hover:border-primary-300 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
             disabled={!canNext || pending}
             onClick={() => setPage(page + 1)}
             type="button"

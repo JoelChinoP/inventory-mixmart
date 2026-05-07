@@ -246,7 +246,7 @@ export function Select({
         aria-expanded={open}
         aria-haspopup="listbox"
         className={cn(
-          "flex min-h-11 w-full items-center justify-between gap-3 rounded-control border px-3.5 py-2 text-left text-sm font-medium transition focus:outline-none focus:ring-4 disabled:pointer-events-none disabled:bg-disabled disabled:text-disabled-foreground",
+          "flex min-h-11 w-full items-center justify-between gap-3 rounded-[8px] border px-3.5 py-2 text-left text-sm font-medium transition focus:outline-none focus:ring-4 disabled:pointer-events-none disabled:bg-disabled disabled:text-disabled-foreground",
           triggerClassName,
           className,
         )}
@@ -276,8 +276,7 @@ export function Select({
         ? createPortal(
             <div
               className={cn(
-                "z-[80] max-h-72 overflow-auto rounded-[18px] border border-border bg-surface-elevated p-1.5 shadow-elevated",
-                variant === "ink" ? "rounded-[20px]" : "",
+                "z-[80] max-h-72 overflow-auto rounded-[10px] border border-border bg-surface-elevated p-1.5 shadow-elevated",
               )}
               id={listboxId}
               role="listbox"
@@ -340,7 +339,7 @@ function SelectOptionButton({
     <button
       aria-selected={active}
       className={cn(
-        "flex w-full items-center justify-between gap-3 rounded-[12px] px-3 py-2.5 text-left text-sm transition",
+        "flex w-full items-center justify-between gap-3 rounded-[8px] px-3 py-2.5 text-left text-sm transition",
         active
           ? "bg-primary-50 font-semibold text-primary"
           : "text-foreground hover:bg-surface-muted",

@@ -109,12 +109,13 @@ export function FilterBar({ children, className }: FilterBarProps) {
       <section
         aria-label="Filtros"
         className={cn(
-          'flex flex-wrap items-center gap-2 rounded-control  px-2.5 pt-2 md:pt-4 shadow-soft',
+          'border-b border-border bg-surface px-4 py-3',
           className,
         )}
       >
-        {children}
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex flex-wrap items-end gap-3">
+          {children}
+          <div className="ml-auto flex items-center gap-2">
           {isPending ? (
             <span
               aria-hidden="true"
@@ -123,7 +124,7 @@ export function FilterBar({ children, className }: FilterBarProps) {
           ) : null}
           <button
             disabled={!hasActiveFilters}
-            className="inline-flex h-9 items-center gap-1.5 rounded-control border border-border bg-surface px-2.5 text-xs font-medium text-muted-foreground transition hover:border-error/30 hover:bg-error-surface hover:text-error"
+            className="inline-flex h-10 items-center gap-1.5 rounded-[8px] border border-primary-200 bg-transparent px-3 text-xs font-medium text-primary transition hover:bg-primary-50 disabled:cursor-not-allowed disabled:border-border disabled:text-muted-foreground disabled:hover:bg-transparent"
             onClick={() => {
               const preserved = new URLSearchParams();
               ['success', 'error'].forEach((key) => {
@@ -134,12 +135,37 @@ export function FilterBar({ children, className }: FilterBarProps) {
             }}
             type="button"
           >
-            <RotateCcw aria-hidden="true" className="h-3.5 w-3.5" />
+            <RotateCcw aria-hidden="true" className="size-3.5" />
             Limpiar
           </button>
+          </div>
         </div>
       </section>
     </FilterContext.Provider>
+  );
+}
+
+function FilterField({
+  children,
+  className,
+  label,
+}: {
+  children: ReactNode;
+  className?: string;
+  label: string;
+}) {
+  return (
+    <label
+      className={cn(
+        'relative block min-w-0 flex-1 basis-full pt-2 sm:basis-auto',
+        className,
+      )}
+    >
+      <span className="absolute left-3 top-0 z-10 bg-surface px-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        {label}
+      </span>
+      {children}
+    </label>
   );
 }
 
@@ -154,7 +180,6 @@ export function SearchFilter({
   className,
   label = 'Buscar',
   name,
-  placeholder,
 }: SearchFilterProps) {
   const { setParam, values } = useFilterContext('SearchFilter');
   const initial = values[name] ?? '';
@@ -177,19 +202,20 @@ export function SearchFilter({
   }, []);
 
   return (
-    <div
+    <FilterField
       className={cn(
-        'relative min-w-0 flex-1 basis-full sm:basis-auto sm:w-60',
+        'sm:w-64',
         className,
       )}
+      label={label}
     >
-      <span className="pointer-events-none absolute left-2.5 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-muted-foreground">
-        <Search aria-hidden="true" className="h-3.5 w-3.5" />
+      <span className="pointer-events-none absolute left-3 top-[calc(50%+0.25rem)] flex size-5 -translate-y-1/2 items-center justify-center text-muted-foreground">
+        <Search aria-hidden="true" className="size-3.5" />
       </span>
       <input
-        aria-label={label}
-        className="h-9 w-full rounded-control border border-input bg-surface-elevated pl-8 pr-3 text-sm text-foreground transition placeholder:text-muted-foreground hover:border-primary-300 focus:border-ring focus:outline-none focus:ring-4 focus:ring-focus"
+        className="h-10 w-full rounded-[8px] border border-input bg-surface-elevated pl-9 pr-3 text-sm text-foreground transition hover:border-primary-300 focus:border-ring focus:outline-none focus:ring-4 focus:ring-focus"
         defaultValue={initial}
+        id={`filter-${name}`}
         onChange={(event) => {
           const nextValue = event.target.value;
 
@@ -201,11 +227,11 @@ export function SearchFilter({
             setParam(name, nextValue.trim() || undefined);
           }, 300);
         }}
-        placeholder={placeholder ?? label}
+        placeholder=""
         ref={inputRef}
         type="search"
       />
-    </div>
+    </FilterField>
   );
 }
 
@@ -233,17 +259,18 @@ export function SelectFilter({
   const value = values[name] ?? '';
 
   return (
-    <div
+    <FilterField
       className={cn(
-        'min-w-0 flex-1 basis-[calc(50%-0.25rem)] sm:basis-auto sm:w-44',
+        'basis-[calc(50%-0.375rem)] sm:w-48',
         className,
       )}
+      label={label}
     >
       <Select
-        aria-label={label}
-        className="h-9 min-h-9 gap-2 px-2.5 py-1.5 text-sm font-normal"
+        className="h-10 min-h-10 gap-2 rounded-[8px] px-3 py-1.5 text-sm font-normal"
+        id={`filter-${name}`}
         onValueChange={(next) => setParam(name, next || undefined)}
-        placeholder={`${label}: ${allLabel}`}
+        placeholder={allLabel}
         value={value}
       >
         <option value="">{allLabel}</option>
@@ -253,7 +280,7 @@ export function SelectFilter({
           </option>
         ))}
       </Select>
-    </div>
+    </FilterField>
   );
 }
 
@@ -283,11 +310,12 @@ export function DateRangeFilter({
   const toValue = values[toName] ?? fallbackToValue ?? '';
 
   return (
-    <div
+    <FilterField
       className={cn(
-        'min-w-0 flex-1 basis-full sm:basis-auto sm:w-64',
+        'sm:w-72',
         className,
       )}
+      label={label}
     >
       <DateRangePicker
         allowClear={allowClear}
@@ -296,10 +324,10 @@ export function DateRangeFilter({
         onChange={({ from, to }) =>
           setMany({ [fromName]: from || undefined, [toName]: to || undefined })
         }
-        placeholder={placeholder ?? label}
+        placeholder={placeholder ?? 'Todos'}
         toValue={toValue}
-        triggerClassName="h-9 min-h-0 px-2.5 py-1.5 text-sm font-normal"
+        triggerClassName="h-10 min-h-10 rounded-[8px] px-3 py-1.5 text-sm font-normal"
       />
-    </div>
+    </FilterField>
   );
 }

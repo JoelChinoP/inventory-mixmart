@@ -26,7 +26,7 @@ export function Section({ children, className }: SectionProps) {
   return (
     <section
       className={cn(
-        "overflow-hidden rounded-card border border-border bg-surface-elevated text-card-foreground shadow-soft",
+        "overflow-hidden rounded-[10px] border border-border bg-surface-elevated text-card-foreground shadow-soft",
         className,
       )}
     >

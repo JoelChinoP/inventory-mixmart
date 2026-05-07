@@ -1,4 +1,5 @@
 import { ProductForm } from "@/components/products/product-form";
+import type { ReactNode } from "react";
 import {
   DataTable,
   EmptyState,
@@ -36,10 +37,12 @@ export type ProductsSearchParams = {
 
 export async function ProductsList({
   canManage,
+  filters,
   role,
   searchParams,
 }: {
   canManage: boolean;
+  filters?: ReactNode;
   role: "ADMIN" | "WORKER";
   searchParams: ProductsSearchParams;
 }) {
@@ -85,6 +88,7 @@ export async function ProductsList({
   if (!products.length) {
     return (
       <Section>
+        {filters}
         <EmptyState
           title="Sin productos"
           description="No hay productos con esos filtros."
@@ -106,6 +110,7 @@ export async function ProductsList({
 
   return (
     <Section>
+      {filters}
       <DataTable headers={headers} containerClassName="overflow-x-auto">
         {products.map((product) => {
           const current = decimalToNumber(product.currentStock);

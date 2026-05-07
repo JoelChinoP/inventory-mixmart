@@ -29,33 +29,36 @@ export default async function StockPage({ searchParams }: StockPageProps) {
 
   return (
     <div className="space-y-3">
-      <FilterBar>
-        <SearchFilter label="Buscar" name="q" placeholder="Producto" />
-        <SelectFilter
-          allLabel="Todas"
-          label="Categoria"
-          name="category"
-          options={categories.map((item) => ({
-            label: productCategoryLabels[item],
-            value: item,
-          }))}
-        />
-        <SelectFilter
-          allLabel="Todo"
-          label="Vista"
-          name="status"
-          options={[
-            { label: 'Bajo stock', value: 'low' },
-            { label: 'Sin stock', value: 'out' },
-          ]}
-        />
-      </FilterBar>
-
       <Suspense
         fallback={<TableSkeleton columns={7} rows={6} />}
         key={filterKey}
       >
-        <StockTable params={params} />
+        <StockTable
+          filters={
+            <FilterBar>
+              <SearchFilter label="Buscar" name="q" placeholder="Producto" />
+              <SelectFilter
+                allLabel="Todas"
+                label="Categoria"
+                name="category"
+                options={categories.map((item) => ({
+                  label: productCategoryLabels[item],
+                  value: item,
+                }))}
+              />
+              <SelectFilter
+                allLabel="Todo"
+                label="Vista"
+                name="status"
+                options={[
+                  { label: 'Bajo stock', value: 'low' },
+                  { label: 'Sin stock', value: 'out' },
+                ]}
+              />
+            </FilterBar>
+          }
+          params={params}
+        />
       </Suspense>
     </div>
   );

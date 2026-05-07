@@ -6,6 +6,7 @@ import {
   SectionHeader,
   StatusBadge,
 } from "@/components/shared";
+import type { ReactNode } from "react";
 import { dateRangeWhere } from "@/lib/calc";
 import {
   decimalToNumber,
@@ -33,8 +34,10 @@ export type ServicesSearchParams = {
 };
 
 export async function ServicesList({
+  filters,
   searchParams,
 }: {
+  filters?: ReactNode;
   searchParams: ServicesSearchParams;
 }) {
   const dateFilter = dateRangeWhere(searchParams.from, searchParams.to);
@@ -75,6 +78,7 @@ export async function ServicesList({
   return (
     <Section>
       <SectionHeader title="Servicios recientes" />
+      {filters}
       {records.length ? (
         <DataTable
           headers={[

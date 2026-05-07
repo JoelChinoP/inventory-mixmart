@@ -129,42 +129,45 @@ export default async function ServicesPage({
         </FlashMessage>
       ) : null}
 
-      <FilterBar>
-        <DateRangeFilter label="Periodo de servicio" />
-        <SelectFilter
-          allLabel="Todos"
-          label="Tipo"
-          name="kind"
-          options={[
-            { label: 'Interno', value: 'IN_HOUSE' },
-            { label: 'Tercerizado', value: 'OUTSOURCED' },
-          ]}
-        />
-        <SelectFilter
-          allLabel="Todos"
-          label="Estado"
-          name="status"
-          options={[
-            { label: 'Recibido', value: 'RECEIVED' },
-            { label: 'En proceso', value: 'IN_PROGRESS' },
-            { label: 'Completado', value: 'COMPLETED' },
-            { label: 'Entregado', value: 'DELIVERED' },
-            { label: 'Cancelado', value: 'CANCELLED' },
-          ]}
-        />
-        <SelectFilter
-          allLabel="Todos"
-          label="Servicio"
-          name="serviceTypeId"
-          options={serviceTypeOptions}
-        />
-      </FilterBar>
-
       <Suspense
         fallback={<TableSkeleton columns={6} rows={6} />}
         key={filterKey}
       >
-        <ServicesList searchParams={params} />
+        <ServicesList
+          filters={
+            <FilterBar>
+              <DateRangeFilter label="Periodo de servicio" />
+              <SelectFilter
+                allLabel="Todos"
+                label="Tipo"
+                name="kind"
+                options={[
+                  { label: 'Interno', value: 'IN_HOUSE' },
+                  { label: 'Tercerizado', value: 'OUTSOURCED' },
+                ]}
+              />
+              <SelectFilter
+                allLabel="Todos"
+                label="Estado"
+                name="status"
+                options={[
+                  { label: 'Recibido', value: 'RECEIVED' },
+                  { label: 'En proceso', value: 'IN_PROGRESS' },
+                  { label: 'Completado', value: 'COMPLETED' },
+                  { label: 'Entregado', value: 'DELIVERED' },
+                  { label: 'Cancelado', value: 'CANCELLED' },
+                ]}
+              />
+              <SelectFilter
+                allLabel="Todos"
+                label="Servicio"
+                name="serviceTypeId"
+                options={serviceTypeOptions}
+              />
+            </FilterBar>
+          }
+          searchParams={params}
+        />
       </Suspense>
 
       <div className="grid gap-5 xl:grid-cols-2">

@@ -141,26 +141,25 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
         </FlashMessage>
       ) : null}
 
-      <FilterBar>
-        <SearchFilter
-          label="Buscar"
-          name="q"
-          placeholder="Nombre, RUC o contacto"
-        />
-
-        <SelectFilter
-          allLabel="Todos"
-          label="Estado"
-          name="status"
-          options={[
-            { label: 'Activos', value: 'active' },
-            { label: 'Inactivos', value: 'inactive' },
-            ...(canManage ? [{ label: 'Eliminados', value: 'deleted' }] : []),
-          ]}
-        />
-      </FilterBar>
-
       <Section>
+        <FilterBar>
+          <SearchFilter
+            label="Buscar"
+            name="q"
+            placeholder="Nombre, RUC o contacto"
+          />
+
+          <SelectFilter
+            allLabel="Todos"
+            label="Estado"
+            name="status"
+            options={[
+              { label: 'Activos', value: 'active' },
+              { label: 'Inactivos', value: 'inactive' },
+              ...(canManage ? [{ label: 'Eliminados', value: 'deleted' }] : []),
+            ]}
+          />
+        </FilterBar>
         {suppliers.length ? (
           <DataTable headers={headers}>
             {suppliers.map((supplier) => (

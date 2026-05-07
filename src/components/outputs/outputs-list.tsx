@@ -1,4 +1,5 @@
 import { RecentOutputItem } from "@/components/outputs/recent-output-item";
+import type { ReactNode } from "react";
 import {
   DataTable,
   EmptyState,
@@ -28,8 +29,10 @@ export type OutputsSearchParams = {
 };
 
 export async function OutputsList({
+  filters,
   searchParams,
 }: {
+  filters?: ReactNode;
   searchParams: OutputsSearchParams;
 }) {
   const occurredAtFilter = dateRangeWhere(searchParams.from, searchParams.to);
@@ -73,6 +76,7 @@ export async function OutputsList({
     <div className="grid gap-5 xl:grid-cols-[1fr_22rem]">
       <Section>
         <SectionHeader title="Historial completo" />
+        {filters}
         {outputs.length ? (
           <DataTable
             headers={["Motivo", "Fecha", "Creado por", "Items", "Costo", "Ingreso"]}

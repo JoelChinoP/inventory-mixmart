@@ -86,35 +86,38 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
         </FlashMessage>
       ) : null}
 
-      <FilterBar>
-        <DateRangeFilter label="Periodo de orden" />
-        <SearchFilter
-          label="Referencia"
-          name="q"
-          placeholder="Numero o codigo"
-        />
-        <SelectFilter
-          allLabel="Todos"
-          label="Estado"
-          name="status"
-          options={[
-            { label: 'Ordenada', value: 'ORDERED' },
-            { label: 'Recibida', value: 'RECEIVED' },
-          ]}
-        />
-        <SelectFilter
-          allLabel="Todos"
-          label="Proveedor"
-          name="supplierId"
-          options={supplierOptions}
-        />
-      </FilterBar>
-
       <Suspense
         fallback={<TableSkeleton columns={7} rows={6} />}
         key={filterKey}
       >
-        <EntriesList searchParams={params} />
+        <EntriesList
+          filters={
+            <FilterBar>
+              <DateRangeFilter label="Periodo de orden" />
+              <SearchFilter
+                label="Referencia"
+                name="q"
+                placeholder="Numero o codigo"
+              />
+              <SelectFilter
+                allLabel="Todos"
+                label="Estado"
+                name="status"
+                options={[
+                  { label: 'Ordenada', value: 'ORDERED' },
+                  { label: 'Recibida', value: 'RECEIVED' },
+                ]}
+              />
+              <SelectFilter
+                allLabel="Todos"
+                label="Proveedor"
+                name="supplierId"
+                options={supplierOptions}
+              />
+            </FilterBar>
+          }
+          searchParams={params}
+        />
       </Suspense>
     </div>
   );

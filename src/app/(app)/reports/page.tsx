@@ -11,7 +11,7 @@ import { ReportMetric } from "@/components/reports/metric";
 import { MovementsTable } from "@/components/reports/movements-table";
 import { ReportsOutputsTable } from "@/components/reports/outputs-table";
 import { ReportsServicesTable } from "@/components/reports/services-table";
-import { PageContentSkeleton } from "@/components/shared";
+import { PageContentSkeleton, Section } from "@/components/shared";
 import {
   dateRangeWhere,
   defaultRangeStrings,
@@ -155,42 +155,44 @@ async function ReportsContent({ searchParams }: ReportsPageProps) {
 
   return (
     <div>
-      <FilterBar className="mb-5">
-        <DateRangeFilter
-          allowClear={false}
-          fallbackFromValue={from}
-          fallbackToValue={to}
-          label="Periodo"
-          placeholder="Ultimos 30 dias"
-        />
-        <SelectFilter
-          allLabel="Todas"
-          label="Categoria"
-          name="category"
-          options={categories.map((item) => ({
-            label: productCategoryLabels[item],
-            value: item,
-          }))}
-        />
-        <SelectFilter
-          allLabel="Todos"
-          label="Producto"
-          name="productId"
-          options={productOptions.map((product) => ({
-            label: product.name,
-            value: product.id,
-          }))}
-        />
-        <SelectFilter
-          allLabel="Todos"
-          label="Proveedor"
-          name="supplierId"
-          options={supplierOptions.map((supplier) => ({
-            label: supplier.name,
-            value: supplier.id,
-          }))}
-        />
-      </FilterBar>
+      <Section className="mb-5">
+        <FilterBar className="border-b-0">
+          <DateRangeFilter
+            allowClear={false}
+            fallbackFromValue={from}
+            fallbackToValue={to}
+            label="Periodo"
+            placeholder="Ultimos 30 dias"
+          />
+          <SelectFilter
+            allLabel="Todas"
+            label="Categoria"
+            name="category"
+            options={categories.map((item) => ({
+              label: productCategoryLabels[item],
+              value: item,
+            }))}
+          />
+          <SelectFilter
+            allLabel="Todos"
+            label="Producto"
+            name="productId"
+            options={productOptions.map((product) => ({
+              label: product.name,
+              value: product.id,
+            }))}
+          />
+          <SelectFilter
+            allLabel="Todos"
+            label="Proveedor"
+            name="supplierId"
+            options={supplierOptions.map((supplier) => ({
+              label: supplier.name,
+              value: supplier.id,
+            }))}
+          />
+        </FilterBar>
+      </Section>
 
       <div className="mb-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <ReportMetric

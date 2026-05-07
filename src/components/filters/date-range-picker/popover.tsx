@@ -1,7 +1,7 @@
 'use client';
 
 import { es } from 'date-fns/locale';
-import { X } from 'lucide-react';
+import { RotateCcw, X } from 'lucide-react';
 import { forwardRef } from 'react';
 import type { DateRange } from 'react-day-picker';
 
@@ -52,7 +52,7 @@ export const DateRangePopover = forwardRef<
 ) {
   return (
     <div
-      className="z-[90] max-h-[calc(100vh-1rem)] overflow-auto rounded-card border border-border bg-surface-elevated shadow-elevated"
+      className="z-[90] max-h-[calc(100vh-1rem)] overflow-auto rounded-[10px] border border-border bg-surface-elevated shadow-elevated"
       ref={ref}
       role="dialog"
       style={{
@@ -90,7 +90,7 @@ export const DateRangePopover = forwardRef<
         <div className="mt-2 flex flex-wrap gap-1">
           {PRESETS.map((preset) => (
             <Button
-              className="rounded-full px-3"
+              className="rounded-[8px] px-3"
               key={preset.key}
               onClick={() => onApplyPreset(preset.key)}
               size="xs"
@@ -104,7 +104,7 @@ export const DateRangePopover = forwardRef<
       </div>
 
       <div className="space-y-2.5 p-3">
-        <div className="rounded-control border border-border bg-surface p-2">
+        <div className="rounded-[8px] border border-border bg-surface p-2">
           <Calendar
             className="mx-auto w-fit bg-transparent p-0 [--cell-size:2rem]"
             classNames={{
@@ -147,6 +147,7 @@ export const DateRangePopover = forwardRef<
                 type="button"
                 variant="outline"
               >
+                <RotateCcw aria-hidden="true" data-icon="inline-start" />
                 Limpiar
               </Button>
             ) : null}

@@ -90,22 +90,25 @@ export default async function OutputsPage({ searchParams }: OutputsPageProps) {
         </FlashMessage>
       ) : null}
 
-      <FilterBar>
-        <DateRangeFilter label="Periodo de salida" />
-        <SelectFilter
-          allLabel="Todos"
-          label="Motivo"
-          name="reason"
-          options={[
-            { label: "Venta", value: "SALE" },
-            { label: "Merma", value: "WASTE" },
-            { label: "Uso interno", value: "INTERNAL_USE" },
-          ]}
-        />
-      </FilterBar>
-
       <Suspense fallback={<PageContentSkeleton />} key={filterKey}>
-        <OutputsList searchParams={params} />
+        <OutputsList
+          filters={
+            <FilterBar>
+              <DateRangeFilter label="Periodo de salida" />
+              <SelectFilter
+                allLabel="Todos"
+                label="Motivo"
+                name="reason"
+                options={[
+                  { label: "Venta", value: "SALE" },
+                  { label: "Merma", value: "WASTE" },
+                  { label: "Uso interno", value: "INTERNAL_USE" },
+                ]}
+              />
+            </FilterBar>
+          }
+          searchParams={params}
+        />
       </Suspense>
     </div>
   );

@@ -18,6 +18,7 @@ export function DataTable({
   return (
     <div
       className={cn(
+        "bg-surface-elevated",
         sticky ? "max-h-[520px] overflow-auto" : "overflow-x-auto",
         containerClassName,
       )}

@@ -468,6 +468,7 @@
 
   .table-operational {
     @apply min-w-full border-separate border-spacing-0 text-sm;
+    border-radius: 10px;
   }
 
   .table-operational thead,
@@ -484,6 +485,14 @@
   .table-operational th {
     @apply px-4 py-3 font-semibold;
     position: relative;
+  }
+
+  .table-operational thead th:first-child {
+    border-top-left-radius: 10px;
+  }
+
+  .table-operational thead th:last-child {
+    border-top-right-radius: 10px;
   }
 
   .table-operational th + th::before {

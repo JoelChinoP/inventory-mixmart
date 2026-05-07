@@ -27,32 +27,33 @@ export async function EntriesSection({
   }));
 
   return (
-    <>
-      <FilterBar>
-        <DateRangeFilter label="Periodo de orden" />
-        <SearchFilter
-          label="Referencia"
-          name="q"
-          placeholder="Numero o codigo"
-        />
-        <SelectFilter
-          allLabel="Todos"
-          label="Estado"
-          name="status"
-          options={[
-            { label: "Ordenada", value: "ORDERED" },
-            { label: "Recibida", value: "RECEIVED" },
-          ]}
-        />
-        <SelectFilter
-          allLabel="Todos"
-          label="Proveedor"
-          name="supplierId"
-          options={supplierOptions}
-        />
-      </FilterBar>
-
-      <EntriesList searchParams={searchParams} />
-    </>
+    <EntriesList
+      filters={
+        <FilterBar>
+          <DateRangeFilter label="Periodo de orden" />
+          <SearchFilter
+            label="Referencia"
+            name="q"
+            placeholder="Numero o codigo"
+          />
+          <SelectFilter
+            allLabel="Todos"
+            label="Estado"
+            name="status"
+            options={[
+              { label: "Ordenada", value: "ORDERED" },
+              { label: "Recibida", value: "RECEIVED" },
+            ]}
+          />
+          <SelectFilter
+            allLabel="Todos"
+            label="Proveedor"
+            name="supplierId"
+            options={supplierOptions}
+          />
+        </FilterBar>
+      }
+      searchParams={searchParams}
+    />
   );
 }

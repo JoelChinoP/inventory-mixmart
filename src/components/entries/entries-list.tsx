@@ -1,4 +1,5 @@
 import { PackageCheck, SpellCheck } from 'lucide-react';
+import type { ReactNode } from 'react';
 
 import {
   ActionTip,
@@ -33,8 +34,10 @@ export type EntriesSearchParams = {
 };
 
 export async function EntriesList({
+  filters,
   searchParams,
 }: {
+  filters?: ReactNode;
   searchParams: EntriesSearchParams;
 }) {
   const q = searchParams.q?.trim();
@@ -74,6 +77,7 @@ export async function EntriesList({
   if (!entries.length) {
     return (
       <Section>
+        {filters}
         <EmptyState
           title="Sin entradas"
           description="Sin resultados para los filtros."
@@ -84,6 +88,7 @@ export async function EntriesList({
 
   return (
     <Section>
+      {filters}
       <DataTable
         headers={[
           'Referencia',

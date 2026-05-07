@@ -136,7 +136,7 @@ export async function OutputsList({
         <PaginationBar {...meta} />
       </Section>
 
-      <aside className="space-y-5">
+      <aside className="space-y-3">
         <Section>
           <SectionHeader title="Resumen rapido" />
           <div className="space-y-3 p-4">

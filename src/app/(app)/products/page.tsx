@@ -2,6 +2,7 @@ import { Plus } from 'lucide-react';
 import { Suspense } from 'react';
 
 import { FilterBar, SearchFilter, SelectFilter } from '@/components/filters';
+import { getBrands } from '@/services';
 import { ProductForm } from '@/components/products/product-form';
 import {
   ProductsList,
@@ -25,13 +26,14 @@ type ProductsPageProps = {
 const categories: ProductCategory[] = ['SCHOOL_SUPPLIES', 'BAZAAR', 'SNACKS'];
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
-  const [user, params] = await Promise.all([
+  const [user, params, brands] = await Promise.all([
     requireActiveUser('/products'),
     searchParams,
+    getBrands(),
   ]);
   const canManage = canManageCatalog(user.role);
 
-  const filterKey = `${params.category ?? ''}|${params.q ?? ''}|${params.status ?? ''}|${params.page ?? ''}|${params.pageSize ?? ''}`;
+  const filterKey = `${params.category ?? ''}|${params.brandId ?? ''}|${params.q ?? ''}|${params.status ?? ''}|${params.page ?? ''}|${params.pageSize ?? ''}`;
 
   const statusOptions = [
     { label: 'Activos', value: 'active' },
@@ -40,7 +42,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   ];
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <PageHeader
         action={
           canManage ? (
@@ -78,8 +80,16 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             value: item,
           }))}
         />
+        {brands.length > 0 ? (
+          <SelectFilter
+            allLabel="Todas"
+            label="Marca"
+            name="brandId"
+            options={brands.map((b) => ({ label: b.name, value: b.id }))}
+          />
+        ) : null}
         <SelectFilter
-          allLabel="Activos"
+          allLabel="Todos"
           label="Estado"
           name="status"
           options={statusOptions}

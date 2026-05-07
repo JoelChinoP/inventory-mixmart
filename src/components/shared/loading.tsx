@@ -146,7 +146,7 @@ export function MetricGridSkeleton({
 
 export function PageContentSkeleton() {
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <FilterSkeleton />
       <TableSkeleton />
     </div>
@@ -155,7 +155,7 @@ export function PageContentSkeleton() {
 
 export function DashboardContentSkeleton() {
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <MetricGridSkeleton />
       <div className="grid gap-4 md:grid-cols-3">
         {Array.from({ length: 3 }).map((_, index) => (
@@ -178,7 +178,7 @@ export function DashboardContentSkeleton() {
 
 export function OperationalPageSkeleton() {
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <FormSkeleton fields={7} />
       <TableSkeleton rows={6} columns={6} />
     </div>

@@ -1,9 +1,14 @@
+import { Power, PowerOff } from "lucide-react";
+
 import {
+  ActionTip,
   EmptyState,
   IdActionForm,
   Section,
   SectionHeader,
   StatusBadge,
+  iconBtnGood,
+  iconBtnWarn,
 } from "@/components/shared";
 import { formatDecimal } from "@/lib/format";
 import { deactivateServiceType, reactivateServiceType } from "@/server/actions";
@@ -72,14 +77,22 @@ export function ServiceTypeList({
                   {type.isActive ? "Activo" : "Inactivo"}
                 </StatusBadge>
                 {canManage ? (
-                  <IdActionForm
-                    action={
-                      type.isActive ? deactivateServiceType : reactivateServiceType
-                    }
-                    id={type.id}
-                  >
-                    {type.isActive ? "Desactivar" : "Activar"}
-                  </IdActionForm>
+                  <ActionTip label={type.isActive ? "Desactivar" : "Activar"}>
+                    <IdActionForm
+                      action={
+                        type.isActive ? deactivateServiceType : reactivateServiceType
+                      }
+                      className={type.isActive ? iconBtnWarn : iconBtnGood}
+                      id={type.id}
+                      label={type.isActive ? "Desactivar" : "Activar"}
+                    >
+                      {type.isActive ? (
+                        <PowerOff aria-hidden="true" data-icon="icon" />
+                      ) : (
+                        <Power aria-hidden="true" data-icon="icon" />
+                      )}
+                    </IdActionForm>
+                  </ActionTip>
                 ) : null}
               </div>
             </div>

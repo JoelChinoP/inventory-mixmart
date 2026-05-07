@@ -28,7 +28,7 @@ export default async function StockPage({ searchParams }: StockPageProps) {
   const filterKey = `${params.q ?? ''}|${params.category ?? ''}|${params.status ?? ''}|${params.page ?? ''}|${params.pageSize ?? ''}`;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <FilterBar>
         <SearchFilter label="Buscar" name="q" placeholder="Producto" />
         <SelectFilter

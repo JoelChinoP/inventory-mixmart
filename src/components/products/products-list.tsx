@@ -1,5 +1,3 @@
-import { Pencil } from "lucide-react";
-
 import { ProductForm } from "@/components/products/product-form";
 import {
   DataTable,
@@ -7,11 +5,11 @@ import {
   PaginationBar,
   ProductCategoryBadge,
   RecordActions,
+  RecordEditModal,
   RecordStatusBadge,
   Section,
   StatusBadge,
 } from "@/components/shared";
-import { FormModal } from "@/components/ui/modal";
 import {
   decimalToNumber,
   formatCurrency,
@@ -30,6 +28,7 @@ import type { ProductCategory } from "../../../prisma/generated/client";
 export type ProductsSearchParams = {
   q?: string;
   category?: ProductCategory;
+  brandId?: string;
   status?: "active" | "inactive" | "deleted";
   page?: string;
   pageSize?: string;
@@ -46,7 +45,8 @@ export async function ProductsList({
 }) {
   const q = searchParams.q?.trim() ?? "";
   const category = searchParams.category;
-  const status = searchParams.status ?? "active";
+  const brandId = searchParams.brandId;
+  const status = searchParams.status;
   const pagination = readPagination(searchParams);
 
   const where = {
@@ -59,16 +59,20 @@ export async function ProductsList({
         }
       : {}),
     ...(category ? { category } : {}),
+    ...(brandId ? { brandId } : {}),
     ...(status === "inactive"
       ? { isActive: false }
       : status === "deleted"
         ? { deletedAt: { not: null } }
-        : { isActive: true }),
+        : status === "active"
+          ? { isActive: true }
+          : {}),
   };
 
   const [products, totalItems] = await Promise.all([
     prisma.product.findMany({
       where,
+      include: { brand: { select: { name: true } } },
       orderBy: [{ isActive: "desc" }, { name: "asc" }],
       skip: pagination.skip,
       take: pagination.take,
@@ -91,6 +95,7 @@ export async function ProductsList({
 
   const headers = [
     "Producto",
+    "Marca",
     "Categoria",
     "Stock",
     "Minimo",
@@ -115,6 +120,9 @@ export async function ProductsList({
                 <p className="text-xs text-muted-foreground">
                   {product.sku || product.unitName}
                 </p>
+              </td>
+              <td className="px-4 py-3 text-sm text-muted-foreground">
+                {product.brand?.name ?? "—"}
               </td>
               <td className="px-4 py-3">
                 <ProductCategoryBadge category={product.category} />
@@ -148,20 +156,12 @@ export async function ProductsList({
                   <RecordActions
                     deletedAt={product.deletedAt}
                     editTrigger={
-                      <FormModal
-                        size="lg"
+                      <RecordEditModal
                         title="Editar producto"
                         description="Actualiza datos y precios."
-                        triggerClassName="btn-soft"
-                        trigger={
-                          <>
-                            <Pencil aria-hidden="true" className="h-4 w-4" />
-                            Editar
-                          </>
-                        }
                       >
                         <ProductForm product={product} />
-                      </FormModal>
+                      </RecordEditModal>
                     }
                     id={product.id}
                     isActive={product.isActive}

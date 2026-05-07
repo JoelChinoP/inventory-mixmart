@@ -1,16 +1,20 @@
-import { Pencil, Plus } from 'lucide-react';
+import { Plus, Power, PowerOff } from 'lucide-react';
 import { Suspense } from 'react';
 
 import {
   DataTable,
   EmptyState,
   FlashMessage,
+  ActionTip,
+  IdActionForm,
   OperationalPageSkeleton,
   PageHeader,
   PaginationBar,
+  RecordEditModal,
   Section,
   StatusBadge,
-  SubmitButton,
+  iconBtnGood,
+  iconBtnWarn,
 } from '@/components/shared';
 import { UserForm } from '@/components/users/user-form';
 import { FormModal } from '@/components/ui/modal';
@@ -116,31 +120,32 @@ async function UsersContent({ searchParams }: UsersPageProps) {
                 </td>
                 <td className="px-4 py-3">{formatDate(user.lastLoginAt)}</td>
                 <td className="px-4 py-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <FormModal
-                      size="lg"
-                      title="Editar usuario"
-                      triggerClassName="btn-soft"
-                      trigger={
-                        <>
-                          <Pencil aria-hidden="true" className="h-4 w-4" />
-                          Editar
-                        </>
-                      }
-                    >
-                      <UserForm user={user} />
-                    </FormModal>
-                    <form action={setUserActive}>
-                      <input name="id" type="hidden" value={user.id} />
-                      <input
-                        name="isActive"
-                        type="hidden"
-                        value={user.isActive ? 'false' : 'true'}
-                      />
-                      <SubmitButton className="btn btn-ghost border border-border">
-                        {user.isActive ? 'Desactivar' : 'Activar'}
-                      </SubmitButton>
-                    </form>
+                  <div className="flex items-center gap-1">
+                    <ActionTip label="Editar">
+                      <RecordEditModal title="Editar usuario">
+                        <UserForm user={user} />
+                      </RecordEditModal>
+                    </ActionTip>
+                    <ActionTip label={user.isActive ? 'Desactivar' : 'Activar'}>
+                      <IdActionForm
+                        action={setUserActive}
+                        className={user.isActive ? iconBtnWarn : iconBtnGood}
+                        fields={[
+                          {
+                            name: 'isActive',
+                            value: user.isActive ? 'false' : 'true',
+                          },
+                        ]}
+                        id={user.id}
+                        label={user.isActive ? 'Desactivar' : 'Activar'}
+                      >
+                        {user.isActive ? (
+                          <PowerOff aria-hidden="true" data-icon="icon" />
+                        ) : (
+                          <Power aria-hidden="true" data-icon="icon" />
+                        )}
+                      </IdActionForm>
+                    </ActionTip>
                   </div>
                 </td>
               </tr>

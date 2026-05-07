@@ -77,7 +77,7 @@ export default async function ServicesPage({
   const filterKey = `${params.from ?? ''}|${params.to ?? ''}|${params.kind ?? ''}|${params.status ?? ''}|${params.serviceTypeId ?? ''}|${params.page ?? ''}|${params.pageSize ?? ''}`;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <PageHeader
         action={
           <div className="flex flex-wrap gap-2">

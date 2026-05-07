@@ -1,25 +1,21 @@
-import { Plus } from "lucide-react";
-import { Suspense } from "react";
+import { Plus } from 'lucide-react';
+import { Suspense } from 'react';
 
-import { EntryForm } from "@/components/entries/entry-form";
+import { EntryForm } from '@/components/entries/entry-form';
 import {
   EntriesList,
   type EntriesSearchParams,
-} from "@/components/entries/entries-list";
+} from '@/components/entries/entries-list';
 import {
   DateRangeFilter,
   FilterBar,
   SearchFilter,
   SelectFilter,
-} from "@/components/filters";
-import {
-  FlashMessage,
-  PageHeader,
-  TableSkeleton,
-} from "@/components/shared";
-import { FormModal } from "@/components/ui/modal";
-import { requireActiveUser } from "@/lib/auth";
-import prisma from "@/lib/prisma";
+} from '@/components/filters';
+import { FlashMessage, PageHeader, TableSkeleton } from '@/components/shared';
+import { FormModal } from '@/components/ui/modal';
+import { requireActiveUser } from '@/lib/auth';
+import prisma from '@/lib/prisma';
 
 type EntriesPageProps = {
   searchParams: Promise<EntriesSearchParams & { success?: string }>;
@@ -27,17 +23,17 @@ type EntriesPageProps = {
 
 export default async function EntriesPage({ searchParams }: EntriesPageProps) {
   const [, params, suppliers, productsRaw] = await Promise.all([
-    requireActiveUser("/entries"),
+    requireActiveUser('/entries'),
     searchParams,
     prisma.supplier.findMany({
       where: { isActive: true },
-      orderBy: { name: "asc" },
+      orderBy: { name: 'asc' },
       select: { id: true, name: true },
       take: 500,
     }),
     prisma.product.findMany({
       where: { isActive: true },
-      orderBy: { name: "asc" },
+      orderBy: { name: 'asc' },
       select: {
         id: true,
         name: true,
@@ -62,10 +58,10 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
     value: supplier.id,
   }));
 
-  const filterKey = `${params.from ?? ""}|${params.to ?? ""}|${params.q ?? ""}|${params.status ?? ""}|${params.supplierId ?? ""}|${params.page ?? ""}|${params.pageSize ?? ""}`;
+  const filterKey = `${params.from ?? ''}|${params.to ?? ''}|${params.q ?? ''}|${params.status ?? ''}|${params.supplierId ?? ''}|${params.page ?? ''}|${params.pageSize ?? ''}`;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <PageHeader
         action={
           <FormModal
@@ -85,7 +81,9 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
       />
 
       {params.success ? (
-        <FlashMessage type="success">Entrada registrada correctamente.</FlashMessage>
+        <FlashMessage type="success">
+          Entrada registrada correctamente.
+        </FlashMessage>
       ) : null}
 
       <FilterBar>
@@ -100,8 +98,8 @@ export default async function EntriesPage({ searchParams }: EntriesPageProps) {
           label="Estado"
           name="status"
           options={[
-            { label: "Ordenada", value: "ORDERED" },
-            { label: "Recibida", value: "RECEIVED" },
+            { label: 'Ordenada', value: 'ORDERED' },
+            { label: 'Recibida', value: 'RECEIVED' },
           ]}
         />
         <SelectFilter

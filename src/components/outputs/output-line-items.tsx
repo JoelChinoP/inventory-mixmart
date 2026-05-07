@@ -164,17 +164,18 @@ export function OutputLineItems({
         </label>
       </div>
 
-      <div className="flex justify-end">
-        <button
-          className="btn btn-soft h-9 px-3 text-xs"
-          onClick={addRow}
-          type="button"
-        >
-          <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-          Agregar
-        </button>
-      </div>
-      <div className="rounded-card border border-border bg-surface">
+      <div className="rounded-card border border-border">
+        <div className="flex items-center justify-between border-b border-border bg-surface px-3 py-2">
+          <h4 className="text-sm font-semibold text-foreground">Productos</h4>
+          <button
+            className="btn btn-soft h-9 px-3 text-xs"
+            onClick={addRow}
+            type="button"
+          >
+            <Plus aria-hidden="true" className="h-3.5 w-3.5" />
+            Agregar
+          </button>
+        </div>
         <div className="divide-y divide-border">
           {rows.map((row, index) => (
             <div

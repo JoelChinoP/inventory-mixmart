@@ -1,13 +1,13 @@
-import { Plus } from "lucide-react";
+import { Plus } from 'lucide-react';
 
-import { Field } from "@/components/forms";
-import { SubmitButton } from "@/components/shared";
-import { Select } from "@/components/ui/select";
-import { roleLabels } from "@/lib/format";
-import { createUser, updateUser } from "@/server/actions";
-import type { UserRole } from "../../../prisma/generated/client";
+import { Field } from '@/components/forms';
+import { SubmitButton } from '@/components/shared';
+import { Select } from '@/components/ui/select';
+import { roleLabels } from '@/lib/format';
+import { createUser, updateUser } from '@/server/actions';
+import type { UserRole } from '../../../prisma/generated/client';
 
-const roles: UserRole[] = ["ADMIN", "WORKER"];
+const roles: UserRole[] = ['ADMIN', 'WORKER'];
 
 export type UserFormValues = {
   id: string;
@@ -24,11 +24,10 @@ export function UserForm({ user }: { user?: UserFormValues }) {
   const isEdit = Boolean(user);
 
   return (
-    <form
-      action={isEdit ? updateUser : createUser}
-      className="space-y-5 p-5"
-    >
-      {isEdit && user ? <input name="id" type="hidden" value={user.id} /> : null}
+    <form action={isEdit ? updateUser : createUser} className="space-y-3 p-5">
+      {isEdit && user ? (
+        <input name="id" type="hidden" value={user.id} />
+      ) : null}
 
       <fieldset className="space-y-3">
         <legend className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
@@ -47,14 +46,14 @@ export function UserForm({ user }: { user?: UserFormValues }) {
           <Field label="Correo">
             <input
               className="input"
-              defaultValue={user?.email ?? ""}
+              defaultValue={user?.email ?? ''}
               name="email"
               placeholder="correo@dominio.com"
               type="email"
             />
           </Field>
           <Field label="Rol">
-            <Select defaultValue={user?.role ?? "WORKER"} name="role">
+            <Select defaultValue={user?.role ?? 'WORKER'} name="role">
               {roles.map((role) => (
                 <option key={role} value={role}>
                   {roleLabels[role]}
@@ -89,7 +88,7 @@ export function UserForm({ user }: { user?: UserFormValues }) {
           <Field label="Telefono">
             <input
               className="input"
-              defaultValue={user?.phone ?? ""}
+              defaultValue={user?.phone ?? ''}
               name="phone"
               placeholder="+51 9XX XXX XXX"
             />
@@ -97,7 +96,7 @@ export function UserForm({ user }: { user?: UserFormValues }) {
           <Field label="DNI">
             <input
               className="input"
-              defaultValue={user?.dni ?? ""}
+              defaultValue={user?.dni ?? ''}
               name="dni"
               placeholder="8 digitos"
             />
@@ -109,17 +108,15 @@ export function UserForm({ user }: { user?: UserFormValues }) {
         <legend className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
           Acceso
         </legend>
-        <Field
-          label={isEdit ? "Nueva contrasena" : "Contrasena inicial"}
-        >
+        <Field label={isEdit ? 'Nueva contrasena' : 'Contrasena inicial'}>
           <input
             className="input"
             minLength={8}
             name="password"
             placeholder={
               isEdit
-                ? "Dejar vacio para conservar la actual"
-                : "Minimo 8 caracteres"
+                ? 'Dejar vacio para conservar la actual'
+                : 'Minimo 8 caracteres'
             }
             required={!isEdit}
             type="password"
@@ -130,7 +127,7 @@ export function UserForm({ user }: { user?: UserFormValues }) {
       <div className="flex justify-end">
         <SubmitButton>
           <Plus aria-hidden="true" className="h-4 w-4" />
-          {isEdit ? "Guardar cambios" : "Crear usuario"}
+          {isEdit ? 'Guardar cambios' : 'Crear usuario'}
         </SubmitButton>
       </div>
     </form>

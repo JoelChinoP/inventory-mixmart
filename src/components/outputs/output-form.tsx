@@ -15,7 +15,7 @@ type OutputFormProps = {
 
 export function OutputForm({ products }: OutputFormProps) {
   return (
-    <form action={createStockOutput} className="space-y-5 p-4 md:p-5">
+    <form action={createStockOutput} className="space-y-3 p-4 md:p-5">
       <OutputLineItems products={products} />
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end">

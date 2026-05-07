@@ -1,12 +1,14 @@
 import { PackageCheck } from "lucide-react";
 
 import {
+  ActionTip,
   DataTable,
   EmptyState,
   IdActionForm,
   PaginationBar,
   Section,
   StatusBadge,
+  iconBtnGood,
 } from "@/components/shared";
 import { dateRangeWhere, sumLineCost } from "@/lib/calc";
 import {
@@ -139,14 +141,16 @@ export async function EntriesList({
             </td>
             <td className="px-4 py-3">
               {entry.status === "ORDERED" ? (
-                <IdActionForm
-                  action={receiveStockEntry}
-                  className="btn btn-secondary"
-                  id={entry.id}
-                >
-                  <PackageCheck aria-hidden="true" className="h-4 w-4" />
-                  Recibir
-                </IdActionForm>
+                <ActionTip label="Recibir">
+                  <IdActionForm
+                    action={receiveStockEntry}
+                    className={iconBtnGood}
+                    id={entry.id}
+                    label="Recibir"
+                  >
+                    <PackageCheck aria-hidden="true" data-icon="icon" />
+                  </IdActionForm>
+                </ActionTip>
               ) : (
                 <span className="text-xs text-muted-foreground">Aplicada</span>
               )}

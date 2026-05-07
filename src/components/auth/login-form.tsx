@@ -51,7 +51,7 @@ export function LoginForm({ callbackUrl, initialError }: LoginFormProps) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="space-y-2">
           <label className="text-sm font-semibold text-foreground" htmlFor="identifier">

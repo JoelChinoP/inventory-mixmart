@@ -16,7 +16,11 @@
       "Bash(node -e \"const { execSync } = require\\('child_process'\\); try { const out = execSync\\('npx prisma generate', { cwd: 'd:/inventory-mixmart', timeout: 60000, encoding: 'utf8' }\\); console.log\\(out\\); } catch\\(e\\) { console.error\\(e.stdout\\); console.error\\(e.stderr\\); }\")",
       "Bash(Remove-Item -Recurse -Force \"d:\\\\inventory-mixmart\\\\.next\")",
       "Bash(cd /d \"d:\\\\inventory-mixmart\")",
-      "Bash(rmdir /s /q .next)"
+      "Bash(rmdir /s /q .next)",
+      "Bash(findstr lucide *)",
+      "Bash(findstr \"lucide\" d:/inventory-mixmart/package.json)",
+      "Bash(dir \"d:\\\\inventory-mixmart\\\\node_modules\\\\lucide-react\\\\dist\" /b)",
+      "Bash(dir \"d:\\\\inventory-mixmart\\\\node_modules\\\\lucide-react\" /b)"
     ]
   }
 }

@@ -63,8 +63,14 @@ export function EntryLineItems({
     );
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-end">
+    <div className="rounded-card border border-border">
+      <div className="flex items-center justify-between border-b border-border bg-surface px-3 py-2">
+        <div>
+          <h4 className="text-sm font-semibold text-foreground">Productos</h4>
+          <p className="text-[11.5px] text-muted-foreground">
+            Agrega los productos que ingresan al stock.
+          </p>
+        </div>
         <button
           className="btn btn-soft h-9 px-3 text-xs"
           onClick={addRow}
@@ -74,82 +80,80 @@ export function EntryLineItems({
           Agregar
         </button>
       </div>
-      <div className="rounded-card border border-border bg-surface">
-        <div className="divide-y divide-border">
-          {rows.map((row, index) => (
-            <div
-              className="grid gap-2 p-3 md:grid-cols-[minmax(0,1fr)_120px_140px_auto] md:items-end"
-              key={row.rowId}
-            >
-              <div className="space-y-1">
-                <span className="text-[11px] font-medium text-muted-foreground">
-                  #{index + 1} Producto
-                </span>
-                <ProductCombobox
-                  ariaLabel={`Producto ${index + 1}`}
-                  name="productId"
-                  onSelect={(option) => {
-                    const product = option
-                      ? products.find((item) => item.id === option.id)
-                      : null;
-                    updateRow(row.rowId, {
-                      productId: option?.id ?? '',
-                      unitCost:
-                        row.unitCost ||
-                        (product?.purchasePrice ? product.purchasePrice : ''),
-                    });
-                  }}
-                  options={options}
-                  placeholder="Buscar producto..."
-                  required
-                />
-              </div>
-              <label className="space-y-1">
-                <span className="text-[11px] font-medium text-muted-foreground">
-                  Cantidad
-                </span>
-                <input
-                  className="input"
-                  min="1"
-                  name="quantity"
-                  onChange={(event) =>
-                    updateRow(row.rowId, { quantity: event.target.value })
-                  }
-                  placeholder="0"
-                  step="1"
-                  type="number"
-                  value={row.quantity}
-                />
-              </label>
-              <label className="space-y-1">
-                <span className="text-[11px] font-medium text-muted-foreground">
-                  Costo unitario
-                </span>
-                <input
-                  className="input"
-                  min="0"
-                  name="unitCost"
-                  onChange={(event) =>
-                    updateRow(row.rowId, { unitCost: event.target.value })
-                  }
-                  placeholder="0.00"
-                  step="0.01"
-                  type="number"
-                  value={row.unitCost}
-                />
-              </label>
-              <button
-                aria-label="Quitar fila"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-control border border-border text-muted-foreground transition hover:border-error/40 hover:bg-error-surface hover:text-error disabled:cursor-not-allowed disabled:opacity-40"
-                disabled={rows.length === 1}
-                onClick={() => removeRow(row.rowId)}
-                type="button"
-              >
-                <Trash2 aria-hidden="true" className="h-4 w-4" />
-              </button>
+      <div className="divide-y divide-border">
+        {rows.map((row, index) => (
+          <div
+            className="grid gap-2 p-3 md:grid-cols-[minmax(0,1fr)_120px_140px_auto] md:items-end"
+            key={row.rowId}
+          >
+            <div className="space-y-1">
+              <span className="text-[11px] font-medium text-muted-foreground">
+                #{index + 1} Producto
+              </span>
+              <ProductCombobox
+                ariaLabel={`Producto ${index + 1}`}
+                name="productId"
+                onSelect={(option) => {
+                  const product = option
+                    ? products.find((item) => item.id === option.id)
+                    : null;
+                  updateRow(row.rowId, {
+                    productId: option?.id ?? '',
+                    unitCost:
+                      row.unitCost ||
+                      (product?.purchasePrice ? product.purchasePrice : ''),
+                  });
+                }}
+                options={options}
+                placeholder="Buscar producto..."
+                required
+              />
             </div>
-          ))}
-        </div>
+            <label className="space-y-1">
+              <span className="text-[11px] font-medium text-muted-foreground">
+                Cantidad
+              </span>
+              <input
+                className="input"
+                min="1"
+                name="quantity"
+                onChange={(event) =>
+                  updateRow(row.rowId, { quantity: event.target.value })
+                }
+                placeholder="0"
+                step="1"
+                type="number"
+                value={row.quantity}
+              />
+            </label>
+            <label className="space-y-1">
+              <span className="text-[11px] font-medium text-muted-foreground">
+                Costo unitario
+              </span>
+              <input
+                className="input"
+                min="0"
+                name="unitCost"
+                onChange={(event) =>
+                  updateRow(row.rowId, { unitCost: event.target.value })
+                }
+                placeholder="0.00"
+                step="0.01"
+                type="number"
+                value={row.unitCost}
+              />
+            </label>
+            <button
+              aria-label="Quitar fila"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-control border border-border text-muted-foreground transition hover:border-error/40 hover:bg-error-surface hover:text-error disabled:cursor-not-allowed disabled:opacity-40"
+              disabled={rows.length === 1}
+              onClick={() => removeRow(row.rowId)}
+              type="button"
+            >
+              <Trash2 aria-hidden="true" className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );

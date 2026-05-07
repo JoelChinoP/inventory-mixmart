@@ -1,4 +1,4 @@
-import { Pencil, Plus, Search } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Fragment, Suspense } from 'react';
 
 import { SupplierForm } from '@/components/suppliers/supplier-form';
@@ -10,12 +10,11 @@ import {
   PageHeader,
   PaginationBar,
   RecordActions,
+  RecordEditModal,
   RecordStatusBadge,
   Section,
-  SectionHeader,
 } from '@/components/shared';
 import { FormModal } from '@/components/ui/modal';
-import { Select } from '@/components/ui/select';
 import { formatCurrency, formatDateOnly } from '@/lib/format';
 import { sumLineCost } from '@/lib/calc';
 import { requireActiveUser } from '@/lib/auth';
@@ -54,7 +53,7 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
   const user = await requireActiveUser('/suppliers');
   const params = await searchParams;
   const q = params.q?.trim() ?? '';
-  const status = params.status ?? 'active';
+  const status = params.status;
   const canManage = canManageCatalog(user.role);
   const pagination = readPagination(params);
 
@@ -72,7 +71,9 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
       ? { isActive: false }
       : status === 'deleted'
         ? { deletedAt: { not: null } }
-        : { isActive: true }),
+        : status === 'active'
+          ? { isActive: true }
+          : {}),
   };
 
   const [suppliers, totalItems] = await Promise.all([
@@ -194,22 +195,11 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
                       <RecordActions
                         deletedAt={supplier.deletedAt}
                         editTrigger={
-                          <FormModal
-                            size="lg"
+                          <RecordEditModal
                             title="Editar proveedor"
-                            triggerClassName="btn-soft"
-                            trigger={
-                              <>
-                                <Pencil
-                                  aria-hidden="true"
-                                  className="h-4 w-4"
-                                />
-                                Editar
-                              </>
-                            }
                           >
                             <SupplierForm supplier={supplier} />
-                          </FormModal>
+                          </RecordEditModal>
                         }
                         id={supplier.id}
                         isActive={supplier.isActive}

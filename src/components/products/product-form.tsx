@@ -34,7 +34,7 @@ export async function ProductForm({
   return (
     <form
       action={isEdit ? updateProduct : createProduct}
-      className="space-y-5 p-5"
+      className="space-y-3 p-5"
     >
       {isEdit && product ? (
         <input name="id" type="hidden" value={product.id} />

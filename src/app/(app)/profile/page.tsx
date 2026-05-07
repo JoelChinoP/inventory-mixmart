@@ -37,7 +37,7 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
   const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       {params.success ? (
         <FlashMessage type="success">Perfil actualizado correctamente.</FlashMessage>
       ) : null}

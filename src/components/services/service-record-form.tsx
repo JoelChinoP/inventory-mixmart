@@ -76,7 +76,7 @@ export function ServiceRecordForm({
     );
 
   return (
-    <form action={createServiceRecord} className="space-y-5 p-5">
+    <form action={createServiceRecord} className="space-y-3 p-5">
       <div className="grid gap-3 md:grid-cols-2">
         <Field className="md:col-span-2" label="Tipo de servicio">
           <ProductCombobox

@@ -20,7 +20,7 @@ export function SupplierForm({ supplier }: { supplier?: SupplierFormValues }) {
   return (
     <form
       action={isEdit ? updateSupplier : createSupplier}
-      className="space-y-5 p-5"
+      className="space-y-3 p-5"
     >
       {isEdit && supplier ? (
         <input name="id" type="hidden" value={supplier.id} />

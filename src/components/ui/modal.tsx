@@ -20,6 +20,7 @@ type FormModalProps = {
   description?: string;
   children: ReactNode;
   size?: ModalSize;
+  triggerAriaLabel?: string;
   triggerClassName?: string;
 };
 
@@ -29,6 +30,7 @@ export function FormModal({
   description,
   children,
   size = "md",
+  triggerAriaLabel,
   triggerClassName,
 }: FormModalProps) {
   const [open, setOpen] = useState(false);
@@ -54,6 +56,7 @@ export function FormModal({
   return (
     <>
       <button
+        aria-label={triggerAriaLabel}
         className={cn("btn btn-primary", triggerClassName)}
         onClick={() => setOpen(true)}
         type="button"

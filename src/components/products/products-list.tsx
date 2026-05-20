@@ -1,6 +1,8 @@
 import { ProductForm } from "@/components/products/product-form";
+import { StockAdjustmentModal } from "@/components/products/stock-adjustment-modal";
 import type { ReactNode } from "react";
 import {
+  ActionTip,
   DataTable,
   EmptyState,
   PaginationBar,
@@ -115,15 +117,15 @@ export async function ProductsList({
         columnWidths={
           role === "ADMIN"
             ? [
-                "22%",
-                "11%",
-                "14%",
+                "19%",
+                "9%",
+                "12%",
                 "9%",
                 "9%",
                 "9%",
                 "9%",
                 "8%",
-                ...(canManage ? ["9%"] : []),
+                ...(canManage ? ["16%"] : []),
               ]
             : ["28%", "14%", "18%", "11%", "11%", "10%", ...(canManage ? ["8%"] : [])]
         }
@@ -177,23 +179,34 @@ export async function ProductsList({
               </td>
               {canManage ? (
                 <td className="px-4 py-3">
-                  <RecordActions
-                    deletedAt={product.deletedAt}
-                    editTrigger={
-                      <RecordEditModal
-                        title="Editar producto"
-                        description="Actualiza datos y precios."
-                      >
-                        <ProductForm product={product} />
-                      </RecordEditModal>
-                    }
-                    id={product.id}
-                    isActive={product.isActive}
-                    onActivate={reactivateProduct}
-                    onDeactivate={deactivateProduct}
-                    onRestore={restoreProduct}
-                    onSoftDelete={softDeleteProduct}
-                  />
+                  <div className="flex items-center gap-1">
+                    {!product.deletedAt ? (
+                      <ActionTip label="Ajustar stock">
+                        <StockAdjustmentModal
+                          currentStock={decimalToNumber(product.currentStock)}
+                          productId={product.id}
+                          productName={product.name}
+                        />
+                      </ActionTip>
+                    ) : null}
+                    <RecordActions
+                      deletedAt={product.deletedAt}
+                      editTrigger={
+                        <RecordEditModal
+                          title="Editar producto"
+                          description="Actualiza datos y precios."
+                        >
+                          <ProductForm product={product} />
+                        </RecordEditModal>
+                      }
+                      id={product.id}
+                      isActive={product.isActive}
+                      onActivate={reactivateProduct}
+                      onDeactivate={deactivateProduct}
+                      onRestore={restoreProduct}
+                      onSoftDelete={softDeleteProduct}
+                    />
+                  </div>
                 </td>
               ) : null}
             </tr>

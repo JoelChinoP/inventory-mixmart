@@ -111,6 +111,7 @@ export const movementTypeLabels: Record<StockMovementType, string> = {
   WASTE: "Merma",
   INTERNAL_USE: "Uso interno",
   SERVICE_CONSUMPTION: "Servicio",
+  ADJUSTMENT: "Ajuste",
 };
 
 export const movementDirectionLabels: Record<StockMovementDirection, string> = {

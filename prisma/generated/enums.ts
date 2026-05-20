@@ -75,7 +75,8 @@ export const StockMovementType = {
   SALE: 'SALE',
   WASTE: 'WASTE',
   INTERNAL_USE: 'INTERNAL_USE',
-  SERVICE_CONSUMPTION: 'SERVICE_CONSUMPTION'
+  SERVICE_CONSUMPTION: 'SERVICE_CONSUMPTION',
+  ADJUSTMENT: 'ADJUSTMENT'
 } as const
 
 export type StockMovementType = (typeof StockMovementType)[keyof typeof StockMovementType]

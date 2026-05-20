@@ -8,6 +8,7 @@ import { actionRedirectPath } from "@/lib/action-redirect";
 import { ADMIN_ROLE, OPERATIONAL_ROLES } from "@/lib/permissions";
 import {
   SelfDeactivationError,
+  adjustProductStock,
   createProductRecord,
   createServiceRecord as createServiceWorkRecord,
   createServiceTypeRecord,
@@ -27,6 +28,7 @@ import {
   parseStockOutputItems,
   productSchema,
   productUpdateSchema,
+  stockAdjustmentSchema,
   receiveStockEntryRecord,
   restoreProductRecord,
   restoreServiceTypeRecord,
@@ -110,6 +112,15 @@ export async function restoreProduct(formData: FormData) {
   await requireRole(adminOnly, "/products");
   await restoreProductRecord(idFromForm(formData));
   revalidateCatalog();
+}
+
+export async function adjustStock(formData: FormData) {
+  const user = await requireRole(adminOnly, "/products");
+  const data = parseForm(stockAdjustmentSchema, formData);
+
+  await adjustProductStock({ performedById: user.id, data });
+  revalidateCatalog();
+  redirect(actionRedirectPath(formData, "/products", { success: "adjusted" }));
 }
 
 export async function createSupplier(formData: FormData) {

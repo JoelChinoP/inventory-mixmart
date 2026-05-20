@@ -144,6 +144,13 @@ const serviceConsumptionSchema = z.object({
 
 export type ServiceConsumptionInput = z.infer<typeof serviceConsumptionSchema>;
 
+export const stockAdjustmentSchema = z.object({
+  productId: z.string().uuid(),
+  newStock: nonNegativeDecimal,
+  notes: z.string().trim().default("").transform((v) => (v.length ? v : null)),
+});
+
+export type StockAdjustmentInput = z.infer<typeof stockAdjustmentSchema>;
 export type ProductInput = z.infer<typeof productSchema>;
 export type ProductUpdateInput = z.infer<typeof productUpdateSchema>;
 export type SupplierInput = z.infer<typeof supplierSchema>;

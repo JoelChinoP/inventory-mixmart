@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import type {
   ProductInput,
   ProductUpdateInput,
+  StockAdjustmentInput,
   SupplierInput,
   SupplierUpdateInput,
 } from "@/services/form-schemas";
@@ -119,6 +120,45 @@ export async function softDeleteProductRecord(id: string) {
 
 export async function restoreProductRecord(id: string) {
   return restoreModel("product", id);
+}
+
+export async function adjustProductStock({
+  performedById,
+  data,
+}: {
+  performedById: string;
+  data: StockAdjustmentInput;
+}) {
+  const product = await prisma.product.findUniqueOrThrow({
+    where: { id: data.productId },
+    select: { currentStock: true },
+  });
+
+  const currentStock = Number(product.currentStock);
+  const newStock = data.newStock;
+  const delta = Math.abs(newStock - currentStock);
+
+  if (delta === 0) return;
+
+  const direction = newStock > currentStock ? "IN" : "OUT";
+
+  await prisma.$transaction([
+    prisma.product.update({
+      where: { id: data.productId },
+      data: { currentStock: newStock },
+    }),
+    prisma.stockMovement.create({
+      data: {
+        productId: data.productId,
+        movementType: "ADJUSTMENT",
+        direction,
+        quantity: delta,
+        productStockAfter: newStock,
+        performedById,
+        notes: data.notes,
+      },
+    }),
+  ]);
 }
 
 export async function createSupplierRecord(data: SupplierInput) {

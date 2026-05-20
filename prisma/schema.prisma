@@ -54,6 +54,7 @@ enum StockMovementType {
   WASTE
   INTERNAL_USE
   SERVICE_CONSUMPTION
+  ADJUSTMENT
 }
 
 model User {

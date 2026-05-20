@@ -8,3 +8,4 @@ export * from "./record-edit-modal";
 export * from "./record-actions";
 export * from "./submit-button";
 export * from "./toast";
+export * from "./row-paginator";

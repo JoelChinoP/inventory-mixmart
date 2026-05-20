@@ -2,15 +2,12 @@ import { Plus, Power, PowerOff } from 'lucide-react';
 import { Suspense } from 'react';
 
 import {
-  DataTable,
-  EmptyState,
   ActionTip,
   IdActionForm,
   OperationalPageSkeleton,
   PageHeader,
-  PaginationBar,
   RecordEditModal,
-  Section,
+  RowPaginator,
   StatusBadge,
   ToastOnLoad,
   iconBtnGood,
@@ -20,16 +17,14 @@ import { UserForm } from '@/components/users/user-form';
 import { FormModal } from '@/components/ui/modal';
 import { formatDate, roleLabels } from '@/lib/format';
 import { requireRole } from '@/lib/auth';
-import { buildPaginationMeta, readPagination } from '@/lib/pagination';
 import prisma from '@/lib/prisma';
 import { setUserActive } from '@/server/actions';
+import type { ReactNode } from 'react';
 
 type UsersPageProps = {
   searchParams: Promise<{
     success?: string;
     error?: string;
-    page?: string;
-    pageSize?: string;
   }>;
 };
 
@@ -44,18 +39,65 @@ export default function UsersPage({ searchParams }: UsersPageProps) {
 async function UsersContent({ searchParams }: UsersPageProps) {
   await requireRole(['ADMIN'], '/users');
   const params = await searchParams;
-  const pagination = readPagination(params);
 
-  const [users, totalItems] = await Promise.all([
-    prisma.user.findMany({
-      orderBy: [{ isActive: 'desc' }, { lastName: 'asc' }, { firstName: 'asc' }],
-      skip: pagination.skip,
-      take: pagination.take,
-    }),
-    prisma.user.count(),
-  ]);
+  const users = await prisma.user.findMany({
+    orderBy: [{ isActive: 'desc' }, { lastName: 'asc' }, { firstName: 'asc' }],
+  });
 
-  const meta = buildPaginationMeta(totalItems, pagination);
+  const rows: ReactNode[] = users.map((user) => (
+    <tr key={user.id} className={user.isActive ? '' : 'bg-surface-muted/45'}>
+      <td className="px-4 py-3">
+        <p className="font-medium text-foreground">
+          {user.firstName} {user.lastName}
+        </p>
+        <p className="text-xs text-muted-foreground">@{user.username}</p>
+      </td>
+      <td className="px-4 py-3">
+        <p>{user.email || '-'}</p>
+        <p className="text-xs text-muted-foreground">
+          {user.phone || user.dni || '-'}
+        </p>
+      </td>
+      <td className="px-4 py-3">{roleLabels[user.role]}</td>
+      <td className="px-4 py-3">
+        {user.isActive ? (
+          <StatusBadge tone="success">Activo</StatusBadge>
+        ) : (
+          <StatusBadge tone="warning">Inactivo</StatusBadge>
+        )}
+      </td>
+      <td className="px-4 py-3">{formatDate(user.lastLoginAt)}</td>
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-1">
+          <ActionTip label="Editar">
+            <RecordEditModal title="Editar usuario">
+              <UserForm user={user} />
+            </RecordEditModal>
+          </ActionTip>
+          <ActionTip label={user.isActive ? 'Desactivar' : 'Activar'}>
+            <IdActionForm
+              action={setUserActive}
+              className={user.isActive ? iconBtnWarn : iconBtnGood}
+              fields={[
+                {
+                  name: 'isActive',
+                  value: user.isActive ? 'false' : 'true',
+                },
+              ]}
+              id={user.id}
+              label={user.isActive ? 'Desactivar' : 'Activar'}
+            >
+              {user.isActive ? (
+                <PowerOff aria-hidden="true" data-icon="icon" />
+              ) : (
+                <Power aria-hidden="true" data-icon="icon" />
+              )}
+            </IdActionForm>
+          </ActionTip>
+        </div>
+      </td>
+    </tr>
+  ));
 
   return (
     <div>
@@ -88,80 +130,13 @@ async function UsersContent({ searchParams }: UsersPageProps) {
         />
       ) : null}
 
-      <Section>
-        {users.length ? (
-          <DataTable
-            columnWidths={['22%', '22%', '12%', '12%', '16%', '16%']}
-            headers={[
-              'Usuario',
-              'Contacto',
-              'Rol',
-              'Estado',
-              'Ultimo acceso',
-              'Acciones',
-            ]}
-            minWidth="900px"
-          >
-            {users.map((user) => (
-              <tr key={user.id} className={user.isActive ? '' : 'bg-surface-muted/45'}>
-                <td className="px-4 py-3">
-                  <p className="font-medium text-foreground">
-                    {user.firstName} {user.lastName}
-                  </p>
-                  <p className="text-xs text-muted-foreground">@{user.username}</p>
-                </td>
-                <td className="px-4 py-3">
-                  <p>{user.email || '-'}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {user.phone || user.dni || '-'}
-                  </p>
-                </td>
-                <td className="px-4 py-3">{roleLabels[user.role]}</td>
-                <td className="px-4 py-3">
-                  {user.isActive ? (
-                    <StatusBadge tone="success">Activo</StatusBadge>
-                  ) : (
-                    <StatusBadge tone="warning">Inactivo</StatusBadge>
-                  )}
-                </td>
-                <td className="px-4 py-3">{formatDate(user.lastLoginAt)}</td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-1">
-                    <ActionTip label="Editar">
-                      <RecordEditModal title="Editar usuario">
-                        <UserForm user={user} />
-                      </RecordEditModal>
-                    </ActionTip>
-                    <ActionTip label={user.isActive ? 'Desactivar' : 'Activar'}>
-                      <IdActionForm
-                        action={setUserActive}
-                        className={user.isActive ? iconBtnWarn : iconBtnGood}
-                        fields={[
-                          {
-                            name: 'isActive',
-                            value: user.isActive ? 'false' : 'true',
-                          },
-                        ]}
-                        id={user.id}
-                        label={user.isActive ? 'Desactivar' : 'Activar'}
-                      >
-                        {user.isActive ? (
-                          <PowerOff aria-hidden="true" data-icon="icon" />
-                        ) : (
-                          <Power aria-hidden="true" data-icon="icon" />
-                        )}
-                      </IdActionForm>
-                    </ActionTip>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </DataTable>
-        ) : (
-          <EmptyState title="Sin usuarios" />
-        )}
-        <PaginationBar {...meta} />
-      </Section>
+      <RowPaginator
+        columnWidths={['22%', '22%', '12%', '12%', '16%', '16%']}
+        emptyTitle="Sin usuarios"
+        headers={['Usuario', 'Contacto', 'Rol', 'Estado', 'Ultimo acceso', 'Acciones']}
+        minWidth="900px"
+        rows={rows}
+      />
     </div>
   );
 }

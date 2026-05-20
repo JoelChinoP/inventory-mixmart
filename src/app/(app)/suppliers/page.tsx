@@ -3,23 +3,19 @@ import { Suspense } from 'react';
 
 import { SupplierForm } from '@/components/suppliers/supplier-form';
 import {
-  DataTable,
-  EmptyState,
   PageContentSkeleton,
   PageHeader,
-  PaginationBar,
   RecordActions,
   RecordDetailModal,
   RecordEditModal,
   RecordStatusBadge,
-  Section,
+  RowPaginator,
   ToastOnLoad,
 } from '@/components/shared';
 import { FormModal } from '@/components/ui/modal';
 import { formatCurrency, formatDateOnly } from '@/lib/format';
 import { sumLineCost } from '@/lib/calc';
 import { requireActiveUser } from '@/lib/auth';
-import { buildPaginationMeta, readPagination } from '@/lib/pagination';
 import { canManageCatalog } from '@/lib/permissions';
 import prisma from '@/lib/prisma';
 import {
@@ -29,14 +25,13 @@ import {
   softDeleteSupplier,
 } from '@/server/actions';
 import { FilterBar, SearchFilter, SelectFilter } from '@/components/filters';
+import type { ReactNode } from 'react';
 
 type SuppliersPageProps = {
   searchParams: Promise<{
     q?: string;
     status?: 'active' | 'inactive' | 'deleted';
     success?: string;
-    page?: string;
-    pageSize?: string;
   }>;
 };
 
@@ -56,7 +51,6 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
   const q = params.q?.trim() ?? '';
   const status = params.status;
   const canManage = canManageCatalog(user.role);
-  const pagination = readPagination(params);
 
   const where = {
     ...(q
@@ -77,32 +71,25 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
           : {}),
   };
 
-  const [suppliers, totalItems] = await Promise.all([
-    prisma.supplier.findMany({
-      where,
-      include: {
-        _count: {
-          select: {
-            productSuppliers: true,
-            stockEntries: true,
-          },
-        },
-        stockEntries: {
-          orderBy: { orderedAt: 'desc' },
-          take: 3,
-          include: {
-            items: { select: { quantity: true, unitCost: true } },
-          },
+  const suppliers = await prisma.supplier.findMany({
+    where,
+    include: {
+      _count: {
+        select: {
+          productSuppliers: true,
+          stockEntries: true,
         },
       },
-      orderBy: [{ isActive: 'desc' }, { name: 'asc' }],
-      skip: pagination.skip,
-      take: pagination.take,
-    }),
-    prisma.supplier.count({ where }),
-  ]);
-
-  const meta = buildPaginationMeta(totalItems, pagination);
+      stockEntries: {
+        orderBy: { orderedAt: 'desc' },
+        take: 3,
+        include: {
+          items: { select: { quantity: true, unitCost: true } },
+        },
+      },
+    },
+    orderBy: [{ isActive: 'desc' }, { name: 'asc' }],
+  });
 
   const headers = [
     'Proveedor',
@@ -112,6 +99,74 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
     'Estado',
     ...(canManage ? ['Acciones'] : []),
   ];
+
+  const columnWidths = canManage
+    ? ['24%', '22%', '10%', '10%', '14%', '20%']
+    : ['28%', '28%', '14%', '14%', '16%'];
+
+  const rows: ReactNode[] = suppliers.map((supplier) => (
+    <tr key={supplier.id}>
+      <td className="px-4 py-3">
+        <p className="font-medium text-foreground">{supplier.name}</p>
+        <p className="text-xs text-muted-foreground">RUC {supplier.ruc}</p>
+      </td>
+      <td className="px-4 py-3">
+        <p>{supplier.contactName}</p>
+        <p className="text-xs text-muted-foreground">{supplier.phone}</p>
+      </td>
+      <td className="px-4 py-3">{supplier._count.productSuppliers}</td>
+      <td className="px-4 py-3">{supplier._count.stockEntries}</td>
+      <td className="px-4 py-3">
+        <RecordStatusBadge
+          deletedAt={supplier.deletedAt}
+          isActive={supplier.isActive}
+        />
+      </td>
+      {canManage ? (
+        <td className="px-4 py-3">
+          <RecordActions
+            deletedAt={supplier.deletedAt}
+            detailTrigger={
+              <RecordDetailModal title="Detalle proveedor">
+                <SupplierDetail supplier={supplier} />
+              </RecordDetailModal>
+            }
+            editTrigger={
+              <RecordEditModal title="Editar proveedor">
+                <SupplierForm supplier={supplier} />
+              </RecordEditModal>
+            }
+            id={supplier.id}
+            isActive={supplier.isActive}
+            onActivate={reactivateSupplier}
+            onDeactivate={deactivateSupplier}
+            onRestore={restoreSupplier}
+            onSoftDelete={softDeleteSupplier}
+          />
+        </td>
+      ) : null}
+    </tr>
+  ));
+
+  const filters = (
+    <FilterBar>
+      <SearchFilter
+        label="Buscar"
+        name="q"
+        placeholder="Nombre, RUC o contacto"
+      />
+      <SelectFilter
+        allLabel="Todos"
+        label="Estado"
+        name="status"
+        options={[
+          { label: 'Activos', value: 'active' },
+          { label: 'Inactivos', value: 'inactive' },
+          ...(canManage ? [{ label: 'Eliminados', value: 'deleted' }] : []),
+        ]}
+      />
+    </FilterBar>
+  );
 
   return (
     <div className="space-y-5">
@@ -140,95 +195,16 @@ async function SuppliersContent({ searchParams }: SuppliersPageProps) {
         <ToastOnLoad title="Proveedor guardado correctamente." type="success" />
       ) : null}
 
-      <Section>
-        <FilterBar>
-          <SearchFilter
-            label="Buscar"
-            name="q"
-            placeholder="Nombre, RUC o contacto"
-          />
-
-          <SelectFilter
-            allLabel="Todos"
-            label="Estado"
-            name="status"
-            options={[
-              { label: 'Activos', value: 'active' },
-              { label: 'Inactivos', value: 'inactive' },
-              ...(canManage ? [{ label: 'Eliminados', value: 'deleted' }] : []),
-            ]}
-          />
-        </FilterBar>
-        {suppliers.length ? (
-          <DataTable
-            columnWidths={
-              canManage
-                ? ['24%', '22%', '10%', '10%', '14%', '20%']
-                : ['28%', '28%', '14%', '14%', '16%']
-            }
-            headers={headers}
-            minWidth={canManage ? '900px' : '760px'}
-          >
-            {suppliers.map((supplier) => (
-              <tr key={supplier.id}>
-                <td className="px-4 py-3">
-                  <p className="font-medium text-foreground">
-                    {supplier.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    RUC {supplier.ruc}
-                  </p>
-                </td>
-                <td className="px-4 py-3">
-                  <p>{supplier.contactName}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {supplier.phone}
-                  </p>
-                </td>
-                <td className="px-4 py-3">
-                  {supplier._count.productSuppliers}
-                </td>
-                <td className="px-4 py-3">{supplier._count.stockEntries}</td>
-                <td className="px-4 py-3">
-                  <RecordStatusBadge
-                    deletedAt={supplier.deletedAt}
-                    isActive={supplier.isActive}
-                  />
-                </td>
-                {canManage ? (
-                  <td className="px-4 py-3">
-                    <RecordActions
-                      deletedAt={supplier.deletedAt}
-                      detailTrigger={
-                        <RecordDetailModal title="Detalle proveedor">
-                          <SupplierDetail supplier={supplier} />
-                        </RecordDetailModal>
-                      }
-                      editTrigger={
-                        <RecordEditModal title="Editar proveedor">
-                          <SupplierForm supplier={supplier} />
-                        </RecordEditModal>
-                      }
-                      id={supplier.id}
-                      isActive={supplier.isActive}
-                      onActivate={reactivateSupplier}
-                      onDeactivate={deactivateSupplier}
-                      onRestore={restoreSupplier}
-                      onSoftDelete={softDeleteSupplier}
-                    />
-                  </td>
-                ) : null}
-              </tr>
-            ))}
-          </DataTable>
-        ) : (
-          <EmptyState
-            title="Sin proveedores"
-            description="No hay proveedores con esos filtros."
-          />
-        )}
-        <PaginationBar {...meta} />
-      </Section>
+      <RowPaginator
+        columnWidths={columnWidths}
+        emptyDescription="No hay proveedores con esos filtros."
+        emptyTitle="Sin proveedores"
+        filters={filters}
+        headers={headers}
+        minWidth={canManage ? '900px' : '760px'}
+        resetKey={[q, status].filter(Boolean).join('|')}
+        rows={rows}
+      />
     </div>
   );
 }
@@ -267,12 +243,12 @@ function SupplierDetail({ supplier }: SupplierDetailProps) {
         <DetailBox
           className="md:col-span-2"
           label="Direccion"
-          value={supplier.address || "Sin direccion registrada"}
+          value={supplier.address || 'Sin direccion registrada'}
         />
         <DetailBox
           className="md:col-span-2"
           label="Notas"
-          value={supplier.notes || "Sin notas"}
+          value={supplier.notes || 'Sin notas'}
         />
       </div>
 

@@ -20,7 +20,7 @@ import { canManageCatalog } from '@/lib/permissions';
 import type { ProductCategory } from '../../../../prisma/generated/client';
 
 type ProductsPageProps = {
-  searchParams: Promise<ProductsSearchParams & { success?: string }>;
+  searchParams: Promise<ProductsSearchParams & { success?: string; error?: string }>;
 };
 
 const categories: ProductCategory[] = ['SCHOOL_SUPPLIES', 'BAZAAR', 'SNACKS'];
